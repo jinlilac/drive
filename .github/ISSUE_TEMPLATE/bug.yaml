@@ -1,0 +1,57 @@
+name: 🚨 버그 보고
+description: 발견된 버그를 보고해주세요.
+title: "🚨 Bug: "
+labels: [ "bug" ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "💬 문제 설명"
+      description: "명확하고 간결한 문제 설명 작성"
+      placeholder: "문제 설명"
+      render: plain text
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "---"
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "📌 심각도"
+      description: "문제의 심각도를 선택하세요."
+      options:
+        - 상
+        - 중
+        - 하
+      default: 1
+    validations:
+      required: true
+  - type: textarea
+    id: error-code
+    attributes:
+      label: "💡 오류 코드"
+      description: "문제와 관련된 코드가 있다면 작성해주세요."
+      placeholder: "TypeScript Error Code"
+      value: "없음"
+  - type: textarea
+    id: detailed-description
+    attributes:
+      label: "📝 상세 내용"
+      description: "문제에 대한 자세한 내용을 작성해주세요."
+      placeholder: "상세한 설명을 여기에 작성해주세요."
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: "🚧 재현 방법"
+      description: "문제를 재현하는 방법을 작성해주세요."
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "📸 첨부파일"
+      description: "문제와 관련된 첨부파일 링크 혹은 스크린샷을 추가해주세요"
+      placeholder: "링크 혹은 스크린샷 첨부"
