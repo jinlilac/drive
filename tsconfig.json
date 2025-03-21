@@ -13,18 +13,20 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "declaration": true,
+    "outDir": "./dist",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     }
   },
-  "include": ["src","eslint.config.js","vite.config.ts","postcss.config.js"],
+  "include": ["src","eslint.config.js","vite.config.ts"],
 }
