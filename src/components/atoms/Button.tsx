@@ -1,4 +1,10 @@
+import { ComponentProps } from 'react';
 import styled from 'styled-components';
+
+type ButtonProps = ComponentProps<'button'> & {
+  direction?: 'left' | 'right';
+  gap?: string;
+};
 
 const DefaultButton = styled.button`
   padding: 18px 36px;
@@ -36,6 +42,13 @@ const StrokeButton = styled(DefaultButton)`
     background-color: ${(props) => props.theme.Colors.gray_10};
   }
 `;
+const GhostButton = styled.button.attrs<ButtonProps>((props) => ({ type: props.type || 'button' }))`
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+`;
 
-const Button = { Stroke: StrokeButton, Fill: DefaultButton };
+const Button = { Stroke: StrokeButton, Fill: DefaultButton, Ghost: GhostButton };
 export default Button;
