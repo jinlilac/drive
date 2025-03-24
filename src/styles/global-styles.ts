@@ -32,9 +32,16 @@ input[type="reset"] {
   input:focus {
   outline: none;
 }
-  /* -webkit-border-radius:0;
-  -moz-border-radius:0; */
-  /* border-radius: 0; */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-transition: background-color 9999s ease-out;
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
 }
 a {
   text-decoration: none;

@@ -8,6 +8,10 @@ export const ICON_LIST = [
   'circle-check',
   'square-check-off',
   'square-check',
+  'eye-on',
+  'eye-off',
+  'mark-red',
+  'mark-green',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
