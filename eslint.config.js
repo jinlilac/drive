@@ -50,6 +50,7 @@ export default tseslint.config(
       'prettier/prettier': 'warn',
       'react-refresh/only-export-components': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/consistent-type-definitions': 0,
     },
   },
 );
