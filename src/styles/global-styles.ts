@@ -29,6 +29,9 @@ input[type="reset"] {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
+  input:focus {
+  outline: none;
+}
   /* -webkit-border-radius:0;
   -moz-border-radius:0; */
   /* border-radius: 0; */

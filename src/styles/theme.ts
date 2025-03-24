@@ -9,7 +9,7 @@ const Colors = {
   success_bg: '#EDF9F0',
   // grayscale
   gray_10: '#FFFFFF',
-  gray_20: '#FAFAFA',
+  gray_20: '#F8F8F8',
   gray_30: '#F3F2F2',
   gray_40: '#E9E8E7',
   gray_50: '#D7D7D5',
