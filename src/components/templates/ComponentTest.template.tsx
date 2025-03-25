@@ -4,6 +4,7 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Input from '@/components/atoms/Input';
 import Typography from '@/components/atoms/Typography';
+import { BasicAlert } from '@/components/molecles/Alert';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
 import { useState } from 'react';
@@ -101,6 +102,31 @@ export default function ComponentTest() {
           <button type="submit">제출</button>
         </form>
       </FormProvider>
+      <Wrapper title="알럿 컴포넌트">
+        <Button.Fill onClick={() => setChecked(true)}>Alert Dialog</Button.Fill>
+        <BasicAlert
+          type="cancel"
+          isOpen={checked}
+          onClose={() => setChecked(false)}
+          confirmLabel="로그인 페이지로"
+          cancelLabel="취소"
+          onCancel={() => console.log('취소')}
+          onConfirm={() => console.log('확인')}
+        >
+          <Container.FlexCol gap="12" alignItems="center" style={{ maxWidth: '314px', marginBottom: '12px' }}>
+            <Img style={{ width: '53px' }} src={ICON.confirm} />
+            <Typography.T2 fontWeight="bold">비밀번호 재설정 메일을 발송하였습니다.</Typography.T2>
+            <Container.FlexCol gap="4" alignItems="center">
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                입력하신 메일로 수신하신 링크를 통해
+              </Typography.B1>
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                비밀번호를 재설정할 수 있습니다.
+              </Typography.B1>
+            </Container.FlexCol>
+          </Container.FlexCol>
+        </BasicAlert>
+      </Wrapper>
     </TestLayoutContainer>
   );
 }

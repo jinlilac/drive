@@ -11,7 +11,6 @@ const DefaultButton = styled.button`
   width: 100%;
   font-size: ${(props) => props.theme.Font.fontSize.t3};
   height: 100%;
-  max-height: 54px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,6 +18,7 @@ const DefaultButton = styled.button`
   color: ${(props) => props.theme.Colors.gray_10};
   user-select: none;
   cursor: pointer;
+  white-space: nowrap;
   border-radius: 8px;
   &:hover {
     background-color: ${(props) => props.theme.Colors.gray_200};
