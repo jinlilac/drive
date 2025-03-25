@@ -12,6 +12,7 @@ export const ICON_LIST = [
   'eye-off',
   'mark-red',
   'mark-green',
+  'confirm',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
