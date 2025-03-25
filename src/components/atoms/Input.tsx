@@ -21,7 +21,7 @@ const DefaultInput = styled.input<InputProps>`
   border: none;
   line-height: 100%;
   &::placeholder {
-    color: ${(props) => props.theme.Colors.gray_20};
+    color: ${(props) => props.theme.Colors.gray_70};
     font-size: ${(props) => props.theme.Font.fontSize.b1};
     font-weight: ${(props) => props.theme.Font.fontWeight.medium};
   }
@@ -40,7 +40,6 @@ const DefaultInput = styled.input<InputProps>`
       color: ${(props) => props.theme.Colors.gray_20};
     }
     outline: none;
-    background-color: ${(props) => props.theme.Colors.gray_20};
   }
 `;
 
