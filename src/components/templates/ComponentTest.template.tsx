@@ -4,6 +4,7 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Input from '@/components/atoms/Input';
 import Typography from '@/components/atoms/Typography';
+import Accordion from '@/components/molecles/Accordion';
 import { BasicAlert } from '@/components/molecles/Alert';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
@@ -126,6 +127,9 @@ export default function ComponentTest() {
             </Container.FlexCol>
           </Container.FlexCol>
         </BasicAlert>
+      </Wrapper>
+      <Wrapper title="아코디언 컴포넌트">
+        <Accordion title={<Typography.B1>전체 동의</Typography.B1>}>서비스 이용 약관에 동의합니다.</Accordion>
       </Wrapper>
     </TestLayoutContainer>
   );
