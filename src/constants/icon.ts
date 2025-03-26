@@ -13,6 +13,9 @@ export const ICON_LIST = [
   'mark-red',
   'mark-green',
   'confirm',
+  'wiive-logo',
+  'chevron',
+  'chevron-right',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
