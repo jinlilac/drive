@@ -11,6 +11,7 @@ type InputHiddenProps = {
 };
 
 const DefaultInput = styled.input<InputProps>`
+  font-family: 'Pretendard', sans-serif;
   width: 100%;
   max-height: 48px;
   padding: 16px;
@@ -19,11 +20,13 @@ const DefaultInput = styled.input<InputProps>`
   font-size: ${(props) => props.theme.Font.fontSize.b1};
   font-weight: ${(props) => props.theme.Font.fontWeight.medium};
   border: none;
+  color: ${(props) => props.theme.Colors.gray_100};
   line-height: 100%;
   &::placeholder {
+    font-family: 'Pretendard', sans-serif;
     color: ${(props) => props.theme.Colors.gray_70};
     font-size: ${(props) => props.theme.Font.fontSize.b1};
-    font-weight: ${(props) => props.theme.Font.fontWeight.medium};
+    font-weight: ${(props) => props.theme.Font.fontWeight.regular};
   }
   &:hover {
     background-color: ${(props) => props.theme.Colors.gray_10};

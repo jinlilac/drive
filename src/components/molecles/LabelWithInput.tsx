@@ -13,6 +13,7 @@ type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
   defaultValue?: string;
   isError?: boolean;
   successMessage?: string;
+  iconTop?: number;
 };
 
 type InfoType = 'default' | 'error' | 'success';
@@ -55,10 +56,13 @@ const TextInput = styled(Input.Default)<InfoBoxProps>`
     else return css``;
   }}
 `;
+type IconContainerProps = {
+  top?: number;
+};
 
-const IconContainer = styled.div`
+const IconContainer = styled.div<IconContainerProps>`
   position: absolute;
-  top: 41px;
+  top: ${(props) => (props.top !== undefined ? `${props.top}px` : '41px')};
   right: 16px;
 `;
 
@@ -96,7 +100,7 @@ const InfoBoxComponent = (props: InfoBoxProps) => {
 
 export default function LabelWithInput(props: LabelWithInputProps) {
   const { register, formState } = useFormContext();
-  const { id, label, icon, name, successMessage, ...others } = props;
+  const { id, label, icon, name, successMessage, iconTop, ...others } = props;
   let currentState: InfoType = 'default';
   if (formState.errors[name]?.message) currentState = 'error';
   else if (successMessage) currentState = 'success';
@@ -111,7 +115,7 @@ export default function LabelWithInput(props: LabelWithInputProps) {
         {...register(name)}
       />
       <InfoBoxComponent option={currentState} message={formState.errors[name]?.message?.toString() || successMessage} />
-      <IconContainer>{icon}</IconContainer>
+      <IconContainer top={iconTop}>{icon}</IconContainer>
     </Container.FlexCol>
   );
 }
