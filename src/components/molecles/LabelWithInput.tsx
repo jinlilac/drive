@@ -18,7 +18,7 @@ type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
 type InfoType = 'default' | 'error' | 'success';
 
 type InfoBoxProps = {
-  type: InfoType;
+  option: InfoType;
   message?: string;
 };
 
@@ -31,8 +31,8 @@ const Label = styled.label`
 `;
 
 const TextInput = styled(Input.Default)<InfoBoxProps>`
-  ${({ type }) => {
-    if (type === 'error')
+  ${({ option }) => {
+    if (option === 'error')
       return css`
         outline: 1px solid;
         outline-color: ${(props) => props.theme.Colors.error};
@@ -42,7 +42,7 @@ const TextInput = styled(Input.Default)<InfoBoxProps>`
         }
         background-color: ${(props) => props.theme.Colors.gray_10};
       `;
-    else if (type === 'success')
+    else if (option === 'success')
       return css`
         outline: 1px solid;
         outline-color: ${(props) => props.theme.Colors.success};
@@ -63,13 +63,13 @@ const IconContainer = styled.div`
 `;
 
 const InfoBox = styled(Container.FlexRow)<InfoBoxProps>`
-  ${({ type }) => {
-    if (type === 'error')
+  ${({ option }) => {
+    if (option === 'error')
       return css`
         background-color: ${(props) => props.theme.Colors.error_bg};
         color: ${(props) => props.theme.Colors.error};
       `;
-    else if (type === 'success')
+    else if (option === 'success')
       return css`
         background-color: ${(props) => props.theme.Colors.success_bg};
         color: ${(props) => props.theme.Colors.success};
@@ -79,16 +79,16 @@ const InfoBox = styled(Container.FlexRow)<InfoBoxProps>`
   align-items: center;
   font-size: ${(props) => props.theme.Font.fontSize.b2};
   font-weight: ${(props) => props.theme.Font.fontWeight.regular};
-  padding: 9px 16px;
+  padding: 6px 16px;
   border-radius: 8px;
   margin-top: 4px;
 `;
 
 const InfoBoxComponent = (props: InfoBoxProps) => {
   return (
-    <InfoBox type={props.type}>
-      {props.type === 'error' && <Img src={ICON['mark-red']} />}
-      {props.type === 'success' && <Img src={ICON['mark-green']} />}
+    <InfoBox option={props.option}>
+      {props.option === 'error' && <Img src={ICON['mark-red']} />}
+      {props.option === 'success' && <Img src={ICON['mark-green']} />}
       {props.message}
     </InfoBox>
   );
@@ -107,10 +107,10 @@ export default function LabelWithInput(props: LabelWithInputProps) {
         id={id}
         {...others}
         isError={!!formState.errors[name]?.message}
-        type={currentState}
+        option={currentState}
         {...register(name)}
       />
-      <InfoBoxComponent type={currentState} message={formState.errors[name]?.message?.toString() || successMessage} />
+      <InfoBoxComponent option={currentState} message={formState.errors[name]?.message?.toString() || successMessage} />
       <IconContainer>{icon}</IconContainer>
     </Container.FlexCol>
   );

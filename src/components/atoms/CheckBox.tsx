@@ -22,7 +22,6 @@ const HiddenCheckBox = styled.input.attrs({
 `;
 
 const CustomCheckBox = styled.div<CheckBoxProps>`
-  display: inline-block;
   width: 24px;
   height: 24px;
   padding: 2px;
