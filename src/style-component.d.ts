@@ -24,7 +24,7 @@ declare module 'styled-components' {
 
       // keycolor
       red: '#FF7262';
-      blue: '#1ABCFE';
+      blue: '#08B7FF';
       purple: '#A259FF';
       green: '#0ACF83';
       dark: '#10130C';
