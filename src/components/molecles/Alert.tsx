@@ -62,10 +62,8 @@ export const BasicAlert = (props: AlertProps) => {
             </Button.Fill>
           </AlertButtons>
         ) : (
-          <Button.Fill style={{ padding: '15px' }}>
-            <Typography.B1 onClick={onConfirm} fontWeight="semiBold">
-              {confirmLabel}
-            </Typography.B1>
+          <Button.Fill onClick={onConfirm} style={{ padding: '15px' }}>
+            <Typography.B1 fontWeight="semiBold">{confirmLabel}</Typography.B1>
           </Button.Fill>
         )}
       </AlertWrap>
