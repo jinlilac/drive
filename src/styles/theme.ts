@@ -32,10 +32,10 @@ const Colors = {
 
 const Font = {
   fontWeight: {
-    bold: '700',
-    semiBold: '600',
-    medium: '500',
-    regular: '400',
+    bold: '600',
+    semiBold: '500',
+    medium: '400',
+    regular: '300',
   },
   fontSize: {
     h1: '2.25rem',
