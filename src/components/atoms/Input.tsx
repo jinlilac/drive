@@ -31,12 +31,14 @@ const DefaultInput = styled.input<InputProps>`
   &:hover {
     background-color: ${(props) => props.theme.Colors.gray_10};
     color: ${(props) => props.theme.Colors.gray_100};
-    outline: 1px solid ${(props) => props.theme.Colors.fill};
+    border: 1px solid ${(props) => props.theme.Colors.fill};
+    outline: none;
   }
   &:focus {
     background-color: ${(props) => props.theme.Colors.gray_10};
     color: ${(props) => props.theme.Colors.gray_100};
-    outline: 1px solid ${(props) => props.theme.Colors.fill};
+    border: 1px solid ${(props) => props.theme.Colors.fill};
+    outline: none;
   }
   &:disabled {
     &::placeholder {
