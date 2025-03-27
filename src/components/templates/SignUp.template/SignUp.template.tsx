@@ -1,21 +1,22 @@
+import Overlay from '@/components/atoms/ Overlay';
 import Button from '@/components/atoms/Button';
 import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import Accordion from '@/components/molecles/Accordion';
-import { BasicAlert } from '@/components/molecles/Alert';
+import Alert from '@/components/molecles/Alert';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { AGREEMENT_OPTIONS } from '@/constants/agreements';
 import { ICON } from '@/constants/icon';
+import useOverlayStore from '@/stores/useOverlayStore';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 type LinkItem = {
   text: string;
-  href: string;
+  contents: string;
 };
 type AccordionContentProps = {
   id: string;
@@ -23,14 +24,18 @@ type AccordionContentProps = {
   label: string;
   link: LinkItem[];
 };
-const AgreementLink = styled(Link)`
+const AgreementLink = styled(Button.Ghost)`
   font-size: ${(props) => props.theme.Font.fontSize.b3};
-  font-weight: ${(props) => props.theme.Font.fontWeight.regular};
+  font-weight: ${(props) => props.theme.Font.fontWeight.medium};
   color: ${(props) => props.theme.Colors.gray_70};
   display: flex;
   align-items: center;
   padding: 6px 28px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  gap: 2px;
 `;
+
 const AccordionContent = (props: AccordionContentProps) => {
   const { id, isRequired, link, label } = props;
   return (
@@ -51,7 +56,7 @@ const AccordionContent = (props: AccordionContentProps) => {
         </Typography.B2>
       </Container.FlexRow>
       {link.map((value) => (
-        <AgreementLink key={value.text} to={`/agreement/${value.href}`}>
+        <AgreementLink key={value.text}>
           {value.text}
           <Img src={ICON['chevron-right']} />
         </AgreementLink>
@@ -61,6 +66,7 @@ const AccordionContent = (props: AccordionContentProps) => {
 };
 
 const SignUpWrap = styled(Container.FlexCol)`
+  position: relative;
   height: 100%;
   min-width: 480px;
   justify-content: center;
@@ -80,8 +86,20 @@ export default function SignUpTemplate() {
     }
   };
   // Confirm Alert
-  const [checked, setChecked] = useState<boolean>(false);
-  console.log('checked', checked);
+  const { openOverlay, closeOverlay } = useOverlayStore();
+  const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
+  // const [alertType, setAlertType] = useState<string | null>(null);
+
+  const handleOpenAlert = () => {
+    openOverlay();
+    setAlertOpen(true);
+    // setAlertType(type);
+  };
+  const handleCloseAlert = () => {
+    closeOverlay();
+    // setAlertType(null);
+    setAlertOpen(false);
+  };
 
   // testForm
   const methods = useForm({
@@ -126,7 +144,7 @@ export default function SignUpTemplate() {
             placeholder="이메일을 입력해주세요."
             successMessage={passwordState}
             icon={
-              <Button.Ghost onClick={() => setChecked(true)}>
+              <Button.Ghost onClick={handleOpenAlert}>
                 <Typography.B1 fontWeight="medium" color="blue">
                   인증하기
                 </Typography.B1>
@@ -183,16 +201,20 @@ export default function SignUpTemplate() {
           </Button.Fill>
         </form>
       </FormProvider>
-      <BasicAlert
+      <Overlay />
+
+      <Alert
         type="confirm"
-        isOpen={checked}
-        onClose={() => setChecked(false)}
+        cancelLabel="취소"
         confirmLabel="확인"
-        onConfirm={() => setChecked(false)}
+        onConfirm={handleCloseAlert}
+        onCancel={handleCloseAlert}
       >
-        <Container.FlexCol gap="12" alignItems="center" style={{ maxWidth: '314px', marginBottom: '12px' }}>
+        <Container.FlexCol gap="12" alignItems="center" style={{ marginBottom: '12px' }}>
           <Img style={{ width: '53px' }} src={ICON.confirm} />
-          <Typography.T2 fontWeight="bold">이메일 인증 번호를 발송하였습니다.</Typography.T2>
+          <Typography.T2 fontWeight="bold" color="gray_100">
+            이메일 인증 번호를 발송하였습니다.
+          </Typography.T2>
           <Container.FlexCol gap="4" alignItems="center">
             <Typography.B1 fontWeight="medium" color="gray_70">
               입력하신 메일로 수신하신 번호를 확인 후
@@ -202,7 +224,7 @@ export default function SignUpTemplate() {
             </Typography.B1>
           </Container.FlexCol>
         </Container.FlexCol>
-      </BasicAlert>
+      </Alert>
     </SignUpWrap>
   );
 }
