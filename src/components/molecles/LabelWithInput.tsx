@@ -34,21 +34,21 @@ const TextInput = styled(Input.Default)<InfoBoxProps>`
   ${({ type }) => {
     if (type === 'error')
       return css`
-        outline: 1px solid;
-        outline-color: ${(props) => props.theme.Colors.error};
+        border: 1px solid;
+        border-color: ${(props) => props.theme.Colors.error};
         &:focus,
         &:hover {
-          outline-color: ${(props) => props.theme.Colors.error};
+          border-color: ${(props) => props.theme.Colors.error};
         }
         background-color: ${(props) => props.theme.Colors.gray_10};
       `;
     else if (type === 'success')
       return css`
-        outline: 1px solid;
-        outline-color: ${(props) => props.theme.Colors.success};
+        border: 1px solid;
+        border-color: ${(props) => props.theme.Colors.success};
         &:focus,
         &:hover {
-          outline-color: ${(props) => props.theme.Colors.success};
+          border-color: ${(props) => props.theme.Colors.success};
         }
         background-color: ${(props) => props.theme.Colors.gray_10};
       `;
