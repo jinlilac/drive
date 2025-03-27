@@ -4,7 +4,7 @@ declare module 'styled-components' {
   export interface DefaultTheme {
     Colors: {
       // system
-      error: '#DA1414';
+      error: '#F03D21';
       fill: '#1B1B1B';
       success: '#287D3C';
       error_bg: '#FEEFEF';
@@ -32,10 +32,10 @@ declare module 'styled-components' {
     };
     Font: {
       fontWeight: {
-        bold: '700';
-        semiBold: '600';
-        medium: '500';
-        regular: '400';
+        bold: '600';
+        semiBold: '500';
+        medium: '400';
+        regular: '300';
       };
       fontSize: {
         h1: '2.25rem';

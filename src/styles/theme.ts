@@ -2,7 +2,7 @@ import { DefaultTheme } from 'styled-components';
 
 const Colors = {
   // system
-  error: '#DA1414',
+  error: '#F03D21',
   fill: '#1B1B1B',
   success: '#287D3C',
   error_bg: '#FEEFEF',
