@@ -48,6 +48,8 @@ const GhostButton = styled.button.attrs<ButtonProps>((props) => ({ type: props.t
   outline: none;
   cursor: pointer;
   padding: 0;
+  height: 100%;
+  white-space: nowrap;
 `;
 
 const Button = { Stroke: StrokeButton, Fill: DefaultButton, Ghost: GhostButton };
