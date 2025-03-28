@@ -1,5 +1,5 @@
 import { ComponentProps, ReactNode } from 'react';
-import { css, styled } from 'styled-components';
+import { css, CSSProperties, styled } from 'styled-components';
 import { useFormContext } from 'react-hook-form';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
@@ -14,6 +14,7 @@ type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
   isError?: boolean;
   successMessage?: string;
   iconTop?: number;
+  containerStyle?: CSSProperties;
 };
 
 type InfoType = 'default' | 'error' | 'success';
@@ -67,25 +68,33 @@ const IconContainer = styled.div<IconContainerProps>`
 `;
 
 const InfoBox = styled(Container.FlexRow)<InfoBoxProps>`
-  ${({ option }) => {
-    if (option === 'error')
-      return css`
-        background-color: ${(props) => props.theme.Colors.error_bg};
-        color: ${(props) => props.theme.Colors.error};
-      `;
-    else if (option === 'success')
-      return css`
-        background-color: ${(props) => props.theme.Colors.success_bg};
-        color: ${(props) => props.theme.Colors.success};
-      `;
-  }}
-  gap: 4px;
-  align-items: center;
-  font-size: ${(props) => props.theme.Font.fontSize.b2};
-  font-weight: ${(props) => props.theme.Font.fontWeight.regular};
-  padding: 6px 16px;
-  border-radius: 8px;
-  margin-top: 4px;
+  ${({ option }) => css`
+    max-height: ${option === 'default' ? '14px' : '32px'};
+    opacity: ${option === 'default' ? '0' : '1'};
+    visibility: ${option === 'default' ? 'hidden' : 'visible'};
+    transform: ${option === 'default' ? 'translateY(-60%)' : 'translateY(0)'};
+    transition: all 0.3s ease;
+    overflow: hidden;
+    gap: 4px;
+    align-items: center;
+    font-size: ${(props) => props.theme.Font.fontSize.b2};
+    font-weight: ${(props) => props.theme.Font.fontWeight.medium};
+    padding: 6px 16px;
+    border-radius: 8px;
+    margin-top: 4px;
+
+    ${option === 'error' &&
+    css`
+      background-color: ${(props) => props.theme.Colors.error_bg};
+      color: ${(props) => props.theme.Colors.error};
+    `}
+
+    ${option === 'success' &&
+    css`
+      background-color: ${(props) => props.theme.Colors.success_bg};
+      color: ${(props) => props.theme.Colors.success};
+    `}
+  `}
 `;
 
 const InfoBoxComponent = (props: InfoBoxProps) => {
@@ -100,12 +109,12 @@ const InfoBoxComponent = (props: InfoBoxProps) => {
 
 export default function LabelWithInput(props: LabelWithInputProps) {
   const { register, formState } = useFormContext();
-  const { id, label, icon, name, successMessage, iconTop, ...others } = props;
+  const { id, label, icon, name, successMessage, iconTop, containerStyle, ...others } = props;
   let currentState: InfoType = 'default';
   if (formState.errors[name]?.message) currentState = 'error';
   else if (successMessage) currentState = 'success';
   return (
-    <Container.FlexCol style={{ position: 'relative' }}>
+    <Container.FlexCol style={{ position: 'relative', ...containerStyle }}>
       {label && <Label htmlFor={id}>{label}</Label>}
       <TextInput
         id={id}
