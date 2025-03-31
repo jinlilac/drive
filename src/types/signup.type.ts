@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const RequestEmailVerificationPayload = z.object({
-  email: z.string().email('잘못된 형식의 이메일 주소입니다.'),
+  email: z.string({ message: '이메일을 입력해주세요.' }).email('잘못된 형식의 이메일 주소입니다.'),
 });
 
 export type RequestEmailVerificationType = z.infer<typeof RequestEmailVerificationPayload>;
