@@ -6,8 +6,8 @@ import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
 import Input from '@/components/atoms/Input';
 
-type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
-  label: string;
+export type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
+  label?: string;
   icon?: ReactNode;
   name: string;
   defaultValue?: string;
@@ -22,6 +22,7 @@ type InfoType = 'default' | 'error' | 'success';
 type InfoBoxProps = {
   option: InfoType;
   message?: string;
+  style?: CSSProperties;
 };
 
 const Label = styled.label`
@@ -32,12 +33,11 @@ const Label = styled.label`
   padding-bottom: 12px;
 `;
 
-const TextInput = styled(Input.Default)<InfoBoxProps>`
+export const TextInput = styled(Input.Default)<InfoBoxProps>`
   ${({ option }) => {
     if (option === 'error')
       return css`
-        border: 1px solid;
-        border-color: ${(props) => props.theme.Colors.error};
+        border: 1px solid ${(props) => props.theme.Colors.error};
         &:focus,
         &:hover {
           border-color: ${(props) => props.theme.Colors.error};
@@ -46,8 +46,7 @@ const TextInput = styled(Input.Default)<InfoBoxProps>`
       `;
     else if (option === 'success')
       return css`
-        border: 1px solid;
-        border-color: ${(props) => props.theme.Colors.success};
+        border: 1px solid ${(props) => props.theme.Colors.success};
         &:focus,
         &:hover {
           border-color: ${(props) => props.theme.Colors.success};
@@ -73,6 +72,7 @@ const InfoBox = styled(Container.FlexRow)<InfoBoxProps>`
     opacity: ${option === 'default' ? '0' : '1'};
     visibility: ${option === 'default' ? 'hidden' : 'visible'};
     transform: ${option === 'default' ? 'translateY(-60%)' : 'translateY(0)'};
+    margin-bottom: ${option === 'default' ? '0' : '12px'};
     transition: all 0.3s ease;
     overflow: hidden;
     gap: 4px;
@@ -97,12 +97,13 @@ const InfoBox = styled(Container.FlexRow)<InfoBoxProps>`
   `}
 `;
 
-const InfoBoxComponent = (props: InfoBoxProps) => {
+export const InfoBoxComponent = (props: InfoBoxProps) => {
+  const { option, message, ...others } = props;
   return (
-    <InfoBox option={props.option}>
-      {props.option === 'error' && <Img src={ICON['mark-red']} />}
-      {props.option === 'success' && <Img src={ICON['mark-green']} />}
-      {props.message}
+    <InfoBox option={option} {...others}>
+      {option === 'error' && <Img src={ICON['mark-red']} />}
+      {option === 'success' && <Img src={ICON['mark-green']} />}
+      {message}
     </InfoBox>
   );
 };
@@ -112,16 +113,16 @@ export default function LabelWithInput(props: LabelWithInputProps) {
   const { id, label, icon, name, successMessage, iconTop, containerStyle, ...others } = props;
   let currentState: InfoType = 'default';
   if (formState.errors[name]?.message) currentState = 'error';
-  else if (successMessage) currentState = 'success';
+  else if (!formState.errors[name]?.message && successMessage) currentState = 'success';
   return (
     <Container.FlexCol style={{ position: 'relative', ...containerStyle }}>
       {label && <Label htmlFor={id}>{label}</Label>}
       <TextInput
         id={id}
-        {...others}
         isError={!!formState.errors[name]?.message}
         option={currentState}
         {...register(name)}
+        {...others}
       />
       <InfoBoxComponent option={currentState} message={formState.errors[name]?.message?.toString() || successMessage} />
       <IconContainer top={iconTop}>{icon}</IconContainer>
