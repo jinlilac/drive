@@ -31,7 +31,7 @@ const AlertButtons = styled(Container.FlexRow)`
 `;
 
 const Alert = (props: AlertProps) => {
-  const { type, children, cancelLabel, confirmLabel, onConfirm, onCancel, ...others } = props;
+  const { type, children, cancelLabel, confirmLabel, onConfirm, onCancel } = props;
   const { isOpen } = useOverlayStore();
   if (!isOpen) return null;
   return (

@@ -16,7 +16,7 @@ const BgContainer = styled(Container.FlexCol)`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-image: url('/public/assets/imgs/bg-main.webp');
+  background-image: url('/assets/imgs/bg-main.webp');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

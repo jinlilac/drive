@@ -1,6 +1,5 @@
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
-import Typography from '@/components/atoms/Typography';
 import { ICON } from '@/constants/icon';
 import { ReactNode, useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
