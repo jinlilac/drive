@@ -8,6 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_NAVER_CLIENT_ID: string;
   readonly VITE_NAVER_REDIRECT_URI: string;
   readonly VITE_NAVER_CLIENT_SECRET: string;
+  readonly VITE_PROFILE_IMG_URL: string;
 }
 
 interface ImportMeta {

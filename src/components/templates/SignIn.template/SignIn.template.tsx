@@ -6,8 +6,11 @@ import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
-import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useSignInEmail } from '@/hooks/useSignIn';
+import { EmailAuth, SignInEmailType } from '@/types/signin.type';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { FieldErrors, FormProvider, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -24,6 +27,65 @@ const SaveId = styled(Button.Ghost)`
 `;
 
 export default function SignInTemplate() {
+  // visible password
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false);
+
+  const onClickPasswordVisible = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const { id } = event.currentTarget;
+
+    if (id === 'password') {
+      setPasswordVisible((prev) => !prev);
+    } else if (id === 'confirmPassword') {
+      setConfirmPasswordVisible((prev) => !prev);
+    }
+  };
+  // signin form
+  const methods = useForm<SignInEmailType>({
+    resolver: zodResolver(EmailAuth),
+    mode: 'onChange',
+    defaultValues: {
+      email: localStorage.getItem('savedEmail') || '',
+      saveId: !!localStorage.getItem('savedEmail'),
+    },
+  });
+  const { signInEmail, isPending } = useSignInEmail();
+  // 저장된 이메일이 있으면 폼에 설정
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('savedEmail');
+    if (savedEmail) {
+      methods.setValue('email', savedEmail);
+      methods.setValue('saveId', true);
+    }
+  }, [methods]);
+  // onSubmitForm
+  const onSubmitSignIn = async (data: SignInEmailType) => {
+    signInEmail(
+      { email: data.email, password: data.password },
+      {
+        onSuccess: () => {
+          if (data.saveId) {
+            localStorage.setItem('savedEmail', data.email);
+          } else {
+            localStorage.removeItem('savedEmail');
+          }
+        },
+        onError: (error) => {
+          if (error) {
+            methods.setError('email', { message: '이메일 또는 비밀번호가 틀립니다.' });
+            methods.setError('password', { message: '이메일 또는 비밀번호가 틀립니다.' });
+          }
+        },
+      },
+    );
+  };
+  const onErrorSignIn = (error: FieldErrors<SignInEmailType>) => {
+    if (error.email?.ref?.value === '' && error.password?.ref?.value === '') {
+      methods.setError('email', { message: '이메일을 입력해주세요.' });
+      methods.setError('password', { message: '비밀번호를 입력해주세요.' });
+    }
+  };
+
   // sign-in oauth
   const onClickKakao = () => {
     const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
@@ -45,45 +107,7 @@ export default function SignInTemplate() {
 
     window.location.href = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}`;
   };
-  // visible password
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false);
 
-  const onClickPasswordVisible = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const { id } = event.currentTarget;
-
-    if (id === 'password') {
-      setPasswordVisible((prev) => !prev);
-    } else if (id === 'confirmPassword') {
-      setConfirmPasswordVisible((prev) => !prev);
-    }
-  };
-  // saveID
-  const [saveId, setSaveId] = useState<boolean>(false);
-  const handleSaveID = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSaveId(e.target.checked);
-  };
-  // testForm
-  const methods = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-  const [emailState, setEmailState] = useState('');
-  const [passwordState, setPasswordState] = useState('');
-  const onSubmit = async (data: Record<string, unknown>) => {
-    console.log(data);
-    // 성공 상황 시뮬레이션
-    if (data.email === 'test@example.com' && data.password === 'password123') {
-      setEmailState('이메일 인증 성공');
-      setPasswordState('암호 성공');
-    } else {
-      // 에러 상황 시뮬레이션
-      methods.setError('email', { type: 'custom', message: '잘못된 이메일입니다.' });
-      methods.setError('password', { type: 'custom', message: '잘못된 비밀번호입니다.' });
-    }
-  };
   return (
     <SignInWrap>
       <Container.FlexCol gap="17">
@@ -102,22 +126,19 @@ export default function SignInTemplate() {
         </Container.FlexRow>
       </Container.FlexCol>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <form onSubmit={methods.handleSubmit(onSubmitSignIn, onErrorSignIn)}>
           <LabelWithInput
             type="text"
             name="email"
             label="이메일주소"
             placeholder="이메일을 입력해주세요."
-            successMessage={emailState}
             containerStyle={{ marginBottom: '36px' }}
-            // containerStyle={{ paddingBottom: '36px' }}
           />
           <LabelWithInput
             label="비밀번호"
             name="password"
             type={passwordVisible ? 'text' : 'password'}
             placeholder="비밀번호를 입력해주세요"
-            successMessage={passwordState}
             icon={
               <Button.Ghost id="password" type="button" onClick={onClickPasswordVisible}>
                 <Img src={ICON[passwordVisible ? 'eye-on' : 'eye-off']} />
@@ -126,7 +147,11 @@ export default function SignInTemplate() {
           />
           <Container.FlexRow style={{ marginTop: '36px' }} alignItems="center" justifyContent="space-between">
             <SaveId>
-              <CheckBox option="square" checked={saveId} onChange={handleSaveID} />
+              <CheckBox
+                option="square"
+                checked={methods.watch('saveId')}
+                onChange={(e) => methods.setValue('saveId', e.target.checked)}
+              />
               <Typography.B2 fontWeight="medium" color="gray_90">
                 아이디 저장
               </Typography.B2>
