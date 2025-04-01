@@ -5,6 +5,6 @@ export type UserAuthType = {
   expiresAt: string;
   social: 0 | 1 | 2 | 3;
   name: string;
-  profile: string;
+  profileImg: string;
   isInitialized: boolean;
 };
