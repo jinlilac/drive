@@ -1,12 +1,15 @@
+import Overlay from '@/components/atoms/ Overlay';
 import Avatar from '@/components/atoms/Avatar';
 import Button from '@/components/atoms/Button';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Input from '@/components/atoms/Input';
 import Typography from '@/components/atoms/Typography';
+import Alert from '@/components/molecles/Alert';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
 import { useAuthStore } from '@/stores/useAuthStore';
+import useOverlayStore from '@/stores/useOverlayStore';
 import React, { useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
@@ -30,15 +33,32 @@ export default function ProfileTemplate() {
   const formValues = useForm({});
   const fileInput = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<boolean>(false);
+  const { openOverlay, closeOverlay } = useOverlayStore();
 
   const onClickImg = () => {
     if (fileInput.current) {
       fileInput.current.click();
     }
   };
+  const handleCloseAlert = () => {
+    closeOverlay();
+    setFileError(false);
+  };
   const onChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // 5MB 제한 검증 (5MB = 5 * 1024 * 1024 bytes)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      openOverlay();
+      setFileError(true);
+      e.target.value = '';
+      return;
+    }
+
+    setFileError(false); // 오류 초기화
 
     // 미리보기 생성
     const reader = new FileReader();
@@ -58,19 +78,36 @@ export default function ProfileTemplate() {
   };
 
   return (
-    <Container.FlexCol gap="48">
-      <Container.FlexCol gap="17" alignItems="center">
-        <Typography.T1 fontWeight="bold" color="gray_200">
+    <Container.FlexCol
+      gap="48"
+      justifyContent="center"
+      style={{ position: 'relative', minWidth: '480px', height: '100%' }}
+    >
+      <Container.FlexCol alignItems="center">
+        <Typography.T1 style={{ marginBottom: '17px' }} fontWeight="bold" color="gray_200">
           프로필 설정
         </Typography.T1>
-        <Typography.B1 fontWeight="medium" color="gray_70">
+        {/* <Container.FlexCol alignItems="center" gap="3"> */}
+        <Typography.B1 style={{ lineHeight: '130%' }} fontWeight="regular" color="gray_70">
           프로필 사진은 회원가입 이후 프로필 설정에서도 등록 가능합니다.
         </Typography.B1>
+        <Container.FlexRow>
+          <Typography.B1 fontWeight="regular" color="gray_70">
+            (사진은&nbsp;
+          </Typography.B1>
+          <Typography.B1 fontWeight="medium" color="gray_70">
+            5MB 이하, 1장
+          </Typography.B1>
+          <Typography.B1 fontWeight="regular" color="gray_70">
+            까지 업로드할 수 있어요.)
+          </Typography.B1>
+        </Container.FlexRow>
+        {/* </Container.FlexCol> */}
       </Container.FlexCol>
       <FormProvider {...formValues}>
         <form onSubmit={formValues.handleSubmit(onSubmit)}>
           <Container.FlexRow style={{ marginBottom: '48px', position: 'relative' }} justifyContent="center">
-            <Avatar src={previewImage || user?.profile} />
+            <Avatar src={previewImage || `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`} />
             <EditImageButton type="button" onClick={onClickImg}>
               <Img src={ICON['edit-img']} />
             </EditImageButton>
@@ -93,8 +130,25 @@ export default function ProfileTemplate() {
           <Button.Fill type="submit" style={{ maxHeight: '54px', marginTop: '28px' }}>
             완료
           </Button.Fill>
+          <Overlay />
         </form>
       </FormProvider>
+      {fileError && (
+        <Alert type="confirm" confirmLabel="확인" onConfirm={handleCloseAlert}>
+          <Container.FlexCol gap="12" alignItems="center" style={{ marginBottom: '12px' }}>
+            <Img style={{ width: '64px', marginBottom: '12px' }} src={ICON['upload-failed']} />
+            <Typography.T2 fontWeight="bold">이미지를 업로드할 수 없어요</Typography.T2>
+            <Container.FlexCol gap="4" alignItems="center">
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                5MB 이하의 이미지만 프로필로 사용할 수 있어요.
+              </Typography.B1>
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                확인 후 다시 업로드해 주세요.
+              </Typography.B1>
+            </Container.FlexCol>
+          </Container.FlexCol>
+        </Alert>
+      )}
     </Container.FlexCol>
   );
 }
