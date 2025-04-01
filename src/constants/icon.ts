@@ -19,6 +19,8 @@ export const ICON_LIST = [
   'google-logo',
   'kakao-logo',
   'naver-logo',
+  'edit-img',
+  'upload-failed',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {

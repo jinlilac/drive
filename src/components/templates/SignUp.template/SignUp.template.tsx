@@ -13,7 +13,6 @@ import useOverlayStore from '@/stores/useOverlayStore';
 import { ReactNode, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled, { css } from 'styled-components';
-import EmailAuthAlertTemplate from '@/components/templates/Alert.template/EmailAuthAlert.template';
 import AgreementAlertTemplate from '@/components/templates/Alert.template/AgreementAlert.template';
 import { useEmailVerification } from '@/apis/EmailVerification';
 import { SignUpPayload, SignUpType } from '@/types/signup.type';
@@ -21,6 +20,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import formatMilliseconds from '@/libs/parseMsToTimer';
 import { useCheckVerificationEmail } from '@/apis/CheckVerificationEmail';
 import { useSignUp } from '@/apis/SignUp';
+import AlertTemplate from '@/components/templates/Alert.template/AlertContent.template';
+import { useNavigate } from 'react-router-dom';
+import Loading from '@/components/atoms/Loading';
 
 type LinkItem = {
   text: string;
@@ -112,6 +114,13 @@ const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
 `;
+const LoaderWrap = styled(Container.FlexCol)`
+  position: absolute;
+  border-radius: 8px;
+  z-index: 999;
+  width: 100%;
+  align-items: center;
+`;
 
 const FormLabelWithInput = ({ isExpanded, ...others }: { isExpanded: boolean } & LabelWithInputProps) => (
   <LabelWithInput {...others} containerStyle={isExpanded ? { marginBottom: 0 } : { marginBottom: 12 }} />
@@ -168,6 +177,10 @@ export default function SignUpTemplate() {
   // Confirm Alert
   const { openOverlay, closeOverlay } = useOverlayStore();
   const [alertContent, setAlertContent] = useState<ReactNode>(null);
+  const [signAlert, setSignAlert] = useState<ReactNode>(null);
+  const [loader, setLoader] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   // 타이머 설정
   useEffect(() => {
@@ -186,9 +199,10 @@ export default function SignUpTemplate() {
     };
   }, [codeTimer]);
   const onRequestEmailVerification = () => {
-    openOverlay();
     signUpForm.trigger('email').then((isValid) => {
-      if (isValid)
+      if (isValid) {
+        openOverlay();
+        setLoader(true);
         emailVerification(
           { email: signUpForm.getValues('email') },
           {
@@ -203,12 +217,35 @@ export default function SignUpTemplate() {
             },
           },
         );
+      }
     });
   };
 
   const handleEmailAuthAlert = () => {
     openOverlay();
-    setAlertContent(<EmailAuthAlertTemplate />);
+    setAlertContent(
+      <AlertTemplate
+        type="confirm"
+        title="이메일 인증 번호를 발송하였습니다."
+        content="입력하신 메일로 수신하신 번호를 확인 후"
+        subContent="인증 번호를 입력하여 인증을 완료하세요."
+      />,
+    );
+  };
+
+  const handleSigninAlert = () => {
+    openOverlay();
+    setSignAlert(
+      <AlertTemplate
+        type="upload-failed"
+        title="정말 나가시겠습니까?"
+        content="현재까지 작성된 내용은 저장되지 않습니다."
+      />,
+    );
+  };
+  const handleCloseSignAlert = () => {
+    closeOverlay();
+    setSignAlert(null);
   };
 
   const handleCloseAlert = () => {
@@ -276,7 +313,7 @@ export default function SignUpTemplate() {
         <Typography.H1 fontWeight="bold" color="gray_200">
           회원가입
         </Typography.H1>
-        <Button.Ghost style={{ display: 'flex', alignItems: 'flex-end' }}>
+        <Button.Ghost onClick={handleSigninAlert} style={{ display: 'flex', alignItems: 'flex-end' }}>
           <Typography.B1 fontWeight="medium" color="blue">
             로그인 바로가기
           </Typography.B1>
@@ -410,6 +447,25 @@ export default function SignUpTemplate() {
         <Alert type="confirm" confirmLabel="확인" onConfirm={handleCloseAlert}>
           {alertContent}
         </Alert>
+      )}
+      {signAlert && (
+        <Alert
+          type="cancel"
+          confirmLabel="로그인 바로가기"
+          cancelLabel="취소"
+          onConfirm={() => {
+            closeOverlay();
+            navigate('/sign/in');
+          }}
+          onCancel={handleCloseSignAlert}
+        >
+          {signAlert}
+        </Alert>
+      )}
+      {loader && (
+        <LoaderWrap>
+          <Loading />
+        </LoaderWrap>
       )}
     </SignUpWrap>
   );

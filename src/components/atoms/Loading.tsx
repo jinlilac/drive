@@ -1,72 +1,119 @@
-import WiiveLogo from '@/assets/wiive.svg?react';
-import { keyframes, styled } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-const firstAppearKeyframe = keyframes`
-    0% {
-        opacity: 0;
-        transform: translateY(50%);
-    }
-    25% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-`;
-const secondAppearKeyframe = keyframes`
-    0% {
-        opacity: 0;
-        transform: translateY(-50%);
-    }
-    25% {
-        opacity: 0;
-        transform: translateY(-50%);
-    }
-    50% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-`;
-
-const moveAndRotateKeyframe = keyframes`
-    0% {
-        opacity: 0;
-        transform: rotate(0deg) translateY(50%)
-    }
-    50% {
-        opacity: 0;
-        transform: rotate(0deg) translateY(50%)
-    }
-    75% {
-        opacity: 1;
-        transform: rotate(0) 
-    }
-    100% {
-        opacity: 1;
-        transform: rotate(18deg) 
-    }
-`;
-
-const Loading = styled(WiiveLogo)`
-  #first {
-    opacity: 0;
-    animation: ${firstAppearKeyframe} 2.5s infinite;
+const mulShdSpin = keyframes`
+0%,
+  100% {
+    box-shadow: 0em -2.6em 0em 0em #ffffff, 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.5), -1.8em -1.8em 0 0em rgba(255,255,255, 0.7);
   }
-  #second {
-    opacity: 0;
-    animation: ${secondAppearKeyframe} 2.5s infinite;
+  12.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.7), 1.8em -1.8em 0 0em #ffffff, 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.5);
   }
-  #third {
-    opacity: 0;
-    animation: ${moveAndRotateKeyframe} 2.5s infinite;
-    transform-origin: 59px 48px;
+  25% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.5), 1.8em -1.8em 0 0em rgba(255,255,255, 0.7), 2.5em 0em 0 0em #ffffff, 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  37.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.5), 2.5em 0em 0 0em rgba(255,255,255, 0.7), 1.75em 1.75em 0 0em #ffffff, 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  50% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.5), 1.75em 1.75em 0 0em rgba(255,255,255, 0.7), 0em 2.5em 0 0em #ffffff, -1.8em 1.8em 0 0em rgba(255,255,255, 0.2), -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  62.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.5), 0em 2.5em 0 0em rgba(255,255,255, 0.7), -1.8em 1.8em 0 0em #ffffff, -2.6em 0em 0 0em rgba(255,255,255, 0.2), -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  75% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.5), -1.8em 1.8em 0 0em rgba(255,255,255, 0.7), -2.6em 0em 0 0em #ffffff, -1.8em -1.8em 0 0em rgba(255,255,255, 0.2);
+  }
+  87.5% {
+    box-shadow: 0em -2.6em 0em 0em rgba(255,255,255, 0.2), 1.8em -1.8em 0 0em rgba(255,255,255, 0.2), 2.5em 0em 0 0em rgba(255,255,255, 0.2), 1.75em 1.75em 0 0em rgba(255,255,255, 0.2), 0em 2.5em 0 0em rgba(255,255,255, 0.2), -1.8em 1.8em 0 0em rgba(255,255,255, 0.5), -2.6em 0em 0 0em rgba(255,255,255, 0.7), -1.8em -1.8em 0 0em #ffffff;
   }
 `;
+const Loader = styled.div`
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  animation: ${mulShdSpin} 1.1s infinite ease;
+  transform: translateZ(0);
+`;
+
+// Loading 컴포넌트
+const Loading = () => {
+  return <Loader />;
+};
 
 export default Loading;
+
+// import WiiveLogo from '@/assets/wiive.svg?react';
+// import { keyframes, styled } from 'styled-components';
+
+// const firstAppearKeyframe = keyframes`
+//     0% {
+//         opacity: 0;
+//         transform: translateY(50%);
+//     }
+//     25% {
+//         opacity: 1;
+//         transform: translateY(0);
+//     }
+//     100% {
+//         opacity: 1;
+//         transform: translateY(0);
+//     }
+// `;
+// const secondAppearKeyframe = keyframes`
+//     0% {
+//         opacity: 0;
+//         transform: translateY(-50%);
+//     }
+//     25% {
+//         opacity: 0;
+//         transform: translateY(-50%);
+//     }
+//     50% {
+//         opacity: 1;
+//         transform: translateY(0);
+//     }
+//     100% {
+//         opacity: 1;
+//         transform: translateY(0);
+//     }
+// `;
+
+// const moveAndRotateKeyframe = keyframes`
+//     0% {
+//         opacity: 0;
+//         transform: rotate(0deg) translateY(50%)
+//     }
+//     50% {
+//         opacity: 0;
+//         transform: rotate(0deg) translateY(50%)
+//     }
+//     75% {
+//         opacity: 1;
+//         transform: rotate(0)
+//     }
+//     100% {
+//         opacity: 1;
+//         transform: rotate(18deg)
+//     }
+// `;
+
+// const Loading = styled(WiiveLogo)`
+//   #first {
+//     opacity: 0;
+//     animation: ${firstAppearKeyframe} 2.5s infinite;
+//   }
+//   #second {
+//     opacity: 0;
+//     animation: ${secondAppearKeyframe} 2.5s infinite;
+//   }
+//   #third {
+//     opacity: 0;
+//     animation: ${moveAndRotateKeyframe} 2.5s infinite;
+//     transform-origin: 59px 48px;
+//   }
+// `;
+
+// export default Loading;
