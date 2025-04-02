@@ -3,6 +3,7 @@ import LayoutTemplate from '@/components/templates/Layout.template/Layout.templa
 import SignInTemplate from '@/components/templates/SignIn.template/SignIn.template';
 import SignUpTemplate from '@/components/templates/SignUp.template/SignUp.template';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import OAuth from '@/components/templates/OAuth';
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,11 @@ export const router = createBrowserRouter([
       { path: 'up', element: <SignUpTemplate /> },
       { path: 'in', element: <SignInTemplate /> },
     ],
+  },
+  {
+    path: 'oauth',
+    element: <OAuth />,
+    children: [{ path: 'google/callback' }, { path: 'kakao/callback' }, { path: 'naver/callback' }],
   },
   {
     path: '/test',
