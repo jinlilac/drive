@@ -36,7 +36,7 @@ export default function SignInTemplate() {
     const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
 
-    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`;
   };
 
   const onClickNaver = () => {
