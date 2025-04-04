@@ -1,3 +1,4 @@
+import { useUpdateProfile } from '@/apis/SignUp';
 import Overlay from '@/components/atoms/ Overlay';
 import Avatar from '@/components/atoms/Avatar';
 import Button from '@/components/atoms/Button';
@@ -10,8 +11,11 @@ import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
 import { useAuthStore } from '@/stores/useAuthStore';
 import useOverlayStore from '@/stores/useOverlayStore';
-import React, { useRef, useState } from 'react';
+import { ProfileInput, profileSchema } from '@/types/profile.type';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const EditImageButton = styled(Button.Ghost)`
@@ -30,13 +34,30 @@ const EditImageButton = styled(Button.Ghost)`
 
 export default function ProfileTemplate() {
   const { user } = useAuthStore();
-  const formValues = useForm({});
+  const navigate = useNavigate();
+  const { openOverlay, closeOverlay } = useOverlayStore();
+  const { updateProfile, isPending } = useUpdateProfile();
+
+  const formValues = useForm<ProfileInput>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user?.name || '',
+      profileImg: undefined,
+    },
+    mode: 'onChange',
+  });
+
   const fileInput = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [fileError, setFileError] = useState<boolean>(false);
-  const { openOverlay, closeOverlay } = useOverlayStore();
 
-  const onClickImg = () => {
+  useEffect(() => {
+    if (user?.isInitialized) {
+      navigate('/sign/outro');
+    }
+  }, [user?.isInitialized]);
+
+  const handleImageClick = () => {
     if (fileInput.current) {
       fileInput.current.click();
     }
@@ -45,7 +66,7 @@ export default function ProfileTemplate() {
     closeOverlay();
     setFileError(false);
   };
-  const onChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -55,10 +76,12 @@ export default function ProfileTemplate() {
       openOverlay();
       setFileError(true);
       e.target.value = '';
+      setPreviewImage(null);
       return;
     }
 
     setFileError(false); // 오류 초기화
+    formValues.setValue('profileImg', file);
 
     // 미리보기 생성
     const reader = new FileReader();
@@ -66,14 +89,12 @@ export default function ProfileTemplate() {
       setPreviewImage(reader.result as string);
     };
     reader.readAsDataURL(file);
-
-    // 서버 업로드 로직
-    const formData = new FormData();
-    formData.append('profile', file);
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = (data: any) => {
-    // 회원가입, 이메일 로그인 시
+
+  const handleSubmit = (data: ProfileInput) => {
+    if (fileError) return; //
+    updateProfile(data);
+
     // 소셜 로그인 시 update 로직
   };
 
@@ -87,7 +108,6 @@ export default function ProfileTemplate() {
         <Typography.T1 style={{ marginBottom: '17px' }} fontWeight="bold" color="gray_200">
           프로필 설정
         </Typography.T1>
-        {/* <Container.FlexCol alignItems="center" gap="3"> */}
         <Typography.B1 style={{ lineHeight: '130%' }} fontWeight="regular" color="gray_70">
           프로필 사진은 회원가입 이후 프로필 설정에서도 등록 가능합니다.
         </Typography.B1>
@@ -102,20 +122,20 @@ export default function ProfileTemplate() {
             까지 업로드할 수 있어요.)
           </Typography.B1>
         </Container.FlexRow>
-        {/* </Container.FlexCol> */}
       </Container.FlexCol>
       <FormProvider {...formValues}>
-        <form onSubmit={formValues.handleSubmit(onSubmit)}>
+        <form onSubmit={formValues.handleSubmit(handleSubmit)}>
           <Container.FlexRow style={{ marginBottom: '48px', position: 'relative' }} justifyContent="center">
             <Avatar src={previewImage || `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`} />
-            <EditImageButton type="button" onClick={onClickImg}>
+            <EditImageButton type="button" onClick={handleImageClick}>
               <Img src={ICON['edit-img']} />
             </EditImageButton>
             {/* 숨겨진 파일 입력 필드 */}
             <Input.Default
               type="file"
+              name="profileImg"
               ref={fileInput}
-              onChange={onChangeImage}
+              onChange={handleImageChange}
               accept="image/*"
               style={{ display: 'none' }}
             />
@@ -125,9 +145,10 @@ export default function ProfileTemplate() {
             label="이름"
             name="name"
             placeholder="이름을 입력해주세요."
-            value={user?.name || undefined}
+            value={formValues.watch('name')}
+            onChange={(e) => formValues.setValue('name', e.target.value)} // 값 업데이트
           />
-          <Button.Fill type="submit" style={{ maxHeight: '54px', marginTop: '28px' }}>
+          <Button.Fill disabled={isPending} type="submit" style={{ maxHeight: '54px', marginTop: '28px' }}>
             완료
           </Button.Fill>
           <Overlay />
