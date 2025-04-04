@@ -19,7 +19,7 @@ const AlertWrap = styled(Container.FlexCol)`
   position: absolute;
   background-color: white;
   border-radius: 8px;
-  z-index: 999;
+  z-index: 1000;
   width: 100%;
   padding: 24px 42px;
 `;

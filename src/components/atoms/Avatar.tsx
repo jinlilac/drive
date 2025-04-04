@@ -5,7 +5,7 @@ type AvatarSize = 's' | 'm';
 
 type AvatarProps = {
   size?: AvatarSize;
-  src?: string;
+  src?: string | undefined;
   alt?: string;
   style?: CSSProperties;
 };
@@ -28,7 +28,14 @@ const AvatarWrap = styled.div<AvatarProps>`
 const Avatar = ({ size = 'm', src, alt, style, ...others }: AvatarProps) => {
   return (
     <AvatarWrap size={size} style={style}>
-      <Img full fit="cover" src={src || ''} alt={alt} />
+      <Img
+        full
+        fit="cover"
+        src={src}
+        alt={alt}
+        onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
+        onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
+      />
     </AvatarWrap>
   );
 };
