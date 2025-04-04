@@ -2,6 +2,7 @@ import ComponentTest from '@/components/templates/ComponentTest.template';
 import LayoutTemplate from '@/components/templates/Layout.template/Layout.template';
 import ProfileTemplate from '@/components/templates/Profile.template';
 import SignInTemplate from '@/components/templates/SignIn.template/SignIn.template';
+import SignOutroTemplate from '@/components/templates/SignOutro.template';
 import SignUpTemplate from '@/components/templates/SignUp.template/SignUp.template';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import OAuth from '@/components/templates/OAuth';
@@ -17,7 +18,8 @@ export const router = createBrowserRouter([
     children: [
       { path: 'up', element: <SignUpTemplate /> },
       { path: 'in', element: <SignInTemplate /> },
-      { path: 'outro', element: <ProfileTemplate /> },
+      { path: 'profile', element: <ProfileTemplate /> },
+      { path: 'outro', element: <SignOutroTemplate /> },
     ],
   },
   {
