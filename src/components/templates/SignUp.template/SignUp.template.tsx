@@ -23,6 +23,7 @@ import { useSignUp } from '@/apis/SignUp';
 import AlertTemplate from '@/components/templates/Alert.template/AlertContent.template';
 import { useNavigate } from 'react-router-dom';
 import Loading from '@/components/atoms/Loading';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 type LinkItem = {
   text: string;
@@ -210,6 +211,7 @@ export default function SignUpTemplate() {
               setCodeTimer(180_000);
               setIsEmailVerificationRequested(true);
               handleEmailAuthAlert();
+              setLoader(false);
             },
             onError: (error) => {
               closeOverlay();
@@ -300,6 +302,7 @@ export default function SignUpTemplate() {
       signUpForm.setValue('userAgreement', true);
     }
   };
+  const { user } = useAuthStore();
 
   const onSubmitSignUp = (data: SignUpType) => {
     const { confirmPassword: _confirmPassword, ...others } = data;

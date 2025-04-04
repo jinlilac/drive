@@ -39,3 +39,11 @@ export const SignUpPayload = RequestEmailVerificationPayload.extend({
 );
 
 export type SignUpType = z.infer<typeof SignUpPayload>;
+
+export type SignUpResponseType = {
+  userId: string;
+  profileImg: string;
+  name: string;
+  accessToken: string;
+  accessTokenExpiresAt: string;
+};
