@@ -6,13 +6,15 @@ import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import { ICON } from '@/constants/icon';
-import { useSignInEmail } from '@/hooks/useSignIn';
+import { useSignInEmail } from '@/apis/SignIn';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { EmailAuth, SignInEmailType } from '@/types/signin.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { FieldErrors, FormProvider, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { usePasswordVisibility } from '@/hooks/usePasswordVisibility';
 
 const SignInWrap = styled(Container.FlexCol)`
   min-width: 480px;
@@ -25,21 +27,43 @@ const SaveId = styled(Button.Ghost)`
   align-items: center;
   gap: 4px;
 `;
+const TooltipBox = styled.div`
+  position: absolute;
+  bottom: -45px; /* 버튼 아래로 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  border-radius: 20px;
+  font-size: ${(props) => props.theme.Font.fontSize.b2};
+  font-weight: ${(props) => props.theme.Font.fontWeight.medium};
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -16px; /* 화살표 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 9px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent; /* 위쪽 화살표 */
+  }
+`;
+
+const SocialButtonWrapper = styled.div`
+  position: relative; /* 툴팁의 기준이 되는 컨테이너 */
+`;
 
 export default function SignInTemplate() {
+  const { user } = useAuthStore();
   // visible password
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false);
+  const { passwordVisible, togglePasswordVisibility } = usePasswordVisibility();
 
-  const onClickPasswordVisible = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const { id } = event.currentTarget;
-
-    if (id === 'password') {
-      setPasswordVisible((prev) => !prev);
-    } else if (id === 'confirmPassword') {
-      setConfirmPasswordVisible((prev) => !prev);
-    }
-  };
   // signin form
   const methods = useForm<SignInEmailType>({
     resolver: zodResolver(EmailAuth),
@@ -140,7 +164,7 @@ export default function SignInTemplate() {
             type={passwordVisible ? 'text' : 'password'}
             placeholder="비밀번호를 입력해주세요"
             icon={
-              <Button.Ghost id="password" type="button" onClick={onClickPasswordVisible}>
+              <Button.Ghost id="password" type="button" onClick={() => togglePasswordVisibility('password')}>
                 <Img src={ICON[passwordVisible ? 'eye-on' : 'eye-off']} />
               </Button.Ghost>
             }
@@ -162,7 +186,7 @@ export default function SignInTemplate() {
               </Typography.B2>
             </Link>
           </Container.FlexRow>
-          <Button.Fill type="submit" style={{ maxHeight: '54px', marginTop: '56px' }}>
+          <Button.Fill disabled={isPending} type="submit" style={{ maxHeight: '54px', marginTop: '56px' }}>
             로그인
           </Button.Fill>
         </form>
@@ -173,15 +197,24 @@ export default function SignInTemplate() {
           SNS 계정으로 로그인/회원가입
         </Typography.B1>
         <Container.FlexRow gap="24" alignItems="center" justifyContent="center">
-          <Button.Ghost onClick={onClickGoogle}>
-            <Img src={ICON['google-logo']} />
-          </Button.Ghost>
-          <Button.Ghost onClick={onClickKakao}>
-            <Img src={ICON['kakao-logo']} />
-          </Button.Ghost>
-          <Button.Ghost onClick={onClickNaver}>
-            <Img src={ICON['naver-logo']} />
-          </Button.Ghost>
+          <SocialButtonWrapper>
+            <Button.Ghost onClick={onClickGoogle}>
+              <Img src={ICON['google-logo']} />
+            </Button.Ghost>
+            {user?.social === 1 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
+          </SocialButtonWrapper>
+          <SocialButtonWrapper>
+            <Button.Ghost onClick={onClickKakao}>
+              <Img src={ICON['kakao-logo']} />
+            </Button.Ghost>
+            {user?.social === 2 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
+          </SocialButtonWrapper>
+          <SocialButtonWrapper>
+            <Button.Ghost onClick={onClickNaver}>
+              <Img src={ICON['naver-logo']} />
+            </Button.Ghost>
+            {user?.social === 3 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
+          </SocialButtonWrapper>
         </Container.FlexRow>
       </Container.FlexCol>
     </SignInWrap>
