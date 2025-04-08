@@ -30,14 +30,19 @@ export const useUpdateProfile = () => {
       formData.append('userId', user?.userId as string);
       formData.append('name', inputData.name);
       formData.append('profileImg', inputData.profileImg);
-      await axiosFormDataInstance.patch('/user/update-user', formData, {
-        headers: {
-          Authorization: `Bearer ${user?.accessToken}`,
+      const response = await axiosFormDataInstance.patch<Omit<ProfileInputType, 'userId'>>(
+        '/user/update-user',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.accessToken}`,
+          },
         },
-      });
+      );
+      return response.data;
     },
-    onSuccess: () => {
-      setUser({ accessToken: undefined, isInitialized: true });
+    onSuccess: (data) => {
+      setUser({ name: data.name, accessToken: undefined, isInitialized: true });
       navigate('sign/outro');
     },
   });

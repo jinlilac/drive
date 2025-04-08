@@ -126,7 +126,14 @@ export default function ProfileTemplate() {
       <FormProvider {...formValues}>
         <form onSubmit={formValues.handleSubmit(handleSubmit)}>
           <Container.FlexRow style={{ marginBottom: '48px', position: 'relative' }} justifyContent="center">
-            <Avatar src={previewImage || `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`} />
+            <Avatar
+              src={
+                previewImage ||
+                (user?.profileImg?.startsWith('https')
+                  ? user?.profileImg
+                  : `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`)
+              }
+            />
             <EditImageButton type="button" onClick={handleImageClick}>
               <Img src={ICON['edit-img']} />
             </EditImageButton>
