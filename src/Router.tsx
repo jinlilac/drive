@@ -20,13 +20,14 @@ export const router = createBrowserRouter([
       { path: 'in', element: <SignInTemplate /> },
       { path: 'profile', element: <ProfileTemplate /> },
       { path: 'outro', element: <SignOutroTemplate /> },
+      {
+        path: 'oauth',
+        element: <OAuth />,
+        children: [{ path: 'google/callback' }, { path: 'kakao/callback' }, { path: 'naver/callback' }],
+      },
     ],
   },
-  {
-    path: 'oauth',
-    element: <OAuth />,
-    children: [{ path: 'google/callback' }, { path: 'kakao/callback' }, { path: 'naver/callback' }],
-  },
+
   {
     path: '/test',
     element: <ComponentTest />,

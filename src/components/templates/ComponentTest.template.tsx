@@ -17,6 +17,7 @@ import styled from 'styled-components';
 const TestLayoutContainer = styled(Container.Grid)`
   height: 100dvh;
   padding: 32px 16px;
+  overflow: scroll;
 `;
 type TestProps = {
   title: string;
