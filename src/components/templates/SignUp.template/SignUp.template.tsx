@@ -23,7 +23,7 @@ import { useSignUp } from '@/apis/SignUp';
 import AlertTemplate from '@/components/templates/Alert.template/AlertContent.template';
 import { useNavigate } from 'react-router-dom';
 import Loading from '@/components/atoms/Loading';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { usePasswordVisibility } from '@/hooks/usePasswordVisibility';
 
 type LinkItem = {
   text: string;
@@ -128,11 +128,9 @@ const FormLabelWithInput = ({ isExpanded, ...others }: { isExpanded: boolean } &
 );
 
 export default function SignUpTemplate() {
-  // visible password
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false);
+  const { passwordVisible, confirmPasswordVisible, togglePasswordVisibility } = usePasswordVisibility();
 
-  // 이메이르 검ㅡ 여
+  // 이메일 검증
   const [emailState, setEmailState] = useState('');
   const [passwordState, setPasswordState] = useState('');
   const [codeTimer, setCodeTimer] = useState<number>(180_000); // 3분 -> 180_000ms
@@ -166,15 +164,6 @@ export default function SignUpTemplate() {
     }
   }, [password, confirmPassword, passwordTouched, confirmPasswordTouched, signUpForm.trigger]);
 
-  const onClickPasswordVisible = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const { id } = event.currentTarget;
-
-    if (id === 'password') {
-      setPasswordVisible((prev) => !prev);
-    } else if (id === 'confirmPassword') {
-      setConfirmPasswordVisible((prev) => !prev);
-    }
-  };
   // Confirm Alert
   const { openOverlay, closeOverlay } = useOverlayStore();
   const [alertContent, setAlertContent] = useState<ReactNode>(null);
@@ -302,7 +291,6 @@ export default function SignUpTemplate() {
       signUpForm.setValue('userAgreement', true);
     }
   };
-  const { user } = useAuthStore();
 
   const onSubmitSignUp = (data: SignUpType) => {
     const { confirmPassword: _confirmPassword, ...others } = data;
@@ -385,7 +373,7 @@ export default function SignUpTemplate() {
             }}
             isExpanded={!!signUpForm.getFieldState('password')?.error?.message}
             icon={
-              <Button.Ghost id="password" type="button" onClick={onClickPasswordVisible}>
+              <Button.Ghost id="password" type="button" onClick={() => togglePasswordVisibility('password')}>
                 <Img src={ICON[passwordVisible ? 'eye-on' : 'eye-off']} />
               </Button.Ghost>
             }
@@ -402,7 +390,11 @@ export default function SignUpTemplate() {
               signUpForm.trigger('confirmPassword');
             }}
             icon={
-              <Button.Ghost id="confirmPassword" type="button" onClick={onClickPasswordVisible}>
+              <Button.Ghost
+                id="confirmPassword"
+                type="button"
+                onClick={() => togglePasswordVisibility('confirmPassword')}
+              >
                 <Img src={ICON[confirmPasswordVisible ? 'eye-on' : 'eye-off']} />
               </Button.Ghost>
             }
