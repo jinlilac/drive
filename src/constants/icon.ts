@@ -21,6 +21,19 @@ export const ICON_LIST = [
   'naver-logo',
   'edit-img',
   'upload-failed',
+  'hamburger',
+  'home',
+  'drive',
+  'stroke-star',
+  'trash',
+  'work-sheet',
+  'search',
+  'plus',
+  'list',
+  'card',
+  'more',
+  'more-trash',
+  'more-edit',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
