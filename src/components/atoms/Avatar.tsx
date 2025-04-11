@@ -20,9 +20,7 @@ const AvatarWrap = styled.div<AvatarProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  img {
-    width: ${({ size }) => (size === 's' ? '42px' : '168px')};
-  }
+  flex-shrink: 0;
 `;
 
 const Avatar = ({ size = 'm', src, alt, style, ...others }: AvatarProps) => {

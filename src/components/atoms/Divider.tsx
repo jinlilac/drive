@@ -15,6 +15,10 @@ const RowDivider = styled(DefaultDivider)`
   width: 100%;
   border-bottom-width: ${({ size }) => (size === 'thin' ? '1px' : '2px')};
 `;
-
-const Divider = { Row: RowDivider };
+const ColDivider = styled(DefaultDivider)`
+  max-height: 12px;
+  border-left-width: 1px;
+  height: 100%;
+`;
+const Divider = { Row: RowDivider, Col: ColDivider };
 export default Divider;

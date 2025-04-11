@@ -2,18 +2,19 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
 import { ReactNode, useCallback, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
 type AccordionProps = {
   title: ReactNode;
   children: ReactNode;
+  style?: CSSProperties;
 };
-type DirectionType = 'top' | 'right' | 'bottom' | 'left';
+export type DirectionType = 'top' | 'right' | 'bottom' | 'left';
 
-type ChevronProps = {
+export type ChevronProps = {
   direction: DirectionType;
 };
-const Chevron = styled.div<ChevronProps>`
+export const Chevron = styled.div<ChevronProps>`
   height: 16px;
   transition: all 0.25s ease-in-out;
 
@@ -49,7 +50,7 @@ const Content = styled.div`
 `;
 
 export default function Accordion(props: AccordionProps) {
-  const { title, children } = props;
+  const { title, children, style, ...others } = props;
   const [isExpanded, setExpand] = useState<boolean>();
   const contentRef = useRef<HTMLDivElement | null>(null);
   const contentHeight = isExpanded ? (contentRef.current?.scrollHeight ?? 0) : 0;
@@ -58,7 +59,7 @@ export default function Accordion(props: AccordionProps) {
     setExpand(!isExpanded);
   }, [isExpanded]);
   return (
-    <AccordionBox>
+    <AccordionBox style={style}>
       <Title onClick={handleExpandToggle}>
         {title}
         <Chevron direction={isExpanded ? 'top' : 'bottom'}>
