@@ -42,7 +42,7 @@ export const useUpdateProfile = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      setUser({ name: data.name, accessToken: undefined, isInitialized: true });
+      setUser({ name: data.name, profileImg: data.profileImg as string, accessToken: undefined, isInitialized: true });
       navigate('sign/outro');
     },
   });
