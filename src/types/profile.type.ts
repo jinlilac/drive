@@ -13,5 +13,5 @@ export type ProfileInput = z.infer<typeof profileSchema>;
 export type ProfileInputType = {
   userId: string;
   name: string;
-  profileImg: File;
+  profileImg: File | string;
 };

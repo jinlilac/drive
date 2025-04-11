@@ -8,3 +8,12 @@ export type UserAuthType = {
   profileImg: string;
   isInitialized: boolean;
 };
+
+export type UserSocialType = Pick<UserAuthType, 'social'>['social'];
+
+export const SOCIAL_LABELS: Record<UserSocialType, string> = {
+  0: '이메일',
+  1: '구글',
+  2: '카카오',
+  3: '네이버',
+} as const;
