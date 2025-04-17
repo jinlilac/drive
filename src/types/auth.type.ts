@@ -7,6 +7,8 @@ export type UserAuthType = {
   name: string;
   profileImg: string;
   isInitialized: boolean;
+  rootFolder: string;
+  currentId: string;
 };
 
 export type UserSocialType = Pick<UserAuthType, 'social'>['social'];
