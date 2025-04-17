@@ -6,6 +6,8 @@ import SignOutroTemplate from '@/components/templates/SignOutro.template';
 import SignUpTemplate from '@/components/templates/SignUp.template/SignUp.template';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import OAuth from '@/components/templates/OAuth';
+import MainLayoutTemplate from '@/components/templates/Layout.template/MainLayout.template';
+import WorkSheet from '@/components/pages/WorkSheet/WorkSheet';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +27,16 @@ export const router = createBrowserRouter([
         element: <OAuth />,
         children: [{ path: 'google/callback' }, { path: 'kakao/callback' }, { path: 'naver/callback' }],
       },
+    ],
+  },
+  {
+    path: '/workspace',
+    element: <MainLayoutTemplate />,
+    children: [
+      { path: 'work-sheet', element: <WorkSheet /> },
+      { path: 'drive', element: <h1>드라이브</h1> },
+      { path: 'starred', element: <h1>즐겨찾기</h1> },
+      { path: 'trash', element: <h1>휴지통</h1> },
     ],
   },
 
