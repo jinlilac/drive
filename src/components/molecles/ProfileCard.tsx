@@ -22,7 +22,7 @@ const ContentWrap = styled(Container.FlexCol)`
   width: 100%;
 `;
 export const DropBoxItem = styled(Button.Ghost)`
-  min-width: 182px;
+  flex: 1;
   width: 100%;
   padding: 16px;
   cursor: pointer;
@@ -31,7 +31,7 @@ export const DropBoxItem = styled(Button.Ghost)`
   text-align: start;
 
   &:hover {
-    background-color: ${(props) => props.theme.Colors.gray_20};
+    background-color: ${(props) => props.theme.Colors.gray_30};
     border-radius: 4px;
   }
 `;

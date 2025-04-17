@@ -32,7 +32,7 @@ const CustomCheckBox = styled.div<CheckBoxProps>`
     switch (props.option) {
       case 'default':
         return `
-          border: 2px solid ${props.theme.Colors.gray_70};
+          border: 2px solid ${props.theme.Colors.gray_50};
           border-radius: 4px;
           background-color: white;
         `;

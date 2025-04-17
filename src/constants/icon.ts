@@ -34,6 +34,7 @@ export const ICON_LIST = [
   'more',
   'more-trash',
   'more-edit',
+  'clear',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {

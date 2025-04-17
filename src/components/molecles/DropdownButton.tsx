@@ -9,12 +9,13 @@ import styled, { CSSProperties } from 'styled-components';
 
 // 스타일 정의
 const DropdownContainer = styled.div`
-  position: relative;
   display: inline-block;
+  position: relative;
 `;
 
 const DropButton = styled(Button.Ghost)<{ isHover?: boolean }>`
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 4px;
   justify-content: space-between;
@@ -39,6 +40,8 @@ const DropdownMenu = styled(Container.FlexCol)`
   width: max-content;
   list-style-type: none;
   padding: 8px;
+  z-index: 99;
+  min-width: 198px;
 `;
 
 // Props 타입 정의
