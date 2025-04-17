@@ -11,6 +11,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const MainLayoutContainer = styled(Container.FlexRow)`
+  width: 100%;
   height: 100dvh;
 `;
 const LinkItem = styled(DropBoxItem)`
@@ -18,6 +19,7 @@ const LinkItem = styled(DropBoxItem)`
   flex-direction: row;
   gap: 16px;
   align-items: center;
+  flex: 1;
 `;
 const SideBarContentWrap = styled(Container.FlexCol)`
   padding: 16px 0;
@@ -57,7 +59,7 @@ export default function MainLayoutTemplate() {
             ))}
           </SideBarContentWrap>
         </SideBar>
-        <WorkSpaceBar gap="16">
+        <WorkSpaceBar gap="16" style={{ width: 'calc(100% - 300px)', flex: '1' }}>
           <Container.FlexCol gap="16" alignItems="flex-end">
             <SearchBar />
             <Divider.Row size="thin" />

@@ -2,12 +2,14 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
 import Typography from '@/components/atoms/Typography';
+import { ReactNode } from 'react';
 
 type AlertTempProps = {
   type?: keyof typeof ICON;
   title: string;
   content: string;
   subContent?: string;
+  customContent?: ReactNode;
 };
 
 function AlertTemplate(props: AlertTempProps) {
