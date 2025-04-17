@@ -51,6 +51,7 @@ export default tseslint.config(
       'react-refresh/only-export-components': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/consistent-type-definitions': 0,
+      'jsx-a11y/no-autofocus': 0,
     },
   },
 );
