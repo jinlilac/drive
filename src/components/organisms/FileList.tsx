@@ -5,6 +5,7 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecles/DropdownButton';
 import { DropBoxItem } from '@/components/molecles/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecles/TagLabel';
+import { UpdateState } from '@/components/templates/WorkSpace.tempplate/WrokSheet.template';
 import { ICON } from '@/constants/icon';
 import { CATEGORY_FILTERS, GENDER_FILTERS, MORE_ITEMS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';
@@ -13,20 +14,22 @@ import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
-const ListWrap = styled(Container.Grid)`
+const ListWrap = styled(Container.Grid)<{ checked: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_30};
   padding: 8px;
   gap: 8px;
   align-items: center;
   grid-template-columns: 28px 320px 320px 320px 320px 191px 25px;
+  background-color: ${(props) => (props.checked ? props.theme.Colors.gray_30 : props.theme.Colors.gray_10)};
 
   &:hover {
     background-color: ${(props) => props.theme.Colors.gray_20};
   }
 `;
-const CheckboxContainer = styled.div`
+const CheckboxContainer = styled.div<{ checked: boolean }>`
   opacity: 0;
   transition: opacity 0.2s;
+  opacity: ${(props) => (props.checked ? 1 : 0)};
 
   ${ListWrap}:hover & {
     opacity: 1;
@@ -48,9 +51,9 @@ const ThumbImg = styled.div`
 export default function FileList(
   props: WorkSheetItems &
     TagLabelProps & {
-      setState: Dispatch<
-        SetStateAction<{ isOpen: boolean; defaultName: string; fileSystemId: string; parentId: string }>
-      >;
+      setState: Dispatch<SetStateAction<UpdateState>>;
+      checked: boolean;
+      onCheck: (id: string, checked: boolean) => void;
     },
 ) {
   const {
@@ -67,6 +70,8 @@ export default function FileList(
     category,
     clothes,
     requester,
+    checked,
+    onCheck,
   } = props;
   const { openOverlay } = useOverlayStore();
   const genderLabel = GENDER_FILTERS.find((f) => f.value === gender)?.label ?? '성별 전체';
@@ -74,12 +79,13 @@ export default function FileList(
 
   const handleMoreButton = (action: string) => {
     if (action === '이름 바꾸기') {
-      setState({
+      setState((prev) => ({
+        ...prev,
         isOpen: true,
         defaultName: name,
         fileSystemId,
         parentId,
-      });
+      }));
 
       openOverlay();
     } else if (action === '삭제') {
@@ -89,10 +95,13 @@ export default function FileList(
   const handleDelete = () => {
     console.log('삭제');
   };
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(worksheetId, e.target.checked);
+  };
   return (
-    <ListWrap id={worksheetId}>
-      <CheckboxContainer>
-        <CheckBox option="default" />
+    <ListWrap id={worksheetId} checked={checked}>
+      <CheckboxContainer checked={checked}>
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
       </CheckboxContainer>
 
       <Container.FlexRow gap="16" style={{ maxWidth: '320px', flex: 1 }} alignItems="center">

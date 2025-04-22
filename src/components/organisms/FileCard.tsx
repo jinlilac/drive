@@ -1,3 +1,4 @@
+import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
@@ -5,23 +6,37 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecles/DropdownButton';
 import { DropBoxItem } from '@/components/molecles/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecles/TagLabel';
+import { UpdateState } from '@/components/templates/WorkSpace.tempplate/WrokSheet.template';
 import { ICON } from '@/constants/icon';
 import { MORE_ITEMS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';
 import useOverlayStore from '@/stores/useOverlayStore';
+import { FolderListResponse } from '@/types/file.type';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
-const CardContainer = styled(Container.FlexCol)`
+const CardContainer = styled(Container.FlexCol)<{ checked: boolean }>`
   width: 100%;
   gap: 8px;
   padding: 16px;
   flex-shrink: 0;
   border-radius: 8px;
-  background-color: ${(props) => props.theme.Colors.gray_20};
+  background-color: ${(props) => (props.checked ? props.theme.Colors.gray_30 : props.theme.Colors.gray_20)};
   &:hover {
     background-color: ${(props) => props.theme.Colors.gray_30};
+  }
+  position: relative;
+`;
+const CheckboxContainer = styled.div<{ checked: boolean }>`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  opacity: ${(props) => (props.checked ? 1 : 0)};
+  ${CardContainer}:hover & {
+    opacity: 1;
   }
 `;
 const TitleWrap = styled(Container.FlexRow)`
@@ -46,22 +61,37 @@ const MoreItem = styled(DropBoxItem)`
 export default function FileCard(
   props: WorkSheetItems &
     TagLabelProps & {
-      setState: Dispatch<
-        SetStateAction<{ isOpen: boolean; defaultName: string; fileSystemId: string; parentId: string }>
-      >;
-    },
+      setState: Dispatch<SetStateAction<UpdateState>>;
+      checked: boolean;
+      onCheck: (id: string, checked: boolean) => void;
+    } & Partial<FolderListResponse>,
 ) {
-  const { worksheetId, createdAt, thumbImg, name, label, color, type, setState, fileSystemId, parentId } = props;
+  const {
+    worksheetId,
+    updatedAt,
+    createdAt,
+    thumbImg,
+    name,
+    type,
+    setState,
+    fileSystemId,
+    parentId,
+    checked,
+    onCheck,
+    mimetype,
+    tag,
+  } = props;
   const { openOverlay, closeOverlay } = useOverlayStore();
 
   const handleMoreButton = (action: string) => {
     if (action === '이름 바꾸기') {
-      setState({
+      setState((prev) => ({
+        ...prev,
         isOpen: true,
         defaultName: name,
         fileSystemId,
         parentId,
-      });
+      }));
 
       openOverlay();
     } else if (action === '삭제') {
@@ -71,8 +101,14 @@ export default function FileCard(
   const handleDelete = () => {
     console.log('삭제');
   };
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked);
+  };
   return (
-    <CardContainer id={worksheetId}>
+    <CardContainer id={worksheetId} checked={checked}>
+      <CheckboxContainer checked={checked}>
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
+      </CheckboxContainer>
       <div style={{ backgroundColor: 'white', minHeight: '142px', maxHeight: '142px', overflow: 'hidden' }}>
         <Img
           full
@@ -99,10 +135,11 @@ export default function FileCard(
           </DropdownButton>
         </TitleWrap>
         <SubtitleWrap gap="4" alignItems="center">
-          <TagLabel label={type === 'worksheet' ? '작업지시서' : ''} color={'green'} />
+          <TagLabel label={type === 'worksheet' ? '작업지시서' : tag} color={'green'} />
           <Divider.Col color="gray_70" />
           <Typography.B3 fontWeight="medium" color="gray_70">
-            {getCustomRelativeTime(createdAt)}
+            {createdAt === updatedAt ? getCustomRelativeTime(createdAt) : getCustomRelativeTime(updatedAt)}
+            {mimetype && mimetype}
           </Typography.B3>
         </SubtitleWrap>
       </Container.FlexCol>

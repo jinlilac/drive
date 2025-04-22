@@ -12,6 +12,11 @@ import { useSetSearchParam } from '@/hooks/useSearchParam';
 import SelectBox from '@/components/molecles/SelectedBox';
 import WorkSheetListTemplate from '@/components/templates/WorkSpace.tempplate/WorkSheetList.template';
 import Typography from '@/components/atoms/Typography';
+import WorkSheetBaseTemplate from '@/components/templates/WorkSpace.tempplate/WorkSheetBaseTemplate';
+import { CardViewWrapper } from '@/components/atoms/CardViewWrapper';
+import { CardItems } from '@/components/organisms/CardItems';
+import { ListItems } from '@/components/organisms/ListItems';
+import { ListViewWrapper } from '@/components/atoms/ListViewWrapper';
 
 const WorkSheetWork = styled(Container.FlexCol)`
   width: 100%;
@@ -25,7 +30,7 @@ const SheetBar = styled(Container.Grid)`
   grid-template-columns: 28px 320px 320px 320px 320px 191px;
   background-color: white;
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_40};
-  padding: 23px 0;
+  padding: 23px 8px;
   align-items: center;
   margin-top: 16px;
 `;
@@ -93,10 +98,12 @@ export default function WorkSheet() {
         />
       </>
       {viewMode === 'card' ? (
-        <WorkSheetTemplate
-          worksheets={data?.pages as unknown as AxiosResponse<WorkSheetResponseType>[]}
+        <WorkSheetBaseTemplate
+          worksheets={data?.pages as AxiosResponse<WorkSheetResponseType>[]}
           hasNextPage={hasNextPage}
           fetchNextPage={fetchNextPage}
+          renderItem={CardItems}
+          Wrapper={CardViewWrapper}
         />
       ) : (
         <>
@@ -108,10 +115,12 @@ export default function WorkSheet() {
               </Typography.B2>
             ))}
           </SheetBar>
-          <WorkSheetListTemplate
-            worksheets={data?.pages as unknown as AxiosResponse<WorkSheetResponseType>[]}
+          <WorkSheetBaseTemplate
+            worksheets={data?.pages as AxiosResponse<WorkSheetResponseType>[]}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
+            renderItem={ListItems}
+            Wrapper={ListViewWrapper}
           />
         </>
       )}
