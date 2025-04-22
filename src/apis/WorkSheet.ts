@@ -40,9 +40,11 @@ export const useGetWorkSheet = (filters: WorkSheetListType) => {
 export const usePatchWorkSheet = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const { mutate: patchWorkSheet, isPending } = useMutation({
-    mutationFn: async (payload: WorkSheetUpdatePayload) => axiosInstance.patch('/drive', payload),
+    mutationFn: async (payload: WorkSheetUpdatePayload) =>
+      axiosInstance.patch('/drive', payload, { headers: { Authorization: `Bearer ${user?.accessToken}` } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['worksheet', 'list'] }).then(() => navigate('/workspace/work-sheet'));
     },
