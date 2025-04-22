@@ -6,7 +6,7 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecles/DropdownButton';
 import { DropBoxItem } from '@/components/molecles/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecles/TagLabel';
-import { UpdateState } from '@/components/templates/WorkSpace.tempplate/WrokSheet.template';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import { MORE_ITEMS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';

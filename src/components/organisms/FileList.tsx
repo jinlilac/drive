@@ -5,7 +5,7 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecles/DropdownButton';
 import { DropBoxItem } from '@/components/molecles/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecles/TagLabel';
-import { UpdateState } from '@/components/templates/WorkSpace.tempplate/WrokSheet.template';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import { CATEGORY_FILTERS, GENDER_FILTERS, MORE_ITEMS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';
@@ -96,7 +96,7 @@ export default function FileList(
     console.log('삭제');
   };
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(worksheetId, e.target.checked);
+    onCheck(fileSystemId, e.target.checked);
   };
   return (
     <ListWrap id={worksheetId} checked={checked}>

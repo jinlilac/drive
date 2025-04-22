@@ -2,7 +2,6 @@ import Container from '@/components/atoms/Container';
 import styled from 'styled-components';
 import FilterBar from '@/components/organisms/FilterBar';
 import { APPAREL_TYPES, CATEGORY_FILTERS, GENDER_FILTERS, SHEET_LABEL } from '@/constants/worksheet';
-import WorkSheetTemplate from '@/components/templates/WorkSpace.tempplate/WrokSheet.template';
 import { useState } from 'react';
 import { WorkSheetListType, WorkSheetResponseType } from '@/types/worksheet.type';
 import { useGetWorkSheet } from '@/apis/WorkSheet';
@@ -10,9 +9,8 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 import SelectBox from '@/components/molecles/SelectedBox';
-import WorkSheetListTemplate from '@/components/templates/WorkSpace.tempplate/WorkSheetList.template';
 import Typography from '@/components/atoms/Typography';
-import WorkSheetBaseTemplate from '@/components/templates/WorkSpace.tempplate/WorkSheetBaseTemplate';
+import WorkSheetBaseTemplate from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { CardViewWrapper } from '@/components/atoms/CardViewWrapper';
 import { CardItems } from '@/components/organisms/CardItems';
 import { ListItems } from '@/components/organisms/ListItems';
@@ -97,7 +95,7 @@ export default function WorkSheet() {
           isCardActive={viewMode === 'card'}
         />
       </>
-      {viewMode === 'card' ? (
+      {viewMode === 'card' && (
         <WorkSheetBaseTemplate
           worksheets={data?.pages as AxiosResponse<WorkSheetResponseType>[]}
           hasNextPage={hasNextPage}
@@ -105,7 +103,8 @@ export default function WorkSheet() {
           renderItem={CardItems}
           Wrapper={CardViewWrapper}
         />
-      ) : (
+      )}
+      {viewMode === 'list' && (
         <>
           <SheetBar columns="7">
             <div />

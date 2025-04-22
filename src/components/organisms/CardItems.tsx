@@ -1,5 +1,5 @@
 import FileCard from '@/components/organisms/FileCard';
-import { UpdateState } from '@/components/templates/WorkSpace.tempplate/WorkSheetBaseTemplate';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { WorkSheetItems } from '@/types/worksheet.type';
 
 export const CardItems = ({
