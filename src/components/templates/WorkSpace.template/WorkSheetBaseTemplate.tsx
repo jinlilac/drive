@@ -9,7 +9,7 @@ import Alert from '@/components/molecles/Alert';
 import LoaderBox from '@/components/molecles/LoaderBox';
 import Toast from '@/components/molecles/Toast';
 import ActionToolbar, { Action } from '@/components/organisms/ActionToolBar';
-import WorkSheetEmptyTemplate from '@/components/templates/WorkSpace.tempplate/WorkSheetEmpty.template';
+import WorkSheetEmptyTemplate from '@/components/templates/WorkSpace.template/WorkSheetEmpty.template';
 import { useObserver } from '@/hooks/useObserver';
 import useOverlayStore from '@/stores/useOverlayStore';
 import useToastStore from '@/stores/useToastStore';
