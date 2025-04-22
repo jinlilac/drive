@@ -11,7 +11,6 @@ import DropdownButton from '@/components/molecles/DropdownButton';
 import LabelWithInput from '@/components/molecles/LabelWithInput';
 import ProfileCard from '@/components/molecles/ProfileCard';
 import SearchBar from '@/components/molecles/SearchBar';
-import ToggleButton from '@/components/molecles/ToggleButton';
 import FilterBar from '@/components/organisms/FilterBar';
 import WorkSheetCard from '@/components/organisms/FileCard';
 import { ICON } from '@/constants/icon';
@@ -21,6 +20,8 @@ import camelcaseKeys from 'camelcase-keys';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled, { CSSProperties } from 'styled-components';
+import Toast from '@/components/molecles/Toast';
+import useToastStore from '@/stores/useToastStore';
 
 const TestLayoutContainer = styled(Container.Grid)`
   height: 100dvh;
@@ -321,6 +322,24 @@ export default function ComponentTest() {
           <WorkSheetCard label="WIIVE" color="green" key={data.worksheetId} {...data} />
         ))}
       </Wrapper> */}
+      <Wrapper title="toast">
+        <Button.Fill
+          onClick={() =>
+            useToastStore.getState().showToast({
+              text: 'toast test',
+              // center: true,
+              button: (
+                <Button.Ghost>
+                  <Typography.B2 color="gray_50">실행취소</Typography.B2>
+                </Button.Ghost>
+              ),
+            })
+          }
+        >
+          Toast Test
+        </Button.Fill>
+        <Toast />
+      </Wrapper>
     </TestLayoutContainer>
   );
 }
