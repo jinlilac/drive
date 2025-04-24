@@ -51,9 +51,11 @@ export default function FilterBar(props: FilterBarProps) {
         <Typography.T1 style={{ whiteSpace: 'nowrap' }} fontWeight="bold" color="gray_100">
           {title}
         </Typography.T1>
-        <Typography.B2 style={{ whiteSpace: 'nowrap' }} fontWeight="medium" color="gray_70">
-          {count}개
-        </Typography.B2>
+        {count && (
+          <Typography.B2 style={{ whiteSpace: 'nowrap' }} fontWeight="medium" color="gray_70">
+            {count}개
+          </Typography.B2>
+        )}
       </Container.FlexRow>
       <Container.FlexRow gap="16">
         <FilterWrap>{filter}</FilterWrap>
