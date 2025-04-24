@@ -4,7 +4,7 @@ import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
-import DropdownButton from '@/components/molecles/DropdownButton';
+import DropdownButton from '@/components/molecules/DropdownButton';
 import { ICON } from '@/constants/icon';
 import { MENU_ITEMS } from '@/constants/workspace';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -21,10 +21,11 @@ const ProfileCardWrap = styled(Container.FlexRow)`
 const ContentWrap = styled(Container.FlexCol)`
   width: 100%;
 `;
-export const DropBoxItem = styled(Button.Ghost)`
+export const DropBoxItem = styled(Button.Ghost)<{ padding?: number }>`
   flex: 1;
   width: 100%;
-  padding: 16px;
+  /* padding: 16px; */
+  padding: ${(props) => (props.padding ? `${props.padding}` : 16)}px;
   cursor: pointer;
   font-size: ${(props) => props.theme.Font.fontSize.b2};
   font-weight: ${(props) => props.theme.Font.fontWeight.medium};

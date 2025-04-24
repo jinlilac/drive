@@ -17,6 +17,7 @@ const Label = styled(Container.FlexRow)<Omit<TagLabelProps, 'label'>>`
   max-height: 20px;
   border-radius: 4px;
   padding: 4px 8px;
+  width: 100%;
   max-width: 68px;
   align-items: center;
   justify-content: center;

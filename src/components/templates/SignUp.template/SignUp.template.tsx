@@ -4,9 +4,13 @@ import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
-import Accordion from '@/components/molecles/Accordion';
-import Alert from '@/components/molecles/Alert';
-import LabelWithInput, { InfoBoxComponent, LabelWithInputProps, TextInput } from '@/components/molecles/LabelWithInput';
+import Accordion from '@/components/molecules/Accordion';
+import Alert from '@/components/molecules/Alert';
+import LabelWithInput, {
+  InfoBoxComponent,
+  LabelWithInputProps,
+  TextInput,
+} from '@/components/molecules/LabelWithInput';
 import { AGREEMENT_OPTIONS } from '@/constants/agreements';
 import { ICON } from '@/constants/icon';
 import useOverlayStore from '@/stores/useOverlayStore';

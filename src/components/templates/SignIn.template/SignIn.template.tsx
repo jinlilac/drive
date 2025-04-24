@@ -4,7 +4,7 @@ import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
-import LabelWithInput from '@/components/molecles/LabelWithInput';
+import LabelWithInput from '@/components/molecules/LabelWithInput';
 import { ICON } from '@/constants/icon';
 import { useSignInEmail } from '@/apis/SignIn';
 import { useAuthStore } from '@/stores/useAuthStore';

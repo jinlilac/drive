@@ -2,7 +2,7 @@ import Button from '@/components/atoms/Button';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
-import { Chevron } from '@/components/molecles/Accordion';
+import { Chevron } from '@/components/molecules/Accordion';
 import { ICON } from '@/constants/icon';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { CSSProperties } from 'styled-components';

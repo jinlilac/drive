@@ -24,9 +24,10 @@ const DefaultButton = styled.button`
     background-color: ${(props) => props.theme.Colors.gray_200};
   }
   &:disabled {
-    background-color: ${(props) => props.theme.Colors.gray_50};
+    color: ${(props) => props.theme.Colors.gray_60};
+    background-color: ${(props) => props.theme.Colors.gray_30};
     &:hover {
-      background-color: ${(props) => props.theme.Colors.gray_50};
+      background-color: ${(props) => props.theme.Colors.gray_30};
     }
     cursor: not-allowed;
     outline: none;

@@ -15,13 +15,24 @@ export type ChevronProps = {
   direction: DirectionType;
 };
 export const Chevron = styled.div<ChevronProps>`
-  height: 16px;
-  transition: all 0.25s ease-in-out;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  transform: ${(p) => p.direction === 'top' && 'rotate(0deg)'};
-  transform: ${(p) => p.direction === 'right' && 'rotate(45deg)'};
-  transform: ${(p) => p.direction === 'bottom' && 'rotate(-180deg)'};
-  transform: ${(p) => p.direction === 'left' && 'rotate(-135deg)'};
+  img {
+    transition: all 0.25s ease-in-out;
+    transform: ${(p) => p.direction === 'top' && 'rotate(0deg)'};
+    transform: ${(p) => p.direction === 'right' && 'rotate(45deg)'};
+    transform: ${(p) => p.direction === 'bottom' && 'rotate(-180deg)'};
+    transform: ${(p) => p.direction === 'left' && 'rotate(-135deg)'};
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme.Colors.gray_20};
+    border-radius: 4px;
+  }
 `;
 const AccordionBox = styled.div`
   border: 1px solid ${(props) => props.theme.Colors.gray_40};
