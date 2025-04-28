@@ -25,6 +25,7 @@ const Colors = {
   blue: '#08B7FF',
   purple: '#A259FF',
   green: '#0ACF83',
+  orange: '#FF9E00',
   dark: '#10130C',
 
   default: 'inherit',

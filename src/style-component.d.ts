@@ -28,6 +28,7 @@ declare module 'styled-components' {
       purple: '#A259FF';
       green: '#0ACF83';
       dark: '#10130C';
+      orange: '#FF9E00';
       default: 'inherit';
     };
     Font: {
