@@ -20,7 +20,6 @@ type SelectBoxProps = {
   style?: CSSProperties;
   padding?: number;
 };
-// 스타일 정의
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -52,35 +51,63 @@ const DropdownMenu = styled(Container.FlexCol)`
   z-index: 999999;
 `;
 
-const SelectBox = ({ options, value, onChange, style, padding }: SelectBoxProps) => {
+let activeDropdownId: string | null = null;
+
+const SelectBox = ({ options, value, onChange, style, padding, id }: SelectBoxProps & { id?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selected = options.find((opt) => opt.value === value);
-
-  // const ref = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (ref.current && !ref.current.contains(event.target as Node)) {
-  //       setIsOpen(false);
-  //     }
-  //   };
-  //   document.addEventListener('mousedown', handleClickOutside);
-  //   return () => document.removeEventListener('mousedown', handleClickOutside);
-  // }, []);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
-  console.log('menuPos', menuPos);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 감지 로직 재활성화 및 개선
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // 버튼이나 메뉴에 클릭이 발생하지 않았을 때만 닫기
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node) &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const openMenu = () => {
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setMenuPos({ top: rect.bottom, left: rect.left });
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setMenuPos({ top: rect.bottom, left: rect.left - 20 });
     }
+
+    // 다른 드롭다운이 열려있다면 닫기
+    if (activeDropdownId && activeDropdownId !== id) {
+      // 이벤트를 발생시켜 다른 드롭다운을 닫도록 함
+      const closeEvent = new CustomEvent('closeDropdown', { detail: { exceptId: id } });
+      document.dispatchEvent(closeEvent);
+    }
+
+    // 현재 드롭다운 ID를 활성화된 ID로 설정
+    activeDropdownId = isOpen ? null : (id as string);
     setIsOpen((prev) => !prev);
   };
 
+  // 다른 드롭다운이 열릴 때 현재 드롭다운을 닫는 이벤트 리스너
+  useEffect(() => {
+    const closeDropdown = (e: CustomEvent) => {
+      if (e.detail.exceptId !== id) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('closeDropdown', closeDropdown as EventListener);
+    return () => document.removeEventListener('closeDropdown', closeDropdown as EventListener);
+  }, [id]);
   return (
-    <DropdownContainer style={style}>
+    <DropdownContainer ref={ref} style={style}>
       <DropButton ref={buttonRef} onClick={openMenu}>
         {selected ? selected.label : '선택'}
         <Chevron direction={isOpen ? 'top' : 'bottom'}>
@@ -89,24 +116,26 @@ const SelectBox = ({ options, value, onChange, style, padding }: SelectBoxProps)
       </DropButton>
       {isOpen && (
         <DropdownMenuPortal>
-          <DropdownMenu style={{ top: menuPos.top, left: menuPos.left }}>
-            {options.map((item) => (
-              <DropBoxItem
-                padding={padding}
-                key={item.value}
-                onClick={() => {
-                  onChange(item.value, item.label);
-                  setIsOpen(false);
-                }}
-              >
-                {item.label}
-              </DropBoxItem>
-            ))}
+          <DropdownMenu ref={menuRef} style={{ top: menuPos.top, left: menuPos.left }}>
+            {options.map((item) => {
+              return (
+                <DropBoxItem
+                  padding={padding}
+                  key={item.value}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 이벤트 버블링 중지
+                    onChange(item.value, item.label);
+                    setIsOpen(false);
+                  }}
+                >
+                  {item.label}
+                </DropBoxItem>
+              );
+            })}
           </DropdownMenu>
         </DropdownMenuPortal>
       )}
     </DropdownContainer>
   );
 };
-
 export default SelectBox;
