@@ -41,6 +41,12 @@ export const ICON_LIST = [
   'all-clear',
   'minus-box',
   'square-white',
+  'folder-add',
+  'upload-file',
+  'failed-error',
+  'reload',
+  'uploading',
+  'success-upload',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
