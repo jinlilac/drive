@@ -15,6 +15,8 @@ import { FolderListResponse } from '@/types/file.type';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
+import { KorToEngDriveCategory, FileSystemType, EngToKorDriveCategory } from '@/types/workspace.type';
+import { TagsColor } from '@/constants/drive';
 
 const CardContainer = styled(Container.FlexCol)<{ checked: boolean }>`
   width: 100%;
@@ -59,7 +61,7 @@ const MoreItem = styled(DropBoxItem)`
 `;
 
 export default function FileCard(
-  props: WorkSheetItems &
+  props: (WorkSheetItems | FileSystemType) &
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
@@ -69,7 +71,6 @@ export default function FileCard(
   const {
     worksheetId,
     updatedAt,
-    createdAt,
     thumbImg,
     name,
     type,
@@ -81,7 +82,7 @@ export default function FileCard(
     mimetype,
     tag,
   } = props;
-  const { openOverlay, closeOverlay } = useOverlayStore();
+  const { openOverlay } = useOverlayStore();
 
   const handleMoreButton = (action: string) => {
     if (action === '이름 바꾸기') {
@@ -105,7 +106,7 @@ export default function FileCard(
     onCheck(fileSystemId, e.target.checked);
   };
   return (
-    <CardContainer id={worksheetId} checked={checked}>
+    <CardContainer id={fileSystemId ?? worksheetId} checked={checked}>
       <CheckboxContainer checked={checked}>
         <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
       </CheckboxContainer>
@@ -135,11 +136,15 @@ export default function FileCard(
           </DropdownButton>
         </TitleWrap>
         <SubtitleWrap gap="4" alignItems="center">
-          <TagLabel label={type === 'worksheet' ? '작업지시서' : tag} color={'green'} />
+          <TagLabel
+            label={type === 'worksheet' ? '작업지시서' : EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
+            color={TagsColor[(tag as KorToEngDriveCategory) ?? 'etc']}
+            wiive={type === 'worksheet'}
+          />
           <Divider.Col color="gray_70" />
           <Typography.B3 fontWeight="medium" color="gray_70">
-            {createdAt === updatedAt ? getCustomRelativeTime(createdAt) : getCustomRelativeTime(updatedAt)}
-            {mimetype && mimetype}
+            {type === 'worksheet' && updatedAt && getCustomRelativeTime(updatedAt)}
+            {type === 'file' && mimetype}
           </Typography.B3>
         </SubtitleWrap>
       </Container.FlexCol>
