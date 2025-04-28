@@ -5,7 +5,9 @@ export enum DriveCategory {
   인쇄 = 'print',
   패턴 = 'pattern',
   기타 = 'etc',
+  원단 = 'fabric',
   WIIVE = 'wiive',
+  ALL = 'all',
 }
 
 export type SpecialDriveType = {
@@ -23,5 +25,31 @@ export type TrashType = SpecialDriveType & {
   target: 'trash';
 };
 
-export type StarredAllType = Omit<StarredType, 'category' | 'page'>;
-export type TrashAllType = Omit<TrashType, 'category' | 'page'>;
+export type FileSystemType = {
+  createdAt: string;
+  deletedAt: string;
+  fileSystemId: string;
+  isStarred: boolean;
+  mimetype?: string;
+  name: string;
+  path: string;
+  parentId: string;
+  size?: number;
+  starredAt: string;
+  storagePath?: string;
+  tag?: string;
+  thumbImg: string;
+  type: string;
+  updatedAt: string;
+  worksheetId: string;
+};
+
+export type FileSystemAllResponseType = {
+  folders: FileSystemType[];
+  files: FileSystemType[];
+};
+
+export type FileSystemListResponseType = {
+  count: number;
+  data: FileSystemType[];
+};
