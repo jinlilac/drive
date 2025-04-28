@@ -1,4 +1,4 @@
-export enum DriveCategory {
+export enum KorToEngDriveCategory {
   폴더 = 'folder',
   작업지시서 = 'worksheet',
   도식화 = 'schematic',
@@ -7,11 +7,23 @@ export enum DriveCategory {
   기타 = 'etc',
   원단 = 'fabric',
   WIIVE = 'wiive',
-  ALL = 'all',
+  전체 = 'all',
+}
+
+export enum EngToKorDriveCategory {
+  folder = '폴더',
+  worksheet = '작업지시서',
+  schematic = '도식화',
+  print = '인쇄',
+  pattern = '패턴',
+  etc = '기타',
+  fabric = '원단',
+  wiive = 'WIIVE',
+  all = '전체',
 }
 
 export type SpecialDriveType = {
-  category: DriveCategory;
+  category: KorToEngDriveCategory;
   page: number;
   target: 'starred' | 'trash';
   name?: string;
@@ -34,10 +46,11 @@ export type FileSystemType = {
   name: string;
   path: string;
   parentId: string;
+  childrenCount?: number;
   size?: number;
   starredAt: string;
   storagePath?: string;
-  tag?: string;
+  tag?: KorToEngDriveCategory;
   thumbImg: string;
   type: string;
   updatedAt: string;
