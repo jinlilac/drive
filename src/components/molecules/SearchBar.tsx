@@ -152,7 +152,7 @@ export default function SearchBar() {
       </Container.FlexRow>
       {openUpload && (
         <>
-          <Overlay />
+          <Overlay closeOnClick={false} />
           <UploadFileTemplate onClose={onClose} />
         </>
       )}

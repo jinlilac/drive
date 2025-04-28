@@ -5,12 +5,12 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import Input from '@/components/atoms/Input';
 import Typography from '@/components/atoms/Typography';
-import Accordion from '@/components/molecles/Accordion';
-import Alert from '@/components/molecles/Alert';
-import DropdownButton from '@/components/molecles/DropdownButton';
-import LabelWithInput from '@/components/molecles/LabelWithInput';
-import ProfileCard from '@/components/molecles/ProfileCard';
-import SearchBar from '@/components/molecles/SearchBar';
+import Accordion from '@/components/molecules/Accordion';
+import Alert from '@/components/molecules/Alert';
+import DropdownButton from '@/components/molecules/DropdownButton';
+import LabelWithInput from '@/components/molecules/LabelWithInput';
+import ProfileCard from '@/components/molecules/ProfileCard';
+import SearchBar from '@/components/molecules/SearchBar';
 import FilterBar from '@/components/organisms/FilterBar';
 import WorkSheetCard from '@/components/organisms/FileCard';
 import { ICON } from '@/constants/icon';
@@ -20,8 +20,10 @@ import camelcaseKeys from 'camelcase-keys';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled, { CSSProperties } from 'styled-components';
-import Toast from '@/components/molecles/Toast';
+import Toast from '@/components/molecules/Toast';
 import useToastStore from '@/stores/useToastStore';
+import UploadFileTemplate from '@/components/templates/Alert.template/UploadFileAlert.template';
+import UploadFileTag from '@/components/molecules/SelectTagFile';
 
 const TestLayoutContainer = styled(Container.Grid)`
   height: 100dvh;
@@ -188,7 +190,7 @@ export default function ComponentTest() {
   };
 
   const transformedData = camelcaseKeys(workSheetResponse, { deep: true });
-  console.log('카멜 케이스 변환', transformedData);
+  // console.log('카멜 케이스 변환', transformedData);
 
   return (
     <TestLayoutContainer columns="3" rows="5">
@@ -339,6 +341,10 @@ export default function ComponentTest() {
           Toast Test
         </Button.Fill>
         <Toast />
+      </Wrapper>
+      <Wrapper title="uploadFile">
+        <UploadFileTemplate />
+        {/* <UploadFileTag /> */}
       </Wrapper>
     </TestLayoutContainer>
   );

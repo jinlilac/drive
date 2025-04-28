@@ -8,7 +8,7 @@ import { useGetWorkSheet } from '@/apis/WorkSheet';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
-import SelectBox from '@/components/molecles/SelectedBox';
+import SelectBox from '@/components/molecules/SelectedBox';
 import Typography from '@/components/atoms/Typography';
 import WorkSheetBaseTemplate from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { CardViewWrapper } from '@/components/atoms/CardViewWrapper';
@@ -73,19 +73,19 @@ export default function WorkSheet() {
               <SelectBox
                 options={GENDER_FILTERS}
                 value={filters.gender ?? GENDER_FILTERS[0].value}
-                onChange={(value, label) => handleFilter('gender', value as number, label)}
+                onChange={(value, label) => handleFilter('gender', value as number, label as string)}
               />
               {/* 카테고리 필터 */}
               <SelectBox
                 options={CATEGORY_FILTERS}
                 value={filters.category ?? CATEGORY_FILTERS[0].value}
-                onChange={(value, label) => handleFilter('category', value as number, label)}
+                onChange={(value, label) => handleFilter('category', value as number, label as string)}
               />
               {/* 의류 필터 */}
               <SelectBox
                 options={APPAREL_TYPES}
                 value={filters.clothes ?? APPAREL_TYPES[0].value}
-                onChange={(value, label) => handleFilter('clothes', value as string, label)}
+                onChange={(value, label) => handleFilter('clothes', value as string, label as string)}
               />
             </Container.FlexRow>
           }

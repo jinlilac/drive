@@ -21,10 +21,6 @@ const BarWrap = styled(Container.FlexRow)`
   padding: 12px 0;
   max-height: 48px;
   align-items: center;
-  /* position: fixed; */
-  /* top: 141px; */
-  /* right: 16px; */
-  /* left: 316px; */
   background-color: white;
 `;
 const FilterWrap = styled(Container.FlexRow)`
