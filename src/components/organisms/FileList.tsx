@@ -13,13 +13,18 @@ import useOverlayStore from '@/stores/useOverlayStore';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
+import { EngToKorDriveCategory, FileSystemType, KorToEngDriveCategory } from '@/types/workspace.type';
+import { TagsColor } from '@/constants/drive';
+import { FolderListResponse } from '@/types/file.type';
 
-const ListWrap = styled(Container.Grid)<{ checked: boolean }>`
+const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_30};
   padding: 8px;
   gap: 8px;
   align-items: center;
-  grid-template-columns: 28px 320px 320px 320px 320px 191px 25px;
+  grid-template-columns: ${({ isDrive }) =>
+    isDrive ? '40px auto 120px 120px 200px 40px' : '28px 320px 320px 320px 320px 191px 25px'};
+
   background-color: ${(props) => (props.checked ? props.theme.Colors.gray_30 : props.theme.Colors.gray_10)};
 
   &:hover {
@@ -49,16 +54,16 @@ const ThumbImg = styled.div`
 `;
 
 export default function FileList(
-  props: WorkSheetItems &
+  props: (WorkSheetItems | FileSystemType) &
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
       onCheck: (id: string, checked: boolean) => void;
-    },
+      isDrive: boolean;
+    } & Partial<FolderListResponse>,
 ) {
   const {
     worksheetId,
-    createdAt,
     updatedAt,
     thumbImg,
     name,
@@ -66,16 +71,17 @@ export default function FileList(
     setState,
     fileSystemId,
     parentId,
-    gender,
-    category,
-    clothes,
-    requester,
     checked,
     onCheck,
+    mimetype,
+    tag,
+    isDrive = false,
   } = props;
   const { openOverlay } = useOverlayStore();
-  const genderLabel = GENDER_FILTERS.find((f) => f.value === gender)?.label ?? '성별 전체';
-  const categoryLabel = CATEGORY_FILTERS.find((f) => f.value === category)?.label ?? '카테고리 전체';
+  const genderLabel =
+    'gender' in props ? (GENDER_FILTERS.find((f) => f.value === props.gender)?.label ?? '성별 전체') : '';
+  const categoryLabel =
+    'category' in props ? (CATEGORY_FILTERS.find((f) => f.value === props.category)?.label ?? '카테고리 전체') : '';
 
   const handleMoreButton = (action: string) => {
     if (action === '이름 바꾸기') {
@@ -99,11 +105,10 @@ export default function FileList(
     onCheck(fileSystemId, e.target.checked);
   };
   return (
-    <ListWrap id={worksheetId} checked={checked}>
+    <ListWrap id={worksheetId} checked={checked} isDrive={isDrive}>
       <CheckboxContainer checked={checked}>
         <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
       </CheckboxContainer>
-
       <Container.FlexRow gap="16" style={{ maxWidth: '320px', flex: 1 }} alignItems="center">
         <ThumbImg>
           <Img
@@ -122,21 +127,34 @@ export default function FileList(
           {name}
         </Typography.B2>
       </Container.FlexRow>
-      <Container.FlexRow style={{ maxWidth: '320px', flex: 1 }}>
-        <Typography.B2 fontWeight="medium" color="gray_90">
-          {`${genderLabel} ・ ${categoryLabel} ・ ${clothes} `}
+      {!isDrive && 'clothes' in props && (
+        <Container.FlexRow style={{ maxWidth: '320px', flex: 1 }}>
+          <Typography.B2 fontWeight="medium" color="gray_90">
+            {`${genderLabel} ・ ${categoryLabel} ・ ${props.clothes} `}
+          </Typography.B2>
+        </Container.FlexRow>
+      )}
+      {!isDrive && 'requester' in props && (
+        <Typography.B2
+          style={{ maxWidth: '300px', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+          fontWeight="medium"
+          color="gray_90"
+        >
+          {props.requester}
         </Typography.B2>
-      </Container.FlexRow>
-      <Typography.B2
-        style={{ maxWidth: '300px', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
-        fontWeight="medium"
-        color="gray_90"
-      >
-        {requester}
-      </Typography.B2>
-      <TagLabel label={type === 'worksheet' ? '작업지시서' : ''} color={'green'} />
+      )}
+      {
+        <TagLabel
+          label={type === 'worksheet' ? '작업지시서' : EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
+          color={TagsColor[(tag as KorToEngDriveCategory) ?? 'etc']}
+          wiive={type === 'worksheet'}
+        />
+      }
       <Typography.B2 fontWeight="medium" color="gray_90">
-        {getCustomRelativeTime(updatedAt) || getCustomRelativeTime(createdAt)}
+        {type === 'file' ? `.${mimetype}` : '-'}
+      </Typography.B2>
+      <Typography.B2 fontWeight="medium" color="gray_90">
+        {getCustomRelativeTime(updatedAt)}
       </Typography.B2>
       <DropdownButton isHover icon={<Img src={ICON.more} />}>
         <Container.FlexCol>
