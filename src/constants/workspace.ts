@@ -55,4 +55,4 @@ export const DRIVE_CATEGORY = [
   { label: '기타', name: KorToEngDriveCategory.기타 },
 ];
 
-export const DRIVE_SHEET_LABEL = ['', '이름', '파일 유형', '파일 형식', '수정일시', ''];
+export const DRIVE_SHEET_LABEL = ['', '이름', '파일 유형', '파일 형식', '수정일시'];
