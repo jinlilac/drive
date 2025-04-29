@@ -1,6 +1,6 @@
 import { IconType } from '@/types/icon.type';
 
-const DEFAULT_PATH = '/public/assets/icons/';
+const DEFAULT_PATH = '/assets/icons/';
 
 export const ICON_LIST = [
   'logo-stitch',
@@ -41,6 +41,8 @@ export const ICON_LIST = [
   'all-clear',
   'minus-box',
   'square-white',
+  'folder-gray',
+  'exclamation-mark',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
