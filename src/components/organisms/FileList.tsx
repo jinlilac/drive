@@ -23,7 +23,7 @@ const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   gap: 8px;
   align-items: center;
   grid-template-columns: ${({ isDrive }) =>
-    isDrive ? '40px auto 120px 120px 200px 40px' : '28px 320px 320px 320px 320px 191px 25px'};
+    isDrive ? '52px auto 188px 188px 175px 25px' : '28px 320px 320px 320px 320px 191px 25px'};
 
   background-color: ${(props) => (props.checked ? props.theme.Colors.gray_30 : props.theme.Colors.gray_10)};
 
@@ -32,7 +32,6 @@ const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   }
 `;
 const CheckboxContainer = styled.div<{ checked: boolean }>`
-  opacity: 0;
   transition: opacity 0.2s;
   opacity: ${(props) => (props.checked ? 1 : 0)};
 
@@ -46,10 +45,8 @@ const MoreItem = styled(DropBoxItem)`
   align-items: center;
 `;
 const ThumbImg = styled.div`
-  width: 100%;
-  height: 100%;
-  max-width: 48px;
-  min-height: 48px;
+  width: 48px;
+  height: 48px;
   border: 1px solid ${(props) => props.theme.Colors.gray_30};
 `;
 
@@ -122,7 +119,7 @@ export default function FileList(
         <Typography.B2
           fontWeight="semiBold"
           color="gray_100"
-          style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+          style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', minWidth: '256px' }}
         >
           {name}
         </Typography.B2>
@@ -150,9 +147,11 @@ export default function FileList(
           wiive={type === 'worksheet'}
         />
       }
-      <Typography.B2 fontWeight="medium" color="gray_90">
-        {type === 'file' ? `.${mimetype}` : '-'}
-      </Typography.B2>
+      {type !== 'worksheet' && (
+        <Typography.B2 fontWeight="medium" color="gray_90">
+          {type === 'file' ? `.${mimetype}` : '-'}
+        </Typography.B2>
+      )}
       <Typography.B2 fontWeight="medium" color="gray_90">
         {getCustomRelativeTime(updatedAt)}
       </Typography.B2>
