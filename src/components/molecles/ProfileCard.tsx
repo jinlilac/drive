@@ -31,7 +31,7 @@ export const DropBoxItem = styled(Button.Ghost)`
   text-align: start;
 
   &:hover {
-    background-color: ${(props) => props.theme.Colors.gray_30};
+    background-color: ${(props) => props.theme.Colors.gray_20};
     border-radius: 4px;
   }
 `;
@@ -51,9 +51,10 @@ export default function ProfileCard() {
         <Avatar
           size="s"
           src={
-            user?.profileImg?.startsWith('https')
+            user?.profileImg &&
+            (user?.profileImg?.startsWith('https')
               ? user?.profileImg
-              : `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`
+              : `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`)
           }
         />
         <ContentWrap gap="8">
