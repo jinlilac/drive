@@ -7,12 +7,12 @@ import { DropBoxItem } from '@/components/molecles/ProfileCard';
 import { TagLabelProps } from '@/components/molecles/TagLabel';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
-import { MORE_ITEMS } from '@/constants/worksheet';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { FolderListResponse } from '@/types/file.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { FileSystemType } from '@/types/workspace.type';
+import { FileSystemType, MoreItemType } from '@/types/workspace.type';
+import useGetMoreItems from '@/hooks/useGetMoreItems';
 
 const CardContainer = styled(Container.FlexRow)<{ checked: boolean }>`
   width: 240px;
@@ -30,7 +30,6 @@ const CheckboxContainer = styled.div<{ checked: boolean }>`
   position: absolute;
   top: 8px;
   left: 8px;
-  opacity: 0;
   transition: opacity 0.2s;
   opacity: ${(props) => (props.checked ? 1 : 0)};
   ${CardContainer}:hover & {
@@ -68,26 +67,30 @@ export default function FolderCard(
   const { openOverlay } = useOverlayStore();
 
   const handleMoreButton = (action: string) => {
-    if (action === '이름 바꾸기') {
-      setState((prev) => ({
-        ...prev,
-        isOpen: true,
-        defaultName: name,
-        fileSystemId,
-        parentId,
-      }));
+    if (action === '이름 바꾸기') handleSetState('name');
+    else if (action === '삭제') handleSetState('delete');
+    else if (action === '영구 삭제') handleSetState('destroy');
+    else if (action === '다운로드') console.log('다운로드', fileSystemId);
+    else if (action === '즐겨찾기 추가') console.log('즐겨찾기', fileSystemId);
+    else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
+    openOverlay();
+  };
+  const handleSetState = (menu: MoreItemType) => {
+    setState((prev) => ({
+      ...prev,
+      isOpen: true,
+      menu,
+      defaultName: name,
+      fileSystemId,
+      parentId,
+    }));
+  };
 
-      openOverlay();
-    } else if (action === '삭제') {
-      handleDelete();
-    }
-  };
-  const handleDelete = () => {
-    console.log('삭제');
-  };
   const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     onCheck(fileSystemId, e.target.checked, path);
   };
+
+  const MORE_ITEMS = useGetMoreItems();
   return (
     <CardContainer id={fileSystemId} checked={checked}>
       <CheckboxContainer checked={checked}>
