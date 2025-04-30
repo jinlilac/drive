@@ -1,29 +1,28 @@
 import { useObserver } from '@/hooks/useObserver';
 import { useEffect, useState } from 'react';
-import useOverlayStore from '@/stores/useOverlayStore';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
-import { FormProvider, useForm } from 'react-hook-form';
-import { usePatchWorkSheet } from '@/apis/WorkSheet';
 import ActionToolbar, { Action } from '@/components/organisms/ActionToolBar';
 import useToastStore from '@/stores/useToastStore';
 import Button from '@/components/atoms/Button';
 import { AxiosResponse } from 'axios';
 import {
+  EngToKorDriveCategory,
   FileSystemAllResponseType,
   FileSystemListResponseType,
-  EngToKorDriveCategory,
   KorToEngDriveCategory,
+  MoreItemAlertType,
 } from '@/types/workspace.type';
 import Container from '@/components/atoms/Container';
 import Typography from '@/components/atoms/Typography';
 import styled from 'styled-components';
 import WorkSpaceFolderTemplate from '@/components/templates/WorkSpace.template/StarAndTrash.template/WorkSpaceFolderTemplate';
 import WorkSpaceItemTemplate from '@/components/templates/WorkSpace.template/StarAndTrash.template/WorkSpaceItem.template';
-import Overlay from '@/components/atoms/ Overlay';
-import Alert from '@/components/molecles/Alert';
 import LoaderBox from '@/components/molecles/LoaderBox';
 import Toast from '@/components/molecles/Toast';
 import { useLocation } from 'react-router-dom';
+import Img from '@/components/atoms/Img';
+import { ICON } from '@/constants/icon';
+import { useDeleteWorkSpace, useDestroyWorkSpace, useRestoreWorkSpace, useUpdateWorkSpace } from '@/apis/WorkSpace';
 import WorkSpaceAlertTemplate from '@/components/templates/WorkSpace.template/WorkSpaceAlert.template';
 
 type WorkSpaceStarAndTrashTemplateProps = {
@@ -33,6 +32,38 @@ type WorkSpaceStarAndTrashTemplateProps = {
   viewMode: 'list' | 'card';
   currentTab: KorToEngDriveCategory;
 };
+const WorkSpaceContainer = styled(Container.FlexCol)`
+  margin-bottom: 164px;
+  margin-top: 24px;
+  padding-top: 8px;
+  overflow: scroll;
+  height: 100%;
+`;
+
+const StarredBreadcrumb = styled(Container.FlexRow)`
+  position: fixed;
+  width: 100%;
+  bottom: 24px;
+  padding: 12px 8px;
+  border-top: ${(props) => `1px ${props.theme.Colors.gray_30} solid`};
+  background: white;
+`;
+
+const StarredBreadcrumbItemContainer = styled(Container.FlexRow)`
+  padding: 0 8px;
+  gap: 4px;
+
+  & > p {
+    max-width: 100px;
+    padding: 5px 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    align-self: center;
+  }
+
+  flex-wrap: wrap;
+`;
 const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
 const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
 
@@ -53,6 +84,7 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
 
   const [updateState, setUpdateState] = useState<UpdateState>({
     isOpen: false,
+    menu: '',
     fileSystemId: '',
     defaultName: '',
     parentId: '',
@@ -62,15 +94,24 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
     if (updateState.selectedIds.length !== 1) setFileSystemPath('');
   }, [updateState.selectedIds.length]);
 
-  const { patchWorkSheet, isPending } = usePatchWorkSheet();
+  const { updateWorkSpace, isUpdating } = useUpdateWorkSpace();
+  const { deleteWorkSpace, isDeleting } = useDeleteWorkSpace();
+  const { restoreWorkSpace, isRestoring } = useRestoreWorkSpace();
+  const { destroyWorkSpace, isDestroying } = useDestroyWorkSpace();
 
-  const actions: Action[] = [
+  const resetUpdateState = () => {
+    setUpdateState((prev) => ({ ...prev, selectedIds: [] }));
+    setHasChecked(false);
+  };
+
+  const isPending = isUpdating || isDeleting || isRestoring || isDestroying;
+  const starredActions: Action[] = [
     {
       type: 'star',
       label: '즐겨찾기 제거',
       icon: 'star-white', // ICON 객체의 key
       handler: (ids: string[]) => {
-        patchWorkSheet(
+        updateWorkSpace(
           {
             id: ids,
             isStarred: ids.map(() => false),
@@ -83,60 +124,59 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
               }),
           },
         );
-        setUpdateState((prev) => ({ ...prev, selectedIds: [] }));
-        setHasChecked(false);
+        resetUpdateState();
       },
     },
-    // {
-    //   type: 'folder',
-    //   label: '폴더로 이동',
-    //   icon: 'folder-white', // ICON 객체의 key
-    //   handler: (ids: string[]) => {
-    //     console.log('folder', ids);
-    //     // patchWorkSheet({
-    //     //   id: ids,
-    //     //   isStarred: ids.map(() => true),
-    //     // });
-    //     // setUpdateState((prev) => ({ ...prev, selectedIds: [] }));
-    //   },
-    // },
     {
       type: 'delete',
       label: '삭제',
       icon: 'trash-white',
       handler: (ids: string[]) => {
-        console.log('trash', ids);
-        // patchWorkSheet({
-        //   id: ids,
-        //   isDeleted: ids.map(() => true),
-        // });
-        // setUpdateState((prev) => ({ ...prev, selectedIds: [] }));
+        deleteWorkSpace(
+          { ids },
+          {
+            onSuccess: () =>
+              useToastStore.getState().showToast({
+                text: '즐겨찾기에서 제거되었습니다.',
+                button: <Button.Ghost>실행취소</Button.Ghost>,
+              }),
+          },
+        );
+        resetUpdateState();
       },
     },
-    // 필요시 다른 액션 추가
   ];
 
-  const onSubmit = (data: { rename: string }) => {
-    const payload = {
-      id: [updateState.fileSystemId],
-      name: [data.rename],
-      parentId: [updateState.parentId],
-      isStarred: [false],
-    };
-    patchWorkSheet(payload);
-    setUpdateState({
-      isOpen: false,
-      fileSystemId: '',
-      defaultName: '',
-      parentId: '',
-      selectedIds: [],
+  const trashAction: Action[] = [
+    {
+      type: 'restore',
+      label: '복원하기',
+      icon: 'restore',
+      handler: (ids: string[]) => {
+        restoreWorkSpace({ ids });
+        resetUpdateState();
+      },
+    },
+    {
+      type: 'permanent-delete',
+      label: '영구 삭제',
+      icon: 'permanent-trash',
+      handler: (ids: string[]) => {
+        destroyWorkSpace({ ids });
+        resetUpdateState();
+      },
+    },
+  ];
+
+  const handleCheck = (id: string, checked: boolean, path?: string) => {
+    setUpdateState((prev) => {
+      const nextUpdateState = {
+        ...prev,
+        selectedIds: checked ? [...prev.selectedIds, id] : prev.selectedIds.filter((item) => item !== id),
+      };
+      if (nextUpdateState.selectedIds.length === 1) setFileSystemPath(path);
+      return nextUpdateState;
     });
-  };
-  const handleCheck = (id: string, checked: boolean) => {
-    setUpdateState((prev) => ({
-      ...prev,
-      selectedIds: checked ? [...prev.selectedIds, id] : prev.selectedIds.filter((item) => item !== id),
-    }));
     if (!hasChecked) setHasChecked(true);
   };
 
@@ -150,7 +190,7 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
   });
   return (
     <>
-      <Container.FlexCol style={{ paddingTop: '32px' }}>
+      <WorkSpaceContainer>
         {'folders' in fileSystem[0].data && fileSystem[0].data.folders.length > 0 && (
           <>
             <Container.FlexRow alignItems="baseline" gap="8">
@@ -188,8 +228,6 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
           (fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count) && (
             <Container.FlexCol
               style={{
-                flex: 1,
-                marginTop: '300px',
                 width: '100%',
                 height: '100%',
                 alignItems: 'center',
@@ -222,7 +260,7 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
       </WorkSpaceContainer>
       {updateState.isOpen && (
         <WorkSpaceAlertTemplate
-          menu={updateState.menu}
+          menu={updateState.menu as MoreItemAlertType}
           setState={setUpdateState}
           state={updateState}
           isPending={isPending}
@@ -238,7 +276,7 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
             setUpdateState((prev) => ({ ...prev, selectedIds: selectedIds as string[] }));
             if (!hasChecked) setHasChecked(true);
           }}
-          actions={actions}
+          actions={pathname.includes('trash') ? trashAction : starredActions}
           close={() => {
             setHasChecked(false);
             setUpdateState((prev) => ({ ...prev, selectedIds: [] }));
