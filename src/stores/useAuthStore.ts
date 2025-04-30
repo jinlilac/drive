@@ -5,9 +5,8 @@ import { persist } from 'zustand/middleware';
 type AuthStoreType = {
   user: Partial<UserAuthType> | null;
   isLoggedIn: boolean;
-  login: (user: Partial<UserAuthType>) => void;
   logout: () => void;
-  setUser: (user: Partial<UserAuthType>) => void;
+  setUser: (user: Partial<UserAuthType> & { isLoggedIn?: boolean }) => void;
 };
 
 export const useAuthStore = create<AuthStoreType>()(
@@ -17,9 +16,9 @@ export const useAuthStore = create<AuthStoreType>()(
       setUser: (user) =>
         set((state) => ({
           user: { ...state.user, ...user }, // 이전 상태와 병합
+          isLoggedIn: true,
         })),
       isLoggedIn: false,
-      login: (user) => set({ user, isLoggedIn: true }),
       logout: () =>
         set({
           isLoggedIn: false,

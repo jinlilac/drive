@@ -13,13 +13,11 @@ export const signIn = async ({ email, password }: SignInEmailType) =>
 
 export const useSignInEmail = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuthStore();
   const { mutate: signInEmail, isPending } = useMutation({
     mutationFn: (payload: SignInEmailType) => signIn(payload),
     onSuccess: (data) => {
-      useAuthStore.setState({
-        isLoggedIn: true,
-        user: data.data,
-      });
+      setUser(data.data);
       navigate('/workspace/work-sheet');
     },
   });
