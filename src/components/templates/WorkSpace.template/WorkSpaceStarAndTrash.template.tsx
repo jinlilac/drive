@@ -23,8 +23,8 @@ import Overlay from '@/components/atoms/ Overlay';
 import Alert from '@/components/molecles/Alert';
 import LoaderBox from '@/components/molecles/LoaderBox';
 import Toast from '@/components/molecles/Toast';
-import Input from '@/components/atoms/Input';
 import { useLocation } from 'react-router-dom';
+import WorkSpaceAlertTemplate from '@/components/templates/WorkSpace.template/WorkSpaceAlert.template';
 
 type WorkSpaceStarAndTrashTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
@@ -35,9 +35,6 @@ type WorkSpaceStarAndTrashTemplateProps = {
 };
 const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
 const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
-const RenameWrap = styled(Container.FlexCol)`
-  width: 100%;
-`;
 
 const RenameInput = styled(Input.Default)`
   background-color: white;
@@ -54,17 +51,12 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
     if (isShow && hasNextPage) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isShow]);
 
-  const { closeOverlay } = useOverlayStore();
   const [updateState, setUpdateState] = useState<UpdateState>({
     isOpen: false,
     fileSystemId: '',
     defaultName: '',
     parentId: '',
     selectedIds: [],
-  });
-
-  const formValue = useForm({
-    defaultValues: { rename: updateState.defaultName },
   });
   useEffect(() => {
     formValue.reset({ rename: updateState.defaultName });
@@ -211,44 +203,12 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
           )}
       </Container.FlexCol>
       {updateState.isOpen && (
-        <>
-          <Overlay />
-          <Alert
-            style={{ alignItems: 'flex-start' }}
-            type="cancel"
-            cancelLabel="취소"
-            confirmLabel="확인"
-            onConfirm={formValue.handleSubmit(onSubmit)}
-            onCancel={() => {
-              closeOverlay();
-              setUpdateState({ isOpen: false, fileSystemId: '', defaultName: '', parentId: '', selectedIds: [] });
-            }}
-          >
-            <RenameWrap gap="24">
-              <Typography.T2 fontWeight="bold" color="gray_100">
-                이름 바꾸기
-              </Typography.T2>
-              <FormProvider {...formValue}>
-                <form>
-                  <RenameInput
-                    disabled={isPending}
-                    type="text"
-                    value={updateState.defaultName}
-                    onChange={(e) =>
-                      setUpdateState((prev) => ({
-                        ...prev,
-                        defaultName: e.target.value,
-                      }))
-                    }
-                    name="rename"
-                    autoFocus
-                    onFocus={(event) => event.target.select()}
-                  />
-                </form>
-              </FormProvider>
-            </RenameWrap>
-          </Alert>
-        </>
+        <WorkSpaceAlertTemplate
+          menu={updateState.menu}
+          setState={setUpdateState}
+          state={updateState}
+          isPending={isPending}
+        />
       )}
       {hasNextPage && <LoaderBox ref={loaderRef} />}
       {/* 3. ActionToolbar 적용 (선택된 게 있을 때만 표시) */}
