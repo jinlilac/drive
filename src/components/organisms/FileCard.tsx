@@ -20,6 +20,8 @@ import { TagsColor } from '@/constants/drive';
 
 const CardContainer = styled(Container.FlexCol)<{ checked: boolean }>`
   width: 100%;
+  max-width: 300px;
+  height: 242px;
   gap: 8px;
   padding: 16px;
   flex-shrink: 0;

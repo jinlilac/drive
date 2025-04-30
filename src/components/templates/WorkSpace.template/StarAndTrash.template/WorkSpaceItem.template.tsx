@@ -38,8 +38,12 @@ const CardItemContainer = styled(Container.Grid)<{ viewMode: 'card' | 'list' }>`
   ${({ viewMode }) =>
     viewMode === 'card'
       ? css`
-          gap: 14.4px;
+          column-gap: 14.4px;
+          row-gap: 24px;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          @media (min-width: 1920px) {
+            grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+          }
         `
       : css`
           display: flex;
