@@ -55,4 +55,16 @@ export const DRIVE_CATEGORY = [
   { label: '기타', name: KorToEngDriveCategory.기타 },
 ];
 
+export const STARRED_MORE_ITEMS = [
+  { label: '이름 바꾸기', icon: ICON['more-edit'] },
+  { label: '즐겨찾기 제거', icon: ICON['menu-unstarred'] },
+  { label: '다운로드', icon: ICON['menu-download'] },
+  { label: '삭제', icon: ICON['more-trash'] },
+];
+
+export const TRASH_MORE_ITEMS = [
+  { label: '복원하기', icon: ICON['restore'] },
+  { label: '영구 삭제', icon: ICON['permanent-trash'] },
+];
+
 export const DRIVE_SHEET_LABEL = ['', '이름', '파일 유형', '파일 형식', '수정일시'];
