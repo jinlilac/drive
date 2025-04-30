@@ -12,7 +12,7 @@ type WorkSpaceFolderCardTemplateProps = {
   folders: FileSystemType[];
   checked: string[];
   setState: Dispatch<SetStateAction<UpdateState>>;
-  onCheck: (id: string, checked: boolean) => void;
+  onCheck: (id: string, checked: boolean, path?: string) => void;
   viewMode: 'card' | 'list';
 };
 const SheetBar = styled(Container.Grid)`

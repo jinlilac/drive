@@ -3,6 +3,7 @@ import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheet
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { FileSystemType } from '@/types/workspace.type';
 import FolderCard from '@/components/organisms/FolderCard';
+import { Dispatch, SetStateAction } from 'react';
 
 export const CardItems = ({
   content,
@@ -13,8 +14,8 @@ export const CardItems = ({
 }: {
   content: WorkSheetItems | FileSystemType;
   checked: boolean;
-  setState: React.Dispatch<React.SetStateAction<UpdateState>>;
-  onCheck: (id: string, checked: boolean) => void;
+  setState: Dispatch<SetStateAction<UpdateState>>;
+  onCheck: (id: string, checked: boolean, path?: string) => void;
   isFolder?: boolean;
 }) => {
   return isFolder ? (

@@ -36,9 +36,9 @@ const CheckboxContainer = styled.div<{ checked: boolean }>`
   position: absolute;
   top: 8px;
   left: 8px;
-  opacity: 0;
   transition: opacity 0.2s;
   opacity: ${(props) => (props.checked ? 1 : 0)};
+
   ${CardContainer}:hover & {
     opacity: 1;
   }
@@ -67,7 +67,7 @@ export default function FileCard(
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean) => void;
+      onCheck: (id: string, checked: boolean, path?: string) => void;
     } & Partial<FolderListResponse>,
 ) {
   const {
@@ -104,13 +104,13 @@ export default function FileCard(
   const handleDelete = () => {
     console.log('삭제');
   };
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked);
+  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path);
   };
   return (
     <CardContainer id={fileSystemId ?? worksheetId} checked={checked}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '')} />
       </CheckboxContainer>
       <div style={{ backgroundColor: 'white', minHeight: '142px', maxHeight: '142px', overflow: 'hidden' }}>
         <Img

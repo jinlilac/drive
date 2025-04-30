@@ -61,10 +61,10 @@ export default function FolderCard(
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean) => void;
+      onCheck: (id: string, checked: boolean, path?: string) => void;
     } & Partial<FolderListResponse>,
 ) {
-  const { name, setState, fileSystemId, childrenCount, parentId, checked, onCheck } = props;
+  const { name, setState, fileSystemId, path, childrenCount, parentId, checked, onCheck } = props;
   const { openOverlay } = useOverlayStore();
 
   const handleMoreButton = (action: string) => {
@@ -85,13 +85,13 @@ export default function FolderCard(
   const handleDelete = () => {
     console.log('삭제');
   };
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked);
+  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path);
   };
   return (
     <CardContainer id={fileSystemId} checked={checked}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(path)} />
       </CheckboxContainer>
       <Container.FlexRow style={{ width: '48px', height: '48px', padding: '12px' }}>
         <Img fit="fill" src={ICON['folder-gray']} />

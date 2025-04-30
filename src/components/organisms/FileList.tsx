@@ -55,7 +55,7 @@ export default function FileList(
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean) => void;
+      onCheck: (id: string, checked: boolean, path?: string) => void;
       isDrive: boolean;
     } & Partial<FolderListResponse>,
 ) {
@@ -98,13 +98,13 @@ export default function FileList(
   const handleDelete = () => {
     console.log('삭제');
   };
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked);
+  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path);
   };
   return (
     <ListWrap id={worksheetId} checked={checked} isDrive={isDrive}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '')} />
       </CheckboxContainer>
       <Container.FlexRow gap="16" style={{ maxWidth: '320px', flex: 1 }} alignItems="center">
         <ThumbImg>

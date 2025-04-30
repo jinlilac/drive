@@ -13,7 +13,7 @@ export const ListItems = ({
   content: WorkSheetItems | FileSystemType;
   checked: boolean;
   setState: React.Dispatch<React.SetStateAction<UpdateState>>;
-  onCheck: (id: string, checked: boolean) => void;
+  onCheck: (id: string, checked: boolean, path?: string) => void;
   isDrive?: boolean;
 }) => (
   <FileList

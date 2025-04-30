@@ -13,7 +13,7 @@ type WorkSpaceStarAndTrashTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
   checked: string[];
   setState: Dispatch<SetStateAction<UpdateState>>;
-  onCheck: (id: string, checked: boolean) => void;
+  onCheck: (id: string, checked: boolean, path?: string) => void;
   viewMode: 'card' | 'list';
 };
 
