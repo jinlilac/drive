@@ -28,7 +28,7 @@ const SheetBar = styled(Container.Grid)`
 export default function WorkSpaceFolderTemplate(props: WorkSpaceFolderCardTemplateProps) {
   const { folders, onCheck, checked, setState, viewMode } = props;
   return (
-    <Container.FlexCol style={{ margin: '16px 0' }} gap="12">
+    <Container.FlexCol style={{ marginTop: '16px' }} gap="12">
       {viewMode === 'list' && (
         <SheetBar>
           {DRIVE_SHEET_LABEL.map((label) => (
