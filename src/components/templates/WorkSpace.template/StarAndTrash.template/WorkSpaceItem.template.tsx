@@ -33,8 +33,8 @@ const SheetBar = styled(Container.Grid)`
   margin-top: 16px;
 `;
 
-const CardItemContainer = styled(Container.Grid)<{ viewMode: 'card' | 'list' }>`
-  padding-top: 32px;
+const ItemContainer = styled(Container.Grid)<{ viewMode: 'card' | 'list' }>`
+  padding-top: 16px;
   ${({ viewMode }) =>
     viewMode === 'card'
       ? css`
@@ -54,7 +54,7 @@ const CardItemContainer = styled(Container.Grid)<{ viewMode: 'card' | 'list' }>`
 export default function WorkSpaceItemTemplate(props: WorkSpaceStarAndTrashTemplateProps) {
   const { fileSystem, checked, onCheck, setState, viewMode } = props;
   return (
-    <CardItemContainer viewMode={viewMode}>
+    <ItemContainer viewMode={viewMode}>
       {viewMode === 'list' && (
         <SheetBar>
           {DRIVE_SHEET_LABEL.map((label) => (
@@ -112,6 +112,6 @@ export default function WorkSpaceItemTemplate(props: WorkSpaceStarAndTrashTempla
           );
         }
       })}
-    </CardItemContainer>
+    </ItemContainer>
   );
 }
