@@ -10,7 +10,7 @@ import { useSignInEmail } from '@/apis/SignIn';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { EmailAuth, SignInEmailType } from '@/types/signin.type';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FieldErrors, FormProvider, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
