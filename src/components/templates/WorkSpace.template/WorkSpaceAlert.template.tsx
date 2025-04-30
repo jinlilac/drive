@@ -8,9 +8,10 @@ import Input from '@/components/atoms/Input';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import useOverlayStore from '@/stores/useOverlayStore';
+import { MoreItemAlertType } from '@/types/workspace.type';
 
 type WorkSpaceAlertTemplateProps = {
-  menu: 'name' | 'delete' | 'destroy';
+  menu: MoreItemAlertType;
   state: UpdateState;
   setState: Dispatch<SetStateAction<UpdateState>>;
   isPending: boolean;
