@@ -14,15 +14,15 @@ import { useObserver } from '@/hooks/useObserver';
 import useOverlayStore from '@/stores/useOverlayStore';
 import useToastStore from '@/stores/useToastStore';
 import { WorkSheetItems, WorkSheetResponseType } from '@/types/worksheet.type';
-import { UseSuspenseInfiniteQueryResult } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
-import { useEffect, useState, ReactNode, RefObject } from 'react';
+import { useEffect, useState, ReactNode, ComponentType, Dispatch, SetStateAction } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 // 1. UpdateState 타입 정의
 export type UpdateState = {
   isOpen: boolean;
+  menu?: string;
   fileSystemId: string;
   defaultName: string;
   parentId: string;
@@ -36,10 +36,10 @@ export type WorkSheetTemplateProps = {
   renderItem: (args: {
     content: WorkSheetItems;
     checked: boolean;
-    setState: React.Dispatch<React.SetStateAction<UpdateState>>;
+    setState: Dispatch<SetStateAction<UpdateState>>;
     onCheck: (id: string, checked: boolean) => void;
   }) => ReactNode;
-  Wrapper: React.ComponentType<{ children: ReactNode }>;
+  Wrapper: ComponentType<{ children: ReactNode }>;
 };
 
 const RenameWrap = styled(Container.FlexCol)`
@@ -62,7 +62,7 @@ export default function WorkSheetBaseTemplate(props: WorkSheetTemplateProps) {
 
   useEffect(() => {
     if (isShow && hasNextPage) fetchNextPage();
-  }, [isShow]);
+  }, [fetchNextPage, hasNextPage, isShow]);
 
   const { closeOverlay } = useOverlayStore();
   const [updateState, setUpdateState] = useState<UpdateState>({
@@ -78,7 +78,7 @@ export default function WorkSheetBaseTemplate(props: WorkSheetTemplateProps) {
   });
   useEffect(() => {
     formValue.reset({ rename: updateState.defaultName });
-  }, [updateState.defaultName]);
+  }, [formValue, updateState.defaultName]);
 
   const { patchWorkSheet, isPending } = usePatchWorkSheet();
 
