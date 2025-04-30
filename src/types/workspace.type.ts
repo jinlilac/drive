@@ -66,3 +66,5 @@ export type FileSystemListResponseType = {
   count: number;
   data: FileSystemType[];
 };
+
+export type MoreItemAlertType = 'name' | 'delete' | 'destroy';

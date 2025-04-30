@@ -13,7 +13,12 @@ import useOverlayStore from '@/stores/useOverlayStore';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { EngToKorDriveCategory, FileSystemType, KorToEngDriveCategory, MoreItemType } from '@/types/workspace.type';
+import {
+  EngToKorDriveCategory,
+  FileSystemType,
+  KorToEngDriveCategory,
+  MoreItemAlertType,
+} from '@/types/workspace.type';
 import { TagsColor } from '@/constants/drive';
 import { FolderListResponse } from '@/types/file.type';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
@@ -81,7 +86,7 @@ export default function FileList(
   const categoryLabel =
     'category' in props ? (CATEGORY_FILTERS.find((f) => f.value === props.category)?.label ?? '카테고리 전체') : '';
 
-  const handleSetState = (menu: MoreItemType) => {
+  const handleSetState = (menu: MoreItemAlertType) => {
     setState((prev) => ({
       ...prev,
       isOpen: true,

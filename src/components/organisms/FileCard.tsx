@@ -14,7 +14,12 @@ import { FolderListResponse } from '@/types/file.type';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { KorToEngDriveCategory, FileSystemType, EngToKorDriveCategory, MoreItemType } from '@/types/workspace.type';
+import {
+  KorToEngDriveCategory,
+  FileSystemType,
+  EngToKorDriveCategory,
+  MoreItemAlertType,
+} from '@/types/workspace.type';
 import { TagsColor } from '@/constants/drive';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
 
@@ -86,7 +91,7 @@ export default function FileCard(
   } = props;
   const { openOverlay } = useOverlayStore();
 
-  const handleSetState = (menu: MoreItemType) => {
+  const handleSetState = (menu: MoreItemAlertType) => {
     setState((prev) => ({
       ...prev,
       isOpen: true,

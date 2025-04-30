@@ -11,7 +11,7 @@ import useOverlayStore from '@/stores/useOverlayStore';
 import { FolderListResponse } from '@/types/file.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { FileSystemType, MoreItemType } from '@/types/workspace.type';
+import { FileSystemType, MoreItemAlertType } from '@/types/workspace.type';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
 
 const CardContainer = styled(Container.FlexRow)<{ checked: boolean }>`
@@ -75,7 +75,7 @@ export default function FolderCard(
     else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
     openOverlay();
   };
-  const handleSetState = (menu: MoreItemType) => {
+  const handleSetState = (menu: MoreItemAlertType) => {
     setState((prev) => ({
       ...prev,
       isOpen: true,
