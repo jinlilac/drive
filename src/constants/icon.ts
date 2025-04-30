@@ -43,6 +43,9 @@ export const ICON_LIST = [
   'square-white',
   'folder-gray',
   'exclamation-mark',
+  'right-arrow',
+  'restore',
+  'permanent-trash',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
