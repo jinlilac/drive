@@ -46,6 +46,8 @@ export const ICON_LIST = [
   'right-arrow',
   'restore',
   'permanent-trash',
+  'menu-unstarred',
+  'menu-download',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
