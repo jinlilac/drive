@@ -14,6 +14,7 @@ type AlertProps = {
   onConfirm: () => void;
   onCancel?: () => void;
   style?: CSSProperties;
+  redConfirm?: boolean;
 };
 
 const AlertWrap = styled(Container.FlexCol)`
@@ -36,8 +37,14 @@ const AlertButtons = styled(Container.FlexRow)`
   align-items: center;
 `;
 
+const ConfirmButton = styled(Button.Fill)<{ redButton: boolean }>`
+  padding: 15px;
+  background: ${(props) => (props.redButton ? props.theme.Colors.error : props.theme.Colors.gray_100)};
+  color: white;
+`;
+
 const Alert = (props: AlertProps) => {
-  const { type, children, cancelLabel, confirmLabel, onConfirm, onCancel, style } = props;
+  const { type, children, cancelLabel, confirmLabel, onConfirm, onCancel, style, redConfirm = false } = props;
   const { isOpen } = useOverlayStore();
   if (!isOpen) return null;
   return (
@@ -50,9 +57,9 @@ const Alert = (props: AlertProps) => {
           <Button.Stroke onClick={onCancel} style={{ padding: '15px' }}>
             <Typography.B1 fontWeight="semiBold">{cancelLabel}</Typography.B1>
           </Button.Stroke>
-          <Button.Fill onClick={onConfirm} style={{ padding: '15px' }}>
+          <ConfirmButton onClick={onConfirm} redButton={redConfirm}>
             <Typography.B1 fontWeight="semiBold">{confirmLabel}</Typography.B1>
-          </Button.Fill>
+          </ConfirmButton>
         </AlertButtons>
       ) : (
         <Button.Fill onClick={onConfirm} style={{ padding: '15px' }}>
