@@ -36,15 +36,15 @@ type WorkSpaceStarAndTrashTemplateProps = {
 const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
 const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
 
-const RenameInput = styled(Input.Default)`
-  background-color: white;
-  border: 1px solid ${(props) => props.theme.Colors.gray_200};
-`;
+const extractFileSystemPath = (path: string): string[] => {
+  return ['내 드라이브', ...path.split('/').slice(1)];
+};
 
 export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTrashTemplateProps) {
   const { fileSystem, hasNextPage, fetchNextPage, viewMode, currentTab } = props;
   const { ref: loaderRef, isShow } = useObserver<HTMLDivElement>();
   const [hasChecked, setHasChecked] = useState(false);
+  const [fileSystemPath, setFileSystemPath] = useState<string>('');
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -59,8 +59,8 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
     selectedIds: [],
   });
   useEffect(() => {
-    formValue.reset({ rename: updateState.defaultName });
-  }, [formValue, updateState.defaultName]);
+    if (updateState.selectedIds.length !== 1) setFileSystemPath('');
+  }, [updateState.selectedIds.length]);
 
   const { patchWorkSheet, isPending } = usePatchWorkSheet();
 
@@ -201,7 +201,25 @@ export default function WorkSpaceStarAndTrashTemplate(props: WorkSpaceStarAndTra
               </Typography.B1>
             </Container.FlexCol>
           )}
-      </Container.FlexCol>
+        {fileSystemPath && (
+          <StarredBreadcrumb>
+            <StarredBreadcrumbItemContainer>
+              {extractFileSystemPath(fileSystemPath).map((value, index, array) => (
+                <>
+                  <Typography.B2 key={value} color="gray_90" fontWeight="medium">
+                    {value}
+                  </Typography.B2>
+                  {index !== array.length - 1 && (
+                    <div style={{ width: '16px', height: '16px', alignSelf: 'center', textAlign: 'center' }}>
+                      <Img src={ICON['right-arrow']} />
+                    </div>
+                  )}
+                </>
+              ))}
+            </StarredBreadcrumbItemContainer>
+          </StarredBreadcrumb>
+        )}
+      </WorkSpaceContainer>
       {updateState.isOpen && (
         <WorkSpaceAlertTemplate
           menu={updateState.menu}
