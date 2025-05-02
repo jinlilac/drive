@@ -5,6 +5,7 @@ import Typography from '@/components/atoms/Typography';
 import { ICON } from '@/constants/icon';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
 type FilterBarProps = {
   title: string;
@@ -39,14 +40,56 @@ const FilterButton = styled(Button.Ghost)<{ isActive: boolean }>`
   background-color: ${(props) => (props.isActive ? '#F3F2F2' : '')};
 `;
 
+const ToolTipContainer = styled(Container.FlexRow)`
+  display: inline-block;
+  width: 100%;
+  align-self: center;
+  position: relative;
+  z-index: 10;
+`;
+const ToolTipIcon = styled(Img).attrs({ src: ICON['exclamation-mark'] })`
+  width: 18px;
+  height: 18px;
+`;
+
+const ToolTip = styled(Typography.B2)`
+  display: inline;
+  font-weight: ${(props) => props.theme.Font.fontWeight.medium};
+  position: absolute;
+  top: 100%;
+  left: 100%;
+  width: max-content;
+  padding: 12px 16px;
+  transform: translateX(-18px);
+  color: ${(props) => props.theme.Colors.gray_90};
+  border-radius: 8px;
+  background-color: ${(props) => props.theme.Colors.gray_20};
+  opacity: 0;
+  transition: opacity 0.2s;
+  ${ToolTipIcon}:hover + & {
+    opacity: 1;
+  }
+`;
+
 export default function FilterBar(props: FilterBarProps) {
   const { title, filter, count, onClickList, onClickCard, isListActive, isCardActive } = props;
+  const { pathname } = useLocation();
   return (
     <BarWrap>
       <Container.FlexRow alignItems="flex-end" gap="8">
         <Typography.T1 style={{ whiteSpace: 'nowrap' }} fontWeight="bold" color="gray_100">
           {title}
         </Typography.T1>
+        {pathname.includes('trash') && (
+          <ToolTipContainer>
+            <ToolTipIcon />
+            <ToolTip>
+              휴지통에 있는 항목은{' '}
+              <strong style={{ display: 'inline', fontWeight: 'bold' }}>14일 후 자동으로 영구 삭제</strong>
+              {''}됩니다.
+            </ToolTip>
+          </ToolTipContainer>
+        )}
         {count && (
           <Typography.B2 style={{ whiteSpace: 'nowrap' }} fontWeight="medium" color="gray_70">
             {count}개

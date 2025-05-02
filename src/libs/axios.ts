@@ -1,5 +1,7 @@
 import { RefreshManager } from '@/libs/refresh';
 import axios, { AxiosError } from 'axios';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { router } from '@/Router';
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -27,8 +29,8 @@ const axiosRequestInterceptor = axiosInstance.interceptors.request.use(
   (config) => {
     const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
     const newConfig = config;
-    if (userLocal.accessToken) {
-      newConfig.headers.Authorization = `Bearer ${userLocal.accessToken}`;
+    if (userLocal.state?.user?.accessToken) {
+      newConfig.headers.Authorization = `Bearer ${userLocal.state.user.accessToken}`;
     }
 
     return newConfig;
@@ -40,7 +42,7 @@ const axiosResponseInterceptor = axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
-    if (!userLocal.state.user.userId) {
+    if (!userLocal.state?.user?.userId) {
       return Promise.reject(error);
     }
     const user = userLocal.state.user;
@@ -62,12 +64,13 @@ const axiosResponseInterceptor = axiosInstance.interceptors.response.use(
             const { accessToken: newAccessToken, accessTokenExpiresAt: newExpiresAt } = data;
             user.accessToken = newAccessToken;
             user.accessTokenExpiresAt = newExpiresAt;
-            localStorage.setItem('auth-store', JSON.stringify(user));
+            useAuthStore.setState((prev) => ({ ...prev, user }));
           }
         } catch (error) {
           const refreshTokenError = error as AxiosError;
           if (refreshTokenError?.response?.status === 401) {
             localStorage.removeItem('auth-store');
+            await router.navigate('/sign/in');
           }
         }
       };
@@ -83,8 +86,7 @@ const axiosResponseInterceptor = axiosInstance.interceptors.response.use(
         }
         return null;
       } catch (refreshError) {
-        //   empty
-        console.log('refreshError', refreshError);
+        await router.navigate('/sign/in');
       }
     }
     return null;

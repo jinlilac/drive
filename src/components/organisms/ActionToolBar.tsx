@@ -6,7 +6,7 @@ import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import { ICON } from '@/constants/icon';
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
 export type Action = {
@@ -88,14 +88,14 @@ export default function ActionToolbar({ selectedIds, allIds, setSelectedIds, act
         </Container.FlexRow>
 
         <Container.FlexRow gap="8" justifyContent="center">
-          {actions.map((action) => (
+          {actions.map((action, index, array) => (
             <Container.FlexRow gap="8" key={action.type} justifyContent="center" alignItems="center">
               <IconButton
                 onClick={() => action.handler(selectedIds)}
                 src={action.icon as keyof typeof ICON}
                 label={action.label}
               />
-              <Divider.Col color="gray_10" />
+              {index !== array.length - 1 && <Divider.Col color="gray_10" />}
             </Container.FlexRow>
           ))}
         </Container.FlexRow>

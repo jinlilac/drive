@@ -33,7 +33,6 @@ const WorkSpaceBar = styled(Container.FlexCol)`
 export default function MainLayoutTemplate() {
   const navigate = useNavigate();
   const handleMenuClick = (path: string) => {
-    console.log(`${path}로 이동`);
     navigate(`${path}`);
   };
   return (

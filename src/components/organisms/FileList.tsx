@@ -7,15 +7,21 @@ import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecules/TagLabel';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
-import { CATEGORY_FILTERS, GENDER_FILTERS, MORE_ITEMS } from '@/constants/worksheet';
+import { CATEGORY_FILTERS, GENDER_FILTERS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { EngToKorDriveCategory, FileSystemType, KorToEngDriveCategory } from '@/types/workspace.type';
+import {
+  EngToKorDriveCategory,
+  FileSystemType,
+  KorToEngDriveCategory,
+  MoreItemAlertType,
+} from '@/types/workspace.type';
 import { TagsColor } from '@/constants/drive';
 import { FolderListResponse } from '@/types/file.type';
+import useGetMoreItems from '@/hooks/useGetMoreItems';
 
 const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_30};
@@ -23,7 +29,7 @@ const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   gap: 8px;
   align-items: center;
   grid-template-columns: ${({ isDrive }) =>
-    isDrive ? '40px auto 120px 120px 200px 40px' : '28px 320px 320px 320px 320px 191px 25px'};
+    isDrive ? '52px auto 188px 188px 175px 25px' : '28px 320px 320px 320px 320px 191px 25px'};
 
   background-color: ${(props) => (props.checked ? props.theme.Colors.gray_30 : props.theme.Colors.gray_10)};
 
@@ -32,7 +38,6 @@ const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   }
 `;
 const CheckboxContainer = styled.div<{ checked: boolean }>`
-  opacity: 0;
   transition: opacity 0.2s;
   opacity: ${(props) => (props.checked ? 1 : 0)};
 
@@ -46,10 +51,8 @@ const MoreItem = styled(DropBoxItem)`
   align-items: center;
 `;
 const ThumbImg = styled.div`
-  width: 100%;
-  height: 100%;
-  max-width: 48px;
-  min-height: 48px;
+  width: 48px;
+  height: 48px;
   border: 1px solid ${(props) => props.theme.Colors.gray_30};
 `;
 
@@ -58,7 +61,7 @@ export default function FileList(
     TagLabelProps & {
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean) => void;
+      onCheck: (id: string, checked: boolean, path?: string) => void;
       isDrive: boolean;
     } & Partial<FolderListResponse>,
 ) {
@@ -83,31 +86,35 @@ export default function FileList(
   const categoryLabel =
     'category' in props ? (CATEGORY_FILTERS.find((f) => f.value === props.category)?.label ?? '카테고리 전체') : '';
 
-  const handleMoreButton = (action: string) => {
-    if (action === '이름 바꾸기') {
-      setState((prev) => ({
-        ...prev,
-        isOpen: true,
-        defaultName: name,
-        fileSystemId,
-        parentId,
-      }));
+  const handleSetState = (menu: MoreItemAlertType) => {
+    setState((prev) => ({
+      ...prev,
+      isOpen: true,
+      menu,
+      defaultName: name,
+      fileSystemId,
+      parentId,
+    }));
+  };
 
-      openOverlay();
-    } else if (action === '삭제') {
-      handleDelete();
-    }
+  const handleMoreButton = (action: string) => {
+    if (action === '이름 바꾸기') handleSetState('name');
+    else if (action === '삭제') handleSetState('delete');
+    else if (action === '영구 삭제') handleSetState('destroy');
+    else if (action === '다운로드') console.log('다운로드', fileSystemId);
+    else if (action === '즐겨찾기 추가') console.log('즐겨찾기', fileSystemId);
+    else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
+    openOverlay();
   };
-  const handleDelete = () => {
-    console.log('삭제');
+
+  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path);
   };
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked);
-  };
+  const MORE_ITEMS = useGetMoreItems();
   return (
     <ListWrap id={worksheetId} checked={checked} isDrive={isDrive}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '')} />
       </CheckboxContainer>
       <Container.FlexRow gap="16" style={{ maxWidth: '320px', flex: 1 }} alignItems="center">
         <ThumbImg>
@@ -122,7 +129,7 @@ export default function FileList(
         <Typography.B2
           fontWeight="semiBold"
           color="gray_100"
-          style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+          style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', minWidth: '256px' }}
         >
           {name}
         </Typography.B2>
@@ -150,9 +157,11 @@ export default function FileList(
           wiive={type === 'worksheet'}
         />
       }
-      <Typography.B2 fontWeight="medium" color="gray_90">
-        {type === 'file' ? `.${mimetype}` : '-'}
-      </Typography.B2>
+      {type !== 'worksheet' && (
+        <Typography.B2 fontWeight="medium" color="gray_90">
+          {type === 'file' ? `.${mimetype}` : '-'}
+        </Typography.B2>
+      )}
       <Typography.B2 fontWeight="medium" color="gray_90">
         {getCustomRelativeTime(updatedAt)}
       </Typography.B2>

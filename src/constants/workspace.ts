@@ -1,4 +1,5 @@
 import { ICON } from '@/constants/icon';
+import { KorToEngDriveCategory } from '@/types/workspace.type';
 
 // 메뉴 아이템 상수 정의
 export const MENU_ITEMS = [
@@ -41,3 +42,29 @@ export const SIDEBAR_ITEMS = [
     icon: ICON.trash,
   },
 ];
+
+export const DRIVE_CATEGORY = [
+  { label: '전체', name: KorToEngDriveCategory.전체 },
+  { label: '폴더', name: KorToEngDriveCategory.폴더 },
+  { label: '작업지시서', name: KorToEngDriveCategory.WIIVE },
+  { label: '작업지시서', name: KorToEngDriveCategory.작업지시서 },
+  { label: '도식화', name: KorToEngDriveCategory.도식화 },
+  { label: '원단', name: KorToEngDriveCategory.원단 },
+  { label: '패턴', name: KorToEngDriveCategory.패턴 },
+  { label: '인쇄', name: KorToEngDriveCategory.인쇄 },
+  { label: '기타', name: KorToEngDriveCategory.기타 },
+];
+
+export const STARRED_MORE_ITEMS = [
+  { label: '이름 바꾸기', icon: ICON['more-edit'] },
+  { label: '즐겨찾기 제거', icon: ICON['menu-unstarred'] },
+  { label: '다운로드', icon: ICON['menu-download'] },
+  { label: '삭제', icon: ICON['more-trash'] },
+];
+
+export const TRASH_MORE_ITEMS = [
+  { label: '복원하기', icon: ICON['restore'] },
+  { label: '영구 삭제', icon: ICON['permanent-trash'] },
+];
+
+export const DRIVE_SHEET_LABEL = ['', '이름', '파일 유형', '파일 형식', '수정일시'];

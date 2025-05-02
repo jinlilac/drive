@@ -1,6 +1,6 @@
 import { IconType } from '@/types/icon.type';
 
-const DEFAULT_PATH = '/public/assets/icons/';
+const DEFAULT_PATH = '/assets/icons/';
 
 export const ICON_LIST = [
   'logo-stitch',
@@ -41,6 +41,13 @@ export const ICON_LIST = [
   'all-clear',
   'minus-box',
   'square-white',
+  'folder-gray',
+  'exclamation-mark',
+  'right-arrow',
+  'restore',
+  'permanent-trash',
+  'menu-unstarred',
+  'menu-download',
   'folder-add',
   'upload-file',
   'failed-error',
