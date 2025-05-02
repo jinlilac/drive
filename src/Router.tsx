@@ -7,9 +7,9 @@ import SignUpTemplate from '@/components/templates/SignUp.template/SignUp.templa
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import OAuth from '@/components/templates/OAuth';
 import MainLayoutTemplate from '@/components/templates/Layout.template/MainLayout.template';
-import WorkSheet from '@/components/pages/WorkSpace/WorkSheet';
 import Starred from '@/components/pages/WorkSpace/Starred';
 import Trash from '@/components/pages/WorkSpace/Trash';
+import WorkSheet from '@/components/pages/WorkSheet/WorkSheet';
 
 export const router = createBrowserRouter([
   {
