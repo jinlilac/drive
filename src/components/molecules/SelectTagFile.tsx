@@ -106,7 +106,6 @@ export default function SelectTagFile(props: SelectTagFileProps) {
           options={TagOptions}
           value={tag}
           onChange={(value) => {
-            console.log(value);
             onTagSelect(index, value as string);
           }}
           padding={8}

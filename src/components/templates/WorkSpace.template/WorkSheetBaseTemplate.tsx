@@ -1,6 +1,6 @@
 // WorkSheetBaseTemplate.tsx
 import { usePatchWorkSheet } from '@/apis/WorkSheet';
-import Overlay from '@/components/atoms/ Overlay';
+import Overlay from '@/components/atoms/Overlay';
 import Button from '@/components/atoms/Button';
 import Container from '@/components/atoms/Container';
 import Input from '@/components/atoms/Input';
@@ -84,9 +84,9 @@ export default function WorkSheetBaseTemplate(props: WorkSheetTemplateProps) {
 
   const actions: Action[] = [
     {
-      type: 'star',
+      type: 'starred',
       label: '즐겨찾기',
-      icon: 'star-white', // ICON 객체의 key
+      icon: 'stroke-star',
       handler: (ids: string[]) => {
         console.log('starred', ids);
         patchWorkSheet(

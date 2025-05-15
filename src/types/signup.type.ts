@@ -29,7 +29,6 @@ export const SignUpPayload = RequestEmailVerificationPayload.extend({
   userAgreement: z.literal<boolean>(true),
 }).refine(
   (data) => {
-    console.log(data);
     return data.password === data.confirmPassword;
   },
   {

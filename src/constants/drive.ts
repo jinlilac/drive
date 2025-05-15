@@ -1,4 +1,4 @@
-import { TagLabelProps } from '@/components/molecles/TagLabel';
+import { TagLabelProps } from '@/components/molecules/TagLabel';
 import { KorToEngDriveCategory } from '@/types/workspace.type';
 
 export const TAGS: { label: string; color: TagLabelProps['color']; value: KorToEngDriveCategory }[] = [

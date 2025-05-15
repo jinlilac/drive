@@ -1,5 +1,5 @@
 import { useUpdateProfile } from '@/apis/SignUp';
-import Overlay from '@/components/atoms/ Overlay';
+import Overlay from '@/components/atoms/Overlay';
 import Avatar from '@/components/atoms/Avatar';
 import Button from '@/components/atoms/Button';
 import Container from '@/components/atoms/Container';

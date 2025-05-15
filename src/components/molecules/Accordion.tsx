@@ -16,7 +16,6 @@ export type ChevronProps = {
 };
 export const Chevron = styled.div<ChevronProps>`
   height: 100%;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

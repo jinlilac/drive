@@ -15,7 +15,7 @@ export const useAuthStore = create<AuthStoreType>()(
       user: null,
       setUser: (user) =>
         set((state) => ({
-          user: { ...state.user, ...user }, // 이전 상태와 병합
+          user: { ...state.user, ...user },
           isLoggedIn: true,
         })),
       isLoggedIn: false,

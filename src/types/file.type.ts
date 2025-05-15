@@ -1,4 +1,4 @@
-export type WorkSheetUpdatePayload = {
+export type DrivePatchPayloadType = {
   id: string[];
   name?: string[];
   parentId?: string[];

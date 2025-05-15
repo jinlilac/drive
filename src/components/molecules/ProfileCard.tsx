@@ -24,7 +24,6 @@ const ContentWrap = styled(Container.FlexCol)`
 export const DropBoxItem = styled(Button.Ghost)<{ padding?: number }>`
   flex: 1;
   width: 100%;
-  /* padding: 16px; */
   padding: ${(props) => (props.padding ? `${props.padding}` : 16)}px;
   cursor: pointer;
   font-size: ${(props) => props.theme.Font.fontSize.b2};

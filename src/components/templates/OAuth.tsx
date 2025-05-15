@@ -5,7 +5,7 @@ import Loading from '@/components/atoms/Loading';
 import SignInTemplate from '@/components/templates/SignIn.template/SignIn.template';
 import Container from '@/components/atoms/Container';
 import useOverlayStore from '@/stores/useOverlayStore';
-import Overlay from '@/components/atoms/ Overlay';
+import Overlay from '@/components/atoms/Overlay';
 import { styled } from 'styled-components';
 
 const OauthWrap = styled(Container.FlexCol)`

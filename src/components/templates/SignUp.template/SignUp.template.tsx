@@ -1,4 +1,4 @@
-import Overlay from '@/components/atoms/ Overlay';
+import Overlay from '@/components/atoms/Overlay';
 import Button from '@/components/atoms/Button';
 import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';

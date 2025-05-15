@@ -46,9 +46,4 @@ export const APPAREL_TYPES = [
   { label: '후드티셔츠', value: '후드티셔츠' },
 ] as const;
 
-export const MORE_ITEMS = [
-  { label: '이름 바꾸기', icon: ICON['more-edit'] },
-  { label: '삭제', icon: ICON['more-trash'] },
-];
-
 export const SHEET_LABEL = ['이름', '작업 유형', '의뢰처', '파일 유형', '수정일시'];
