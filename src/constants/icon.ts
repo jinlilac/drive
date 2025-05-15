@@ -54,6 +54,13 @@ export const ICON_LIST = [
   'reload',
   'uploading',
   'success-upload',
+  'drive-folder',
+  'checkbox-gray',
+  'cross',
+  'stroke-folder',
+  'caret-right',
+  'caret-left',
+  'stroke-star-s',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
