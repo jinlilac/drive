@@ -53,6 +53,7 @@ const TitleWrap = styled(Container.FlexRow)`
   align-items: center;
 `;
 const Title = styled(Typography.B1)`
+  line-height: 130%;
   max-width: 152px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -70,9 +71,10 @@ const MoreItem = styled(DropBoxItem)`
 export default function FileCard(
   props: (WorkSheetItems | FileSystemType) &
     TagLabelProps & {
+      state: UpdateState;
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean, path?: string) => void;
+      onCheck: (id: string, checked: boolean, path?: string, name?: string) => void;
     } & Partial<FolderListResponse>,
 ) {
   const {
@@ -88,10 +90,13 @@ export default function FileCard(
     onCheck,
     mimetype,
     tag,
+    isStarred,
+    storagePath,
+    state,
   } = props;
   const { openOverlay } = useOverlayStore();
 
-  const handleSetState = (menu: MoreItemAlertType) => {
+  const handleOpenSetState = (menu: MoreItemAlertType) => {
     setState((prev) => ({
       ...prev,
       isOpen: true,
@@ -100,32 +105,44 @@ export default function FileCard(
       fileSystemId,
       parentId,
     }));
+    openOverlay();
+  };
+  const handleSetState = (menu: MoreItemAlertType) => {
+    setState((prev) => ({
+      ...prev,
+      isOpen: false,
+      menu,
+      defaultName: name,
+      fileSystemId,
+      parentId,
+    }));
   };
 
   const handleMoreButton = (action: string) => {
-    if (action === '이름 바꾸기') handleSetState('name');
-    else if (action === '삭제') handleSetState('delete');
-    else if (action === '영구 삭제') handleSetState('destroy');
-    else if (action === '다운로드') console.log('다운로드', fileSystemId);
-    else if (action === '즐겨찾기 추가') console.log('즐겨찾기', fileSystemId);
-    else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
-    openOverlay();
+    if (action === '이름 바꾸기') handleOpenSetState('name');
+    else if (action === '삭제') handleOpenSetState('delete');
+    else if (action === '영구 삭제') handleOpenSetState('destroy');
+    else if (action === '다운로드') handleSetState('download');
+    else if (action === '즐겨찾기 추가') handleSetState('starred');
+    else if (action === '즐겨찾기 제거') handleSetState('unstarred');
+    else if (action === '복원하기') handleSetState('restore');
   };
 
-  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked, path);
+  const handleCheckboxChange = (path: string, name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path, name);
   };
-  const MORE_ITEMS = useGetMoreItems();
+  const MORE_ITEMS = useGetMoreItems(isStarred);
   return (
     <CardContainer id={fileSystemId ?? worksheetId} checked={checked}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '')} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '', name)} />
       </CheckboxContainer>
       <div style={{ backgroundColor: 'white', minHeight: '142px', maxHeight: '142px', overflow: 'hidden' }}>
         <Img
           full
-          fit="fill"
-          src={thumbImg?.startsWith('https') ? thumbImg : `${import.meta.env.VITE_PROFILE_IMG_URL}/${thumbImg}`}
+          style={{ height: '100%' }}
+          fit="contain"
+          src={`${import.meta.env.VITE_IMG_URL}/${type === 'wiive' ? thumbImg : storagePath}`}
           onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
           onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
         />
@@ -135,7 +152,11 @@ export default function FileCard(
           <Title fontWeight="semiBold" color="gray_100">
             {name}
           </Title>
-          <DropdownButton isHover icon={<Img src={ICON.more} />}>
+          <DropdownButton
+            disabled={state.selectedIds.length > 0}
+            isHover={state.selectedIds.length === 0}
+            icon={<Img src={ICON.more} />}
+          >
             <Container.FlexCol>
               {MORE_ITEMS.map((item) => (
                 <MoreItem key={item.label} onClick={() => handleMoreButton(item.label)}>

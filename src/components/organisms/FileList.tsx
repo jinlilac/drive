@@ -11,7 +11,7 @@ import { CATEGORY_FILTERS, GENDER_FILTERS } from '@/constants/worksheet';
 import getCustomRelativeTime from '@/libs/date';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { WorkSheetItems } from '@/types/worksheet.type';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, MouseEvent, SetStateAction } from 'react';
 import styled from 'styled-components';
 import {
   EngToKorDriveCategory,
@@ -22,6 +22,9 @@ import {
 import { TagsColor } from '@/constants/drive';
 import { FolderListResponse } from '@/types/file.type';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useSetSearchParam } from '@/hooks/useSearchParam';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_30};
@@ -59,10 +62,12 @@ const ThumbImg = styled.div`
 export default function FileList(
   props: (WorkSheetItems | FileSystemType) &
     TagLabelProps & {
+      state: UpdateState;
       setState: Dispatch<SetStateAction<UpdateState>>;
       checked: boolean;
-      onCheck: (id: string, checked: boolean, path?: string) => void;
+      onCheck: (id: string, checked: boolean, path?: string, name?: string) => void;
       isDrive: boolean;
+      isFolder: boolean;
     } & Partial<FolderListResponse>,
 ) {
   const {
@@ -77,10 +82,17 @@ export default function FileList(
     checked,
     onCheck,
     mimetype,
+    isStarred,
     tag,
     isDrive = false,
+    isFolder,
+    state,
+    storagePath,
   } = props;
   const { openOverlay } = useOverlayStore();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
   const genderLabel =
     'gender' in props ? (GENDER_FILTERS.find((f) => f.value === props.gender)?.label ?? '성별 전체') : '';
   const categoryLabel =
@@ -89,42 +101,75 @@ export default function FileList(
   const handleSetState = (menu: MoreItemAlertType) => {
     setState((prev) => ({
       ...prev,
-      isOpen: true,
+      isOpen: false,
       menu,
       defaultName: name,
       fileSystemId,
       parentId,
     }));
   };
-
-  const handleMoreButton = (action: string) => {
-    if (action === '이름 바꾸기') handleSetState('name');
-    else if (action === '삭제') handleSetState('delete');
-    else if (action === '영구 삭제') handleSetState('destroy');
-    else if (action === '다운로드') console.log('다운로드', fileSystemId);
-    else if (action === '즐겨찾기 추가') console.log('즐겨찾기', fileSystemId);
-    else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
+  const handleOpenSetState = (menu: MoreItemAlertType) => {
+    setState((prev) => ({
+      ...prev,
+      isOpen: true,
+      menu,
+      defaultName: name,
+      fileSystemId,
+      parentId,
+    }));
     openOverlay();
   };
 
-  const handleCheckboxChange = (path: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheck(fileSystemId, e.target.checked, path);
+  const handleMoreButton = (action: string) => {
+    if (action === '이름 바꾸기') handleOpenSetState('name');
+    else if (action === '삭제') handleOpenSetState('delete');
+    else if (action === '영구 삭제') handleOpenSetState('destroy');
+    else if (action === '다운로드') handleSetState('download');
+    else if (action === '즐겨찾기 추가') handleSetState('starred');
+    else if (action === '즐겨찾기 제거') handleSetState('unstarred');
+    else if (action === '복원하기') handleSetState('restore');
   };
-  const MORE_ITEMS = useGetMoreItems();
+
+  const handleCheckboxChange = (path: string, name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheck(fileSystemId, e.target.checked, path, name);
+  };
+  const MORE_ITEMS = useGetMoreItems(isStarred);
+  const { setUser } = useAuthStore();
+  const { add } = useSetSearchParam();
+
+  const handleDoubleClick = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
+    if (!isFolder) return;
+    e.stopPropagation();
+    setUser({
+      currentId: id,
+      currentFolderName: name,
+    });
+    add([
+      ['name', name],
+      ['path', id],
+    ]);
+    if (!pathname.startsWith('/workspace/drive'))
+      navigate(`/workspace/drive?page=1&path=${id}&category=all&name=${name}`);
+  };
+
   return (
-    <ListWrap id={worksheetId} checked={checked} isDrive={isDrive}>
+    <ListWrap id={worksheetId} checked={checked} isDrive={isDrive} onDoubleClick={handleDoubleClick(fileSystemId)}>
       <CheckboxContainer checked={checked}>
-        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '')} />
+        <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '', name)} />
       </CheckboxContainer>
       <Container.FlexRow gap="16" style={{ maxWidth: '320px', flex: 1 }} alignItems="center">
         <ThumbImg>
-          <Img
-            full
-            fit="fill"
-            src={thumbImg?.startsWith('https') ? thumbImg : `${import.meta.env.VITE_PROFILE_IMG_URL}/${thumbImg}`}
-            onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
-            onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
-          />
+          {isFolder ? (
+            <Img full fit="fill" style={{ padding: '8px' }} src={ICON['drive-folder']} />
+          ) : (
+            <Img
+              full
+              fit="fill"
+              src={`${import.meta.env.VITE_IMG_URL}/${type === 'wiive' ? thumbImg : storagePath}`}
+              onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
+              onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
+            />
+          )}
         </ThumbImg>
         <Typography.B2
           fontWeight="semiBold"
@@ -150,13 +195,17 @@ export default function FileList(
           {props.requester}
         </Typography.B2>
       )}
-      {
-        <TagLabel
-          label={type === 'worksheet' ? '작업지시서' : EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
-          color={TagsColor[(tag as KorToEngDriveCategory) ?? 'etc']}
-          wiive={type === 'worksheet'}
-        />
-      }
+      {isFolder ? (
+        '-'
+      ) : (
+        <div style={{ maxWidth: '68px' }}>
+          <TagLabel
+            label={type === 'worksheet' ? '작업지시서' : EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
+            color={TagsColor[(tag as KorToEngDriveCategory) ?? 'etc']}
+            wiive={type === 'worksheet'}
+          />
+        </div>
+      )}
       {type !== 'worksheet' && (
         <Typography.B2 fontWeight="medium" color="gray_90">
           {type === 'file' ? `.${mimetype}` : '-'}
@@ -165,7 +214,11 @@ export default function FileList(
       <Typography.B2 fontWeight="medium" color="gray_90">
         {getCustomRelativeTime(updatedAt)}
       </Typography.B2>
-      <DropdownButton isHover icon={<Img src={ICON.more} />}>
+      <DropdownButton
+        disabled={state.selectedIds.length > 0}
+        isHover={state.selectedIds.length === 0}
+        icon={<Img src={ICON.more} />}
+      >
         <Container.FlexCol>
           {MORE_ITEMS.map((item) => (
             <MoreItem key={item.label} onClick={() => handleMoreButton(item.label)}>

@@ -8,25 +8,35 @@ import { Dispatch, SetStateAction } from 'react';
 export const CardItems = ({
   content,
   checked,
+  state,
   setState,
   onCheck,
   isFolder = false,
 }: {
   content: WorkSheetItems | FileSystemType;
   checked: boolean;
+  state: UpdateState;
   setState: Dispatch<SetStateAction<UpdateState>>;
-  onCheck: (id: string, checked: boolean, path?: string) => void;
+  onCheck: (id: string, checked: boolean, path?: string, name?: string) => void;
   isFolder?: boolean;
 }) => {
   return isFolder ? (
     <FolderCard
       key={content.fileSystemId}
       {...(content as FileSystemType)}
+      state={state}
       setState={setState}
       checked={checked}
       onCheck={onCheck}
     />
   ) : (
-    <FileCard key={content.fileSystemId} {...content} setState={setState} checked={checked} onCheck={onCheck} />
+    <FileCard
+      key={content.fileSystemId}
+      {...content}
+      setState={setState}
+      state={state}
+      checked={checked}
+      onCheck={onCheck}
+    />
   );
 };

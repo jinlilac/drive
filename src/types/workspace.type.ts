@@ -60,6 +60,8 @@ export type FileSystemType = {
 export type FileSystemAllResponseType = {
   folders: FileSystemType[];
   files: FileSystemType[];
+  idPath: string;
+  path: string;
 };
 
 export type FileSystemListResponseType = {
@@ -67,4 +69,13 @@ export type FileSystemListResponseType = {
   data: FileSystemType[];
 };
 
-export type MoreItemAlertType = 'name' | 'delete' | 'destroy';
+export type MoreItemAlertType =
+  | 'name'
+  | 'delete'
+  | 'destroy'
+  | 'download'
+  | 'starred'
+  | 'unstarred'
+  | 'restore'
+  | 'moveTrash'
+  | 'hardDelete';
