@@ -1,9 +1,11 @@
+import theme from '@/styles/theme';
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
 
 type ButtonProps = ComponentProps<'button'> & {
   direction?: 'left' | 'right';
   gap?: string;
+  strokeColor?: keyof (typeof theme)['Colors'];
 };
 
 const DefaultButton = styled.button`

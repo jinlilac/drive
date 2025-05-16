@@ -15,6 +15,8 @@ type AlertProps = {
   onCancel?: () => void;
   style?: CSSProperties;
   redConfirm?: boolean;
+  disabled?: HTMLButtonElement['disabled'];
+  strokeColor?: boolean;
 };
 
 const AlertWrap = styled(Container.FlexCol)`
@@ -40,11 +42,29 @@ const AlertButtons = styled(Container.FlexRow)`
 const ConfirmButton = styled(Button.Fill)<{ redButton: boolean }>`
   padding: 15px;
   background: ${(props) => (props.redButton ? props.theme.Colors.error : props.theme.Colors.gray_100)};
+  &:hover {
+    background-color: ${(props) => (props.redButton ? '#C1311B' : props.theme.Colors.gray_200)};
+  }
   color: white;
 `;
 
+const StrokeButton = styled(Button.Stroke)<{ strokeColor?: boolean }>`
+  border-color: ${(props) => (props.strokeColor ? props.theme.Colors.gray_50 : props.theme.Colors.gray_100)};
+`;
+
 const Alert = (props: AlertProps) => {
-  const { type, children, cancelLabel, confirmLabel, onConfirm, onCancel, style, redConfirm = false } = props;
+  const {
+    type,
+    children,
+    cancelLabel,
+    confirmLabel,
+    onConfirm,
+    onCancel,
+    style,
+    redConfirm = false,
+    disabled,
+    strokeColor,
+  } = props;
   const { isOpen } = useOverlayStore();
   if (!isOpen) return null;
   return (
@@ -54,10 +74,10 @@ const Alert = (props: AlertProps) => {
       </Container.FlexCol>
       {type === 'cancel' ? (
         <AlertButtons gap="16">
-          <Button.Stroke onClick={onCancel} style={{ padding: '15px' }}>
+          <StrokeButton onClick={onCancel} strokeColor={strokeColor} style={{ padding: '15px' }}>
             <Typography.B1 fontWeight="semiBold">{cancelLabel}</Typography.B1>
-          </Button.Stroke>
-          <ConfirmButton onClick={onConfirm} redButton={redConfirm}>
+          </StrokeButton>
+          <ConfirmButton onClick={onConfirm} redButton={redConfirm} disabled={disabled}>
             <Typography.B1 fontWeight="semiBold">{confirmLabel}</Typography.B1>
           </ConfirmButton>
         </AlertButtons>
