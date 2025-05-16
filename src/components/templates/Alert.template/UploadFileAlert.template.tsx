@@ -7,7 +7,9 @@ import UploadingBox from '@/components/atoms/Uploading';
 import UploadFilesList from '@/components/organisms/UploadFiles';
 import { ICON } from '@/constants/icon';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import useOverlayStore from '@/stores/useOverlayStore';
+import useUploadFileStore from '@/stores/useUploadFileStore';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -57,7 +59,10 @@ const ReloadButton = styled(Button.Ghost)`
   gap: 4px;
 `;
 
-export default function UploadFileTemplate({ onClose }: { onClose: () => void }) {
+export default function UploadFileTemplate() {
+  const { isOpenUploadFile, closeUploadFile } = useUploadFileStore();
+  const { closeOverlay } = useOverlayStore();
+
   const methods = useForm();
   const [files, setFiles] = useState<FileWithTag[]>([]);
   const [failedFiles, setFailedFiles] = useState<FileWithTag[]>([]);
@@ -68,13 +73,33 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
   const { user } = useAuthStore();
   const { uploadFiles, isUploading } = useUploadFile();
   const isComplete = files.length === 0 && successFiles.length > 0;
-  // console.log('Upload Failed Files', failedFiles);
+  const handleComplete = () => {
+    closeUploadFile();
+    closeOverlay();
+    setSuccessFiles([]);
+    setFailedFiles([]);
+    setFiles([]);
+  };
 
-  const handleFindFileClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
+  const handleFindFileClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // ✅ 기존 선택 초기화
+      fileInputRef.current.click();
+    }
+  };
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
 
-  const handleDropFiles = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    const newFiles = Array.from(e.target.files).map((file) => ({
+      file,
+      tag: 'etc',
+    }));
+
+    setFiles((prev) => [...prev, ...newFiles]);
+    e.target.value = ''; // ✅ 동일 파일 재선택 가능하도록 초기화
+  };
+
+  const handleDropFiles = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const newFiles = Array.from(e.dataTransfer.files).map((file) => ({
       file,
@@ -83,31 +108,24 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
     setFiles((prev) => [...prev, ...newFiles]);
 
     setIsDragging(false);
-  }, []);
+  };
 
-  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files || []).map((file) => ({
-      file,
-      tag: 'etc',
-    }));
-    setFiles((prev) => [...prev, ...newFiles]);
-  }, []);
-
-  const handleDragIn = useCallback((e: DragEvent) => {
+  const handleDragIn = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-  }, []);
+  };
 
-  const handleDragOut = useCallback((e: DragEvent) => {
+  const handleDragOut = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-  }, []);
+  };
 
-  const handleDragOver = useCallback((e: DragEvent) => {
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
-  }, []);
+  };
 
   const handleDeleteFile = (variant: 'upload' | 'success' | 'failed') => (index: number) => {
     if (variant === 'success') setSuccessFiles((prev) => prev.filter((_, i) => i !== index));
@@ -118,7 +136,6 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
   const handleTagSelect = (index: number, selectedTag: string) => {
     setFiles((prev) => prev.map((item, i) => (i === index ? { ...item, tag: selectedTag } : item)));
   };
-
   useEffect(() => {
     const label = dragRef.current;
     if (!label) return;
@@ -133,19 +150,18 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
     Object.entries(handlers).forEach(([event, handler]) => {
       label.addEventListener(event, handler as EventListener);
     });
-
     return () => {
       Object.entries(handlers).forEach(([event, handler]) => {
         label.removeEventListener(event, handler as EventListener);
       });
     };
-  }, [handleDragIn, handleDragOut, handleDragOver, handleDropFiles]);
+  }, [isOpenUploadFile, dragRef]);
 
   const handleUpload = () => {
     const formData = new FormData();
 
     formData.append('userId', user?.userId as string);
-    formData.append('parentId', user?.rootFolder as string);
+    formData.append('parentId', user?.currentId as string);
 
     files.forEach((f) => formData.append('tags', f.tag));
 
@@ -171,7 +187,7 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
 
     const formData = new FormData();
     formData.append('userId', user?.userId as string);
-    formData.append('parentId', user?.rootFolder as string);
+    formData.append('parentId', user?.currentId as string);
 
     failedFiles.forEach((f) => formData.append('tags', f.tag));
     failedFiles.forEach(({ file }, index) => {
@@ -198,6 +214,7 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
       },
     });
   };
+  if (!isOpenUploadFile) return null;
 
   return (
     <UploadFileContainer>
@@ -205,7 +222,7 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
         <TitleWrap>
           <Container.FlexRow justifyContent="space-between" alignItems="center">
             <Typography.T2 fontWeight="bold">파일 업로드 ({files.length})</Typography.T2>
-            <Button.Ghost style={{ width: '20px' }} onClick={onClose}>
+            <Button.Ghost style={{ width: '20px' }} onClick={handleComplete}>
               <Img full src={ICON.clear} />
             </Button.Ghost>
           </Container.FlexRow>
@@ -213,8 +230,8 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
             원하는 파일을 선택하여 업로드하세요.
           </Typography.B2>
         </TitleWrap>
-        <div>
-          <DropZone isDragging={isDragging} ref={dragRef} aria-label="파일 드래그 영역">
+        <>
+          <DropZone isDragging={isDragging} ref={dragRef} aria-label="파일 드래그 영역" onChange={handleDropFiles}>
             <Img style={{ width: '28px' }} src={ICON['upload-file']} />
             <Container.FlexCol gap="8" alignItems="center">
               <Typography.B1 fontWeight="semiBold" color="gray_90">
@@ -228,8 +245,8 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
               파일 찾기
             </FindFile>
           </DropZone>
-          <input type="file" id="fileUpload" style={{ display: 'none' }} multiple onChange={handleInputChange} />
-        </div>
+          <input type="file" id="fileUpload" style={{ display: 'none' }} multiple onChange={handleFileInputChange} />
+        </>
         <form onSubmit={methods.handleSubmit(handleUpload)}>
           <Container.FlexCol gap="12" style={{ maxHeight: '350px', overflow: 'auto', padding: '1px' }}>
             {files.length > 0 && (
@@ -277,7 +294,7 @@ export default function UploadFileTemplate({ onClose }: { onClose: () => void })
             type={isComplete ? 'button' : 'submit'}
             disabled={isUploading || (files.length === 0 && !(files.length === 0 && successFiles.length > 0))}
             style={{ maxHeight: '46px', marginTop: '24px' }}
-            onClick={isComplete ? onClose : undefined}
+            onClick={isComplete ? handleComplete : undefined}
           >
             {isUploading ? (
               <UploadingBox size={20} />

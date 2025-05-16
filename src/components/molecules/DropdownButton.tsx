@@ -4,7 +4,7 @@ import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import { Chevron } from '@/components/molecules/Accordion';
 import { ICON } from '@/constants/icon';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { MouseEventHandler, ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 // 스타일 정의
@@ -20,7 +20,7 @@ const DropButton = styled(Button.Ghost)<{ isHover?: boolean }>`
   gap: 4px;
   justify-content: space-between;
   padding: 8px;
-  cursor: pointer;
+  cursor: ${({ isHover }) => (isHover ? 'pointer' : 'not-allowed')};
 
   &:hover {
     background-color: ${(props) => (props.isHover ? '#F8f8f8' : 'transparent')};
@@ -52,6 +52,7 @@ type DropdownButtonProps = {
   chevron?: boolean;
   style?: CSSProperties;
   isHover?: boolean;
+  disabled?: boolean;
 };
 
 const DropdownButton: React.FC<DropdownButtonProps> = ({
@@ -61,32 +62,54 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   isHover,
   chevron,
   label,
+  disabled,
   ...others
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsOpen((prev) => !prev);
-  };
+  // 자식 요소 클릭 핸들러 주입
+  const enhancedChildren = React.Children.map(children, (child) => {
+    if (React.isValidElement<{ onClick?: MouseEventHandler; style?: CSSProperties }>(child)) {
+      return React.cloneElement(child, {
+        onClick: (e: React.MouseEvent) => {
+          child.props.onClick?.(e);
+          setIsOpen(false);
+          e.stopPropagation();
+        },
+        style: { ...child.props.style, cursor: 'pointer' },
+      });
+    }
+    return child;
+  });
 
-  // 외부 클릭 감지
+  // 외부 클릭 감지 로직
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false); // 외부 클릭 시 닫힘
+      const target = event.target as HTMLElement;
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target) &&
+        !target.closest('.overlay') // 오버레이 요소 예외 처리
+      ) {
+        setIsOpen(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
     <DropdownContainer ref={dropdownRef}>
-      <DropButton isHover={isHover} onClick={toggleDropdown}>
+      <DropButton
+        disabled={disabled}
+        isHover={isHover}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+      >
         {label && (
           <Typography.B2 fontWeight="medium" color="gray_100">
             {label}
@@ -99,7 +122,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
           </Chevron>
         )}
       </DropButton>
-      {isOpen && <DropdownMenu style={style}>{children}</DropdownMenu>}
+      {isOpen && <DropdownMenu style={style}>{enhancedChildren}</DropdownMenu>}
     </DropdownContainer>
   );
 };

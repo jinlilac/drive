@@ -5,11 +5,13 @@ import Typography from '@/components/atoms/Typography';
 import { KorToEngDriveCategory } from '@/types/workspace.type';
 import { Dispatch, MouseEvent, SetStateAction } from 'react';
 import styled from 'styled-components';
-import TagLabel from '@/components/molecles/TagLabel';
+import TagLabel from '@/components/molecules/TagLabel';
+import { useSetSearchParam } from '@/hooks/useSearchParam';
 
 type CategoryTabProps = {
   currentTab: KorToEngDriveCategory;
-  setCurrentTab: Dispatch<SetStateAction<KorToEngDriveCategory>>;
+  setCurrentTab: (category: KorToEngDriveCategory) => void;
+  // setCurrentTab: Dispatch<SetStateAction<KorToEngDriveCategory>>;
 };
 
 const TabButton = styled(Button.Ghost)<{ isActive: boolean }>`
@@ -22,9 +24,12 @@ const TabButton = styled(Button.Ghost)<{ isActive: boolean }>`
 
 export default function CategoryTab(props: CategoryTabProps) {
   const { currentTab, setCurrentTab } = props;
+  const { add } = useSetSearchParam();
+
   const onClickTab = (e: MouseEvent<HTMLButtonElement>) => {
     const { id } = e.currentTarget;
     setCurrentTab(id as KorToEngDriveCategory);
+    add([['category', id as KorToEngDriveCategory]]);
   };
   return (
     <Container.FlexRow gap="32" alignItems={'center'} style={{ marginTop: '16px' }}>

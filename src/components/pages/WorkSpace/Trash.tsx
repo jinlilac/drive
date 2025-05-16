@@ -1,14 +1,13 @@
 import Container from '@/components/atoms/Container';
 import styled from 'styled-components';
 import FilterBar from '@/components/organisms/FilterBar';
-import { useState } from 'react';
-import { WorkSheetListType } from '@/types/worksheet.type';
+import { useEffect, useState } from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 import { FileSystemAllResponseType, FileSystemListResponseType, KorToEngDriveCategory } from '@/types/workspace.type';
 import CategoryTab from '@/components/organisms/CategoryTab';
 import { AxiosResponse } from 'axios';
-import WorkSpaceStarAndTrashTemplate from '@/components/templates/WorkSpace.template/WorkSpaceStarAndTrash.template';
+import WorkSpaceStarAndTrashTemplate from '@/components/templates/WorkSpace.template/WorkSpace.template';
 import { useGetTrash } from '@/apis/Trash';
 
 const WorkSpaceContainer = styled(Container.FlexCol)`
@@ -21,18 +20,23 @@ const WorkSpaceContainer = styled(Container.FlexCol)`
 export default function Trash() {
   const { add, get } = useSetSearchParam();
   const viewMode = get('view') === 'list' ? 'list' : 'card';
-  const [currentTab, setCurrentTab] = useState<KorToEngDriveCategory>(KorToEngDriveCategory.전체);
-  const [filters, _setFilters] = useState<WorkSheetListType>({
-    page: 1,
-    name: get('name') || undefined,
-  });
-  // 필터 선택 핸들러
+  const [filters, setFilters] = useState(() => ({
+    category: get('category') as KorToEngDriveCategory,
+    page: Number(get('page')),
+  }));
+
+  useEffect(() => {
+    setFilters({
+      category: get('category') as KorToEngDriveCategory,
+      page: Number(get('page')),
+    });
+  }, [get('category'), get('page')]);
 
   const handleViewMode = (mode: 'card' | 'list') => {
     add([['view', mode]]);
   };
 
-  const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(useGetTrash(filters, currentTab));
+  const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(useGetTrash(filters));
   return (
     <WorkSpaceContainer>
       <FilterBar
@@ -42,13 +46,18 @@ export default function Trash() {
         isListActive={viewMode === 'list'}
         isCardActive={viewMode === 'card'}
       />
-      <CategoryTab currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      <CategoryTab
+        currentTab={filters.category}
+        setCurrentTab={(category) => {
+          add([['category', category]]);
+        }}
+      />
       <WorkSpaceStarAndTrashTemplate
         fileSystem={data?.pages as AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[]}
         hasNextPage={hasNextPage}
         fetchNextPage={fetchNextPage}
         viewMode={viewMode}
-        currentTab={currentTab}
+        currentTab={filters.category}
       />
     </WorkSpaceContainer>
   );

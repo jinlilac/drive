@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 export const useSetSearchParam = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const get = (target: string) => {
-    return searchParams.get(target);
+    const item = searchParams.get(target);
+    if (item) return decodeURIComponent(item);
   };
   const add = (add: [string, string[] | string][]) => {
     const newParams = new URLSearchParams(searchParams.toString());

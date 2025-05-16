@@ -1,4 +1,4 @@
-import Overlay from '@/components/atoms/ Overlay';
+import Overlay from '@/components/atoms/Overlay';
 import Button from '@/components/atoms/Button';
 import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';
@@ -9,7 +9,7 @@ import Accordion from '@/components/molecules/Accordion';
 import Alert from '@/components/molecules/Alert';
 import DropdownButton from '@/components/molecules/DropdownButton';
 import LabelWithInput from '@/components/molecules/LabelWithInput';
-import ProfileCard from '@/components/molecules/ProfileCard';
+import ProfileCard, { DropBoxItem } from '@/components/molecules/ProfileCard';
 import SearchBar from '@/components/molecules/SearchBar';
 import FilterBar from '@/components/organisms/FilterBar';
 import WorkSheetCard from '@/components/organisms/FileCard';
@@ -24,6 +24,13 @@ import Toast from '@/components/molecules/Toast';
 import useToastStore from '@/stores/useToastStore';
 import UploadFileTemplate from '@/components/templates/Alert.template/UploadFileAlert.template';
 import UploadFileTag from '@/components/molecules/SelectTagFile';
+import FolderItem from '@/components/organisms/FolderItem';
+import WorkSpaceAlertTemplate from '@/components/templates/WorkSpace.template/WorkSpaceAlert.template';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
+import { MoreItemAlertType } from '@/types/workspace.type';
+import { MORE_ITEMS } from '@/constants/worksheet';
+import useGetMoreItems from '@/hooks/useGetMoreItems';
+import { STARRED_MORE_ITEMS } from '@/constants/workspace';
 
 const TestLayoutContainer = styled(Container.Grid)`
   height: 100dvh;
@@ -46,57 +53,12 @@ const Wrapper = (props: TestProps) => {
     </Container.FlexCol>
   );
 };
-//* 작업지시서 목록 목업 데이터
-// const workSheetResponse = {
-//   data: [
-//     {
-//       worksheet_id: 'ffc0249e-e8b9-42a0-bd87-ca96c0706fbf',
-//       title: '새로운 작업지시서',
-//       thumb_img: `https://picsum.photos/200/300?random=1`,
-//       gender: 1,
-//       category: 1,
-//       clothes: '반팔',
-//       requester: 'dolore Lorem exercitation ea',
-//       created_at: '2025-04-11T04:13:35.000Z',
-//       updated_at: '2025-04-11T04:13:35.403Z',
-//       is_starred: false,
-//       starred_at: null,
-//       is_deleted: false,
-//       deleted_at: null,
-//     },
-//     {
-//       worksheet_id: '58409e40-3815-4c77-a719-d90c3676a61c',
-//       title: '새로운 작업지시서',
-//       thumb_img: `https://picsum.photos/200/300?random=2`,
-//       gender: 1,
-//       category: 1,
-//       clothes: '반팔',
-//       requester: 'dolore Lorem exercitation ea',
-//       created_at: '2025-04-11T04:13:52.000Z',
-//       updated_at: '2025-04-11T04:13:52.884Z',
-//       is_starred: false,
-//       starred_at: null,
-//       is_deleted: false,
-//       deleted_at: null,
-//     },
-//     {
-//       worksheet_id: '1e70a56b-222b-46a0-ac2b-5387f866ae1d',
-//       title: '새로운 작업지시서2',
-//       thumb_img: `https://picsum.photos/200/300?random=3`,
-//       gender: 1,
-//       category: 1,
-//       clothes: '반팔',
-//       requester: 'dolore Lorem exercitation ea',
-//       created_at: '2025-04-11T04:15:59.000Z',
-//       updated_at: '2025-04-11T04:15:59.663Z',
-//       is_starred: false,
-//       starred_at: null,
-//       is_deleted: false,
-//       deleted_at: null,
-//     },
-//   ],
-//   count: 3,
-// };
+const MoreItem = styled(DropBoxItem)`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
 const workSheetResponse = {
   data: [
     {
@@ -188,9 +150,34 @@ export default function ComponentTest() {
     closeOverlay();
     setAlertOpen(false);
   };
+  const [state, setState] = useState<UpdateState>({
+    isOpen: false,
+    menu: '',
+    fileSystemId: '',
+    defaultName: '',
+    parentId: '',
+    selectedIds: [],
+  });
+  const handleSetState = (menu: MoreItemAlertType) => {
+    setState((prev) => ({
+      ...prev,
+      isOpen: true,
+      menu: 'delete',
+      defaultName: 'name',
+      fileSystemId: ['file-456'],
+      parentId: 'parent-123',
+    }));
+  };
 
-  const transformedData = camelcaseKeys(workSheetResponse, { deep: true });
-  // console.log('카멜 케이스 변환', transformedData);
+  const handleMoreButton = (action: string) => {
+    if (action === '이름 바꾸기') handleSetState('name');
+    else if (action === '삭제') handleSetState('delete');
+    else if (action === '영구 삭제') handleSetState('destroy');
+    // else if (action === '다운로드') console.log('다운로드', fileSystemId);
+    // else if (action === '즐겨찾기 추가') console.log('즐겨찾기', fileSystemId);
+    // else if (action === '즐겨찾기 제거') console.log('즐겨찾기 제거', fileSystemId);
+    openOverlay();
+  };
 
   return (
     <TestLayoutContainer columns="3" rows="5">
@@ -240,7 +227,7 @@ export default function ComponentTest() {
           </form>
         </FormProvider>
       </Wrapper>
-      <Wrapper title="Alert 컴포넌트">
+      {/* <Wrapper title="Alert 컴포넌트">
         <Container.FlexCol style={{ position: 'relative', minWidth: '480px', height: '100dvh' }}>
           <Button.Fill style={{ maxHeight: '52px' }} onClick={handleOpenAlert}>
             Alert dialog
@@ -267,7 +254,7 @@ export default function ComponentTest() {
             </Container.FlexCol>
           </Alert>
         </Container.FlexCol>
-      </Wrapper>
+      </Wrapper> */}
       <Wrapper title="아코디언 컴포넌트">
         <Accordion title={<Typography.B1>전체 동의</Typography.B1>}>서비스 이용 약관에 동의합니다.</Accordion>
       </Wrapper>
@@ -275,55 +262,6 @@ export default function ComponentTest() {
         <ProfileCard />
       </Wrapper>
       <SearchBar />
-      {/* <Wrapper title="FilterBar">
-        <FilterBar
-          title="작업지시서"
-          filter={
-            <Container.FlexRow gap="16">
-              <DropdownButton
-                isHover={false}
-                icon={
-                  <Container.FlexRow gap="4" alignItems="center">
-                    <Typography.B2>성별 전체</Typography.B2>
-                    <ToggleButton />
-                  </Container.FlexRow>
-                }
-              >
-                뭐
-              </DropdownButton>
-              <DropdownButton
-                isHover={false}
-                icon={
-                  <Container.FlexRow gap="4" alignItems="center">
-                    <Typography.B2>성별 전체</Typography.B2>
-                    <ToggleButton />
-                  </Container.FlexRow>
-                }
-              >
-                뭐
-              </DropdownButton>
-              <DropdownButton
-                isHover={false}
-                icon={
-                  <Container.FlexRow gap="4" alignItems="center">
-                    <Typography.B2>성별 전체</Typography.B2>
-                    <ToggleButton />
-                  </Container.FlexRow>
-                }
-              >
-                뭐
-              </DropdownButton>
-            </Container.FlexRow>
-          }
-          onClickList={() => console.log('리스트 클릭')}
-          onClickCard={() => console.log('카드 클릭')}
-        />
-      </Wrapper>
-      <Wrapper title="카드" style={{ display: 'flex', gap: '4px', position: 'relative', maxHeight: '242px' }}>
-        {transformedData.data.map((data) => (
-          <WorkSheetCard label="WIIVE" color="green" key={data.worksheetId} {...data} />
-        ))}
-      </Wrapper> */}
       <Wrapper title="toast">
         <Button.Fill
           onClick={() =>
@@ -343,8 +281,22 @@ export default function ComponentTest() {
         <Toast />
       </Wrapper>
       <Wrapper title="uploadFile">
-        <UploadFileTemplate />
-        {/* <UploadFileTag /> */}
+        <DropdownButton isHover icon={<Img src={ICON.more} />}>
+          <Container.FlexCol>
+            {STARRED_MORE_ITEMS.map((item) => (
+              <MoreItem key={item.label} onClick={() => handleMoreButton(item.label)}>
+                <Img src={item.icon} />
+                {item.label}
+              </MoreItem>
+            ))}
+          </Container.FlexCol>
+        </DropdownButton>
+        <WorkSpaceAlertTemplate
+          menu={state.menu as MoreItemAlertType}
+          state={state}
+          setState={setState}
+          isPending={false}
+        />
       </Wrapper>
     </TestLayoutContainer>
   );

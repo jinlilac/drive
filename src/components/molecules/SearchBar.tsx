@@ -1,4 +1,5 @@
-import Overlay from '@/components/atoms/ Overlay';
+import { usePostFolder } from '@/apis/Drive';
+import Overlay from '@/components/atoms/Overlay';
 import Button from '@/components/atoms/Button';
 import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
@@ -11,8 +12,12 @@ import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import UploadFileTemplate from '@/components/templates/Alert.template/UploadFileAlert.template';
 import { ICON } from '@/constants/icon';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
+import { useAuthStore } from '@/stores/useAuthStore';
 import useOverlayStore from '@/stores/useOverlayStore';
+import useUploadFileStore from '@/stores/useUploadFileStore';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 const SearchBarWrap = styled(Container.FlexRow)`
@@ -57,15 +62,39 @@ const ButtonItem = styled(DropBoxItem)`
 `;
 
 export default function SearchBar() {
+  const { user } = useAuthStore();
   const { add, remove, get } = useSetSearchParam();
   const [searchTerm, setSearchTerm] = useState(get('name') || '');
   const { openOverlay, closeOverlay } = useOverlayStore();
-  const [openUpload, setOpenUpload] = useState<boolean>(false);
-  // console.log('searchTerm', searchTerm);
-  console.log('onClose', openUpload);
-  const onClose = () => {
-    setOpenUpload(false);
-    closeOverlay();
+  const [createFolder, setCreateFolder] = useState<boolean>(false);
+  const { openUploadFile } = useUploadFileStore();
+  // const { patchDrive, isPatching } = usePatchDrive();
+  const queryClient = useQueryClient();
+
+  const formValue = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+    },
+  });
+  const { addFolder, isPending } = usePostFolder();
+
+  const {
+    handleSubmit,
+    register,
+    formState: { isValid, dirtyFields },
+  } = formValue;
+
+  const onAddFolder = (data: { name: string }) => {
+    addFolder(
+      { name: data.name },
+      {
+        onSuccess: () => {
+          setCreateFolder(false);
+          closeOverlay();
+        },
+      },
+    );
   };
 
   // 드롭다운 메뉴 항목
@@ -78,14 +107,18 @@ export default function SearchBar() {
     {
       label: '폴더',
       icon: ICON['folder-add'],
-      onClick: () => console.log('폴더 클릭'),
+      onClick: () => {
+        formValue.reset();
+        openOverlay();
+        setCreateFolder(true);
+      },
     },
     {
       label: '파일 업로드',
       icon: ICON['upload-file'],
       onClick: () => {
         openOverlay();
-        setOpenUpload(true);
+        openUploadFile();
       },
     },
   ];
@@ -93,6 +126,23 @@ export default function SearchBar() {
   // 디바운싱 처리 (300ms)
   useEffect(() => {
     const handler = setTimeout(() => {
+      if (!user?.currentId) return;
+      const payload = {
+        parentId: user.currentId,
+        name: searchTerm.trim() || '',
+      };
+
+      // patchDrive(
+      //   { ...payload },
+      //   {
+      //     onSuccess: () => {
+      //       queryClient.invalidateQueries({
+      //         queryKey: ['drive', user.currentId],
+      //       });
+      //     },
+      //   },
+      // );
+
       if (searchTerm.trim()) {
         add([['name', encodeURIComponent(searchTerm)]]);
       } else {
@@ -111,6 +161,13 @@ export default function SearchBar() {
             placeholder="파일 제목을 검색하세요"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                // 검색 실행 함수 호출
+                // handleSearch(searchTerm);
+              }
+            }}
           />
           <SearchIcon src={ICON.search} />
           {searchTerm && (
@@ -150,11 +207,44 @@ export default function SearchBar() {
           </Container.FlexCol>
         </DropdownButton>
       </Container.FlexRow>
-      {openUpload && (
-        <>
-          <Overlay closeOnClick={false} />
-          <UploadFileTemplate onClose={onClose} />
-        </>
+      <Overlay closeOnClick={false} />
+      <UploadFileTemplate />
+      {createFolder && (
+        <Alert
+          style={{ alignItems: 'flex-start' }}
+          type="cancel"
+          cancelLabel="취소"
+          confirmLabel="확인"
+          disabled={!isValid || !dirtyFields.name}
+          strokeColor
+          onConfirm={handleSubmit(onAddFolder)}
+          onCancel={() => {
+            closeOverlay();
+            setCreateFolder(false);
+            formValue.reset();
+          }}
+        >
+          <Container.FlexCol gap="24" style={{ width: '100%' }}>
+            <Typography.T2 fontWeight="bold" color="gray_100">
+              폴더 만들기
+            </Typography.T2>
+            <FormProvider {...formValue}>
+              <form>
+                <Input.Default
+                  placeholder="폴더명을 입력해주세요."
+                  disabled={isPending}
+                  type="text"
+                  autoFocus
+                  onFocus={(event) => event.target.select()}
+                  {...register('name', {
+                    required: '폴더명을 입력해주세요',
+                    validate: (value) => value.trim().length > 0 || '공백만 입력할 수 없습니다',
+                  })}
+                />
+              </form>
+            </FormProvider>
+          </Container.FlexCol>
+        </Alert>
       )}
     </SearchBarWrap>
   );

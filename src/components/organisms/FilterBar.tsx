@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 
 type FilterBarProps = {
-  title: string;
+  title: ReactNode;
   count?: number;
   filter?: ReactNode;
   onClickList: () => void;
@@ -19,10 +19,11 @@ type FilterBarProps = {
 
 const BarWrap = styled(Container.FlexRow)`
   justify-content: space-between;
-  padding: 12px 0;
+  padding: 16px 0;
   max-height: 48px;
   align-items: center;
   background-color: white;
+  padding-right: 16px;
 `;
 const FilterWrap = styled(Container.FlexRow)`
   width: 100%;
@@ -90,7 +91,7 @@ export default function FilterBar(props: FilterBarProps) {
             </ToolTip>
           </ToolTipContainer>
         )}
-        {count && (
+        {count >= 0 && (
           <Typography.B2 style={{ whiteSpace: 'nowrap' }} fontWeight="medium" color="gray_70">
             {count}개
           </Typography.B2>

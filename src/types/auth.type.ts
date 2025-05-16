@@ -9,6 +9,9 @@ export type UserAuthType = {
   isInitialized: boolean;
   rootFolder: string;
   currentId: string;
+  currentFolderName: string;
+  storageLimit: number;
+  storageUsed: number;
 };
 
 export type UserSocialType = Pick<UserAuthType, 'social'>['social'];

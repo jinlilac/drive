@@ -15,10 +15,10 @@ const ToastContainer = styled(Container.FlexRow)<{
   background-color: rgba(0, 0, 0, 0.8);
   color: ${(props) => props.theme.Colors.gray_10};
   padding: 16px;
-  position: absolute;
+  position: fixed;
   bottom: ${(props) => props.bottomLocation}px;
   max-width: 810px;
-  left: 16px;
+  left: 316px;
   right: 16px;
   visibility: ${(props) => (props.isActive ? 'visible' : 'hidden')};
   transform: translateY(${(props) => (props.isActive ? '0' : '200%')});

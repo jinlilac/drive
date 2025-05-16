@@ -17,7 +17,7 @@ export const useSignInEmail = () => {
   const { mutate: signInEmail, isPending } = useMutation({
     mutationFn: (payload: SignInEmailType) => signIn(payload),
     onSuccess: (data) => {
-      setUser(data.data);
+      setUser({ ...data.data, currentId: data.data.rootFolder, currentFolderName: '내 드라이브' });
       navigate('/workspace/work-sheet');
     },
   });

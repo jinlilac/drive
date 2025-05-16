@@ -10,6 +10,7 @@ import MainLayoutTemplate from '@/components/templates/Layout.template/MainLayou
 import Starred from '@/components/pages/WorkSpace/Starred';
 import Trash from '@/components/pages/WorkSpace/Trash';
 import WorkSheet from '@/components/pages/WorkSheet/WorkSheet';
+import Drive from '@/components/pages/Drive/Drive';
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
     element: <MainLayoutTemplate />,
     children: [
       { path: 'work-sheet', element: <WorkSheet /> },
-      { path: 'drive', element: <h1>드라이브</h1> },
+      { path: 'drive', element: <Drive /> },
       { path: 'starred', element: <Starred /> },
       { path: 'trash', element: <Trash /> },
     ],

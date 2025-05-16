@@ -29,6 +29,14 @@ const FileListContainer = styled(Container.FlexRow)`
   justify-content: space-between;
   align-items: flex-start;
 `;
+const FileName = styled(Typography.B1)`
+  width: 200px;
+  height: 100%;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-x: hidden;
+`;
+
 const TagOptions = TAGS.map((tag) => ({
   label: <TagLabel label={tag.label} color={tag.color} />,
   value: tag.value as string,
@@ -73,19 +81,9 @@ export default function SelectTagFile(props: SelectTagFileProps) {
   return (
     <FileListContainer>
       <Container.FlexCol gap="8">
-        <Typography.B1
-          fontWeight="semiBold"
-          color="gray_100"
-          style={{
-            minWidth: '200px',
-            maxWidth: '200px',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-          }}
-        >
+        <FileName fontWeight="semiBold" color="gray_100">
           {name}
-        </Typography.B1>
+        </FileName>
         <Container.FlexRow>
           <Typography.B3 fontWeight="medium" color="gray_70">
             {formatFileSize(size)}

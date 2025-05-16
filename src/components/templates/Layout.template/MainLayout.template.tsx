@@ -7,6 +7,7 @@ import SearchBar from '@/components/molecules/SearchBar';
 import WindowBar from '@/components/molecules/WindowBar';
 import SideBar from '@/components/organisms/SideBar';
 import { SIDEBAR_ITEMS } from '@/constants/workspace';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -20,6 +21,9 @@ const LinkItem = styled(DropBoxItem)`
   gap: 16px;
   align-items: center;
   flex: 1;
+  &:focus {
+    background-color: ${(props) => props.theme.Colors.gray_20};
+  }
 `;
 const SideBarContentWrap = styled(Container.FlexCol)`
   padding: 16px 0;
@@ -32,8 +36,12 @@ const WorkSpaceBar = styled(Container.FlexCol)`
 
 export default function MainLayoutTemplate() {
   const navigate = useNavigate();
+  const { user, setUser } = useAuthStore();
   const handleMenuClick = (path: string) => {
-    navigate(`${path}`);
+    if (path === '/workspace/drive') {
+      setUser({ currentId: user?.rootFolder, currentFolderName: '내 드라이브' });
+      navigate(`${path}?page=1&path=${user?.rootFolder}&category=all&name=내 드라이브`);
+    } else navigate(`${path}`);
   };
   return (
     <>

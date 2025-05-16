@@ -15,6 +15,7 @@ import { CardViewWrapper } from '@/components/atoms/CardViewWrapper';
 import { CardItems } from '@/components/organisms/CardItems';
 import { ListItems } from '@/components/organisms/ListItems';
 import { ListViewWrapper } from '@/components/atoms/ListViewWrapper';
+import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
 
 const WorkSheetWork = styled(Container.FlexCol)`
   width: 100%;
@@ -115,7 +116,7 @@ export default function WorkSheet() {
             ))}
           </SheetBar>
           <WorkSheetBaseTemplate
-            worksheets={data?.pages as AxiosResponse<WorkSheetResponseType>[]}
+            worksheets={data?.pages as AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[]}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
             renderItem={ListItems}

@@ -31,8 +31,8 @@ const CustomCheckBox = styled.div<CheckBoxProps>`
 
   ${({ option, checked, indeterminate, theme }) => {
     const getBackground = () => {
-      if (indeterminate) return `url('${ICON['minus-box']}')`;
-      if (checked) return `url('${ICON['square-white']}')`;
+      if (indeterminate) return `url('${ICON['checkbox-gray']}')`;
+      if (checked) return `url('${ICON['square-check']}')`;
       return 'none';
     };
 
@@ -67,12 +67,13 @@ const CustomCheckBox = styled.div<CheckBoxProps>`
         `;
       case 'minus':
         return `
-          width: 15px;
-          height: 15px;
-          border: ${!checked && !indeterminate ? `1px solid ${theme.Colors.gray_40}` : 'none'};
+        width:16px;
+        height:16px;
+          padding: ${indeterminate && '0'};
+          border: ${!checked && !indeterminate ? `1px solid ${theme.Colors.gray_70}` : 'none'};
           border-radius: 2px;
-          background: ${getBackground()} center/contain no-repeat;
-          background-position: center;
+          background: ${getBackground()} center no-repeat;
+          background-size: cover;
           background-color: ${(checked || indeterminate) ?? 'transparent'};
         `;
       default:
