@@ -2,8 +2,8 @@ import { useSetSearchParam } from '@/hooks/useSearchParam';
 import { axiosFormDataInstance, axiosInstance } from '@/libs/axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { GetDrivePayloadType, UploadFileResponseType } from '@/types/drive.type';
-import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
-import { infiniteQueryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import { FileSystemAllResponseType, FileSystemListResponseType, FileSystemType } from '@/types/workspace.type';
+import { infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const useUploadFile = () => {
@@ -97,4 +97,11 @@ export const usePostFolder = () => {
     },
   });
   return { addFolder, isPending };
+};
+
+export const useDownLoad = (fileSystemId: Pick<FileSystemType, 'fileSystemId'>) => {
+  return queryOptions({
+    queryKey: ['download', fileSystemId],
+    queryFn: async () => axiosInstance.get(`/drive/download/${fileSystemId}`),
+  });
 };

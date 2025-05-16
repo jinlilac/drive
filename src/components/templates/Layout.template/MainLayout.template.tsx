@@ -4,6 +4,7 @@ import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import ProfileCard, { DropBoxItem } from '@/components/molecules/ProfileCard';
 import SearchBar from '@/components/molecules/SearchBar';
+import StorageProgressBar from '@/components/molecules/StorageProgressBar';
 import WindowBar from '@/components/molecules/WindowBar';
 import SideBar from '@/components/organisms/SideBar';
 import { SIDEBAR_ITEMS } from '@/constants/workspace';
@@ -27,11 +28,17 @@ const LinkItem = styled(DropBoxItem)`
 `;
 const SideBarContentWrap = styled(Container.FlexCol)`
   padding: 16px 0;
-  gap: 16px;
+  height: 100%;
+  justify-content: space-between;
+  margin-bottom: 16px;
 `;
 const WorkSpaceBar = styled(Container.FlexCol)`
   width: 100%;
   padding: 24px 16px;
+`;
+const Storage = styled(Container.FlexCol)`
+  padding: 16px;
+  gap: 24px;
 `;
 
 export default function MainLayoutTemplate() {
@@ -56,14 +63,20 @@ export default function MainLayoutTemplate() {
           }
         >
           <SideBarContentWrap>
-            {SIDEBAR_ITEMS.map((items) => (
-              <LinkItem onClick={() => handleMenuClick(items.path)} key={items.path}>
-                <Img src={items.icon} style={{ width: '20px' }} />
-                <Typography.B1 fontWeight="semiBold" color="gray_90">
-                  {items.label}
-                </Typography.B1>
-              </LinkItem>
-            ))}
+            <Container.FlexCol gap="16">
+              {SIDEBAR_ITEMS.map((items) => (
+                <LinkItem onClick={() => handleMenuClick(items.path)} key={items.path}>
+                  <Img src={items.icon} style={{ width: '20px' }} />
+                  <Typography.B1 fontWeight="semiBold" color="gray_90">
+                    {items.label}
+                  </Typography.B1>
+                </LinkItem>
+              ))}
+            </Container.FlexCol>
+            <Storage>
+              <Divider.Row />
+              <StorageProgressBar />
+            </Storage>
           </SideBarContentWrap>
         </SideBar>
         <WorkSpaceBar gap="16" style={{ width: 'calc(100% - 300px)', flex: '1' }}>

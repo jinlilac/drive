@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
-import styled, { keyframes } from 'styled-components';
 import { forwardRef } from 'react';
+import styled, { keyframes } from 'styled-components';
 
 import Container from '@/components/atoms/Container';
 
