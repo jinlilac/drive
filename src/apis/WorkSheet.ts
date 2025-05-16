@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/libs/axios';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { WorkSheetUpdatePayload } from '@/types/file.type';
+import { DrivePatchPayloadType } from '@/types/file.type';
 import { WorkSheetListType, WorkSheetResponseType } from '@/types/worksheet.type';
 import { infiniteQueryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -43,7 +43,7 @@ export const usePatchWorkSheet = () => {
   const { user } = useAuthStore();
 
   const { mutate: patchWorkSheet, isPending } = useMutation({
-    mutationFn: async (payload: WorkSheetUpdatePayload) =>
+    mutationFn: async (payload: DrivePatchPayloadType) =>
       axiosInstance.patch('/drive', payload, { headers: { Authorization: `Bearer ${user?.accessToken}` } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['worksheet', 'list'] }).then(() => navigate('/workspace/work-sheet'));

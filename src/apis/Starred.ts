@@ -1,23 +1,23 @@
-import { WorkSheetListType } from '@/types/worksheet.type';
 import { infiniteQueryOptions } from '@tanstack/react-query';
 import { axiosInstance } from '@/libs/axios';
 import { AxiosError } from 'axios';
-import { KorToEngDriveCategory, FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
+import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
+import { GetDrivePayloadType } from '@/types/drive.type';
 
-export const useGetStarred = (filters: WorkSheetListType, tag: KorToEngDriveCategory) => {
+export const useGetStarred = (workSpaceParams: GetDrivePayloadType) => {
   const isSignIn = !!localStorage.getItem('auth-store');
 
   return infiniteQueryOptions({
-    queryKey: ['workspace', 'list', 'starred', tag, filters],
+    queryKey: ['workspace', 'list', 'starred', workSpaceParams],
     queryFn: async ({ pageParam }) => {
       try {
-        if (tag === 'all')
+        if (workSpaceParams.category === 'all')
           return await axiosInstance.get<FileSystemAllResponseType>('/drive/starred-all?target=starred');
         const filterParams = Object.fromEntries(
-          Object.entries(filters).filter(([_, v]) => v !== undefined && v !== null),
+          Object.entries(workSpaceParams).filter(([_, v]) => v !== undefined && v !== null),
         );
         // page는 항상 pageParam으로 덮어쓰기
-        const params = { ...filterParams, category: tag, page: pageParam };
+        const params = { ...filterParams, page: pageParam };
         return await axiosInstance.get<FileSystemListResponseType>('/drive/starred', {
           params,
         });
