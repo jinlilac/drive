@@ -60,7 +60,7 @@ const Content = styled.div`
 `;
 
 export default function Accordion(props: AccordionProps) {
-  const { title, children, style, ...others } = props;
+  const { title, children, style } = props;
   const [isExpanded, setExpand] = useState<boolean>();
   const contentRef = useRef<HTMLDivElement | null>(null);
   const contentHeight = isExpanded ? (contentRef.current?.scrollHeight ?? 0) : 0;

@@ -24,8 +24,8 @@ export const useUploadFile = () => {
       });
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
     },
   });
   return { uploadFiles, isUploading };
@@ -82,8 +82,8 @@ export const usePostFolder = () => {
       });
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
     },
   });
   return { addFolder, isPending };

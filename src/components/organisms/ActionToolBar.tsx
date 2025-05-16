@@ -10,7 +10,7 @@ import { ICON } from '@/constants/icon';
 import useGetActionBarItem from '@/hooks/useGetActionBarItems';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { MoreItemAlertType } from '@/types/workspace.type';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, MouseEvent, SetStateAction } from 'react';
 import styled from 'styled-components';
 
 export type Props = {
@@ -26,7 +26,7 @@ export type Props = {
 type IconButtonProps = {
   src: string;
   label: string;
-  onClick: (action: string) => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 const Toolbar = styled(Container.FlexRow)`
@@ -79,7 +79,7 @@ export default function ActionToolbar(props: Props) {
       setSelectedIds(allIds); // 모두 선택
     }
   };
-  const handleItemClick = (action: string) => (e: any) => {
+  const handleItemClick = (action: string) => (e: MouseEvent<HTMLButtonElement>) => {
     if (action === '폴더로 이동' && onFolderClick) {
       onFolderClick(e);
     } else if (action === '삭제') handleOpenSetState('delete');
