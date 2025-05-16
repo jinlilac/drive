@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from 'react';
 import Typography from '@/components/atoms/Typography';
 import styled, { css } from 'styled-components';
 import { DRIVE_SHEET_LABEL } from '@/constants/workspace';
-import { ItemContainer } from '@/components/templates/WorkSpace.template/StarAndTrash.template/WorkSpaceItem.template';
+import { ItemContainer } from '@/components/templates/WorkSpace.template/WorkSpaceFolderAndItem.template/WorkSpaceItem.template';
 
 type WorkSpaceFolderCardTemplateProps = {
   folders: FileSystemType[];
