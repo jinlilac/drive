@@ -91,7 +91,7 @@ export default function FilterBar(props: FilterBarProps) {
             </ToolTip>
           </ToolTipContainer>
         )}
-        {count >= 0 && (
+        {count && count >= 0 && (
           <Typography.B2 style={{ whiteSpace: 'nowrap' }} fontWeight="medium" color="gray_70">
             {count}개
           </Typography.B2>
