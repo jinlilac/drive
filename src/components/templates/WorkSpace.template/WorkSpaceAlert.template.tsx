@@ -45,7 +45,7 @@ export default function WorkSpaceAlertTemplate(props: WorkSpaceAlertTemplateProp
     formValue.reset({ rename: state.defaultName });
   }, [formValue]);
 
-  const onConfirm = formValue.handleSubmit((data) => {
+  const onConfirm = formValue.handleSubmit(() => {
     if (menu === 'name') {
       setState((prev) => ({
         ...prev,
@@ -117,6 +117,7 @@ export default function WorkSpaceAlertTemplate(props: WorkSpaceAlertTemplateProp
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.stopPropagation();
+                      onConfirm();
                     }
                   }}
                   name="rename"

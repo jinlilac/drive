@@ -235,6 +235,12 @@ export default function SearchBar() {
                   disabled={isPending}
                   type="text"
                   autoFocus
+                  onKeyDown={(e: KeyboardEvent) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSubmit(onAddFolder)();
+                    }
+                  }}
                   onFocus={(event) => event.target.select()}
                   {...register('name', {
                     required: '폴더명을 입력해주세요',
