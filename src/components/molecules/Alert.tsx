@@ -68,7 +68,13 @@ const Alert = (props: AlertProps) => {
   const { isOpen } = useOverlayStore();
   if (!isOpen) return null;
   return (
-    <AlertWrap gap="24" onClick={(e) => e.stopPropagation()}>
+    <AlertWrap
+      gap="24"
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && onCancel) onCancel();
+      }}
+    >
       <Container.FlexCol gap="12" style={{ alignItems: 'center', ...style }}>
         {children}
       </Container.FlexCol>
