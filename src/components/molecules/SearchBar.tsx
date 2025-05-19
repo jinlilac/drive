@@ -121,7 +121,7 @@ export default function SearchBar() {
   ];
 
   const handleSearch = (search: string) => {
-    navigate(`/workspace/drive?page=1&category=all&name=내 드라이브&search=${search}`);
+    navigate(`/workspace/drive?page=1&category=all&name=검색결과&search=${search}`);
   };
 
   return (
