@@ -13,7 +13,7 @@ import { FileSystemAllResponseType, FileSystemListResponseType, KorToEngDriveCat
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 const BreadCrumb = styled(Container.FlexRow)`
@@ -46,11 +46,14 @@ export default function Drive() {
   const { add, get } = useSetSearchParam();
   const viewMode = get('view') === 'list' ? 'list' : 'card';
   const [title, setTitle] = useState(get('name'));
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const [filters, setFilters] = useState(() => ({
     category: get('category') as KorToEngDriveCategory,
     path: get('path') as string,
     page: Number(get('page')),
+    search: get('search'),
   }));
 
   useEffect(() => {
@@ -59,6 +62,7 @@ export default function Drive() {
       category: get('category') as KorToEngDriveCategory,
       path: get('path') as string,
       page: Number(get('page')),
+      search: get('search'),
     });
   }, [get('category'), get('path'), get('page'), get('name')]);
 
