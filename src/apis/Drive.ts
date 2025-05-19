@@ -31,22 +31,28 @@ export const useUploadFile = () => {
   return { uploadFiles, isUploading };
 };
 
-export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path: string }) => {
+export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: string; search?: string }) => {
   const isSignIn = !!localStorage.getItem('auth-store');
+
   return infiniteQueryOptions({
     queryKey: ['workspace', 'list', 'drive', workSpaceParams],
     queryFn: async ({ pageParam }) => {
       try {
-        if (workSpaceParams.category === 'all')
-          return await axiosInstance.get<FileSystemAllResponseType>('/drive/all', {
-            params: { path: workSpaceParams.path },
-          });
+        if (workSpaceParams.category === 'all') {
+          const params = workSpaceParams.search ? { search: workSpaceParams.search } : { path: workSpaceParams.path };
+          return await axiosInstance.get<FileSystemAllResponseType>(
+            `/drive/${workSpaceParams.search ? 'search-' : ''}all`,
+            {
+              params,
+            },
+          );
+        }
         const filterParams = Object.fromEntries(
           Object.entries(workSpaceParams).filter(([_, v]) => v !== undefined && v !== null),
         );
         // page는 항상 pageParam으로 덮어쓰기
         const params = { ...filterParams, page: pageParam };
-        return await axiosInstance.get<FileSystemListResponseType>('/drive', {
+        return await axiosInstance.get<FileSystemListResponseType>(`/drive${workSpaceParams.search ? '/search' : ''}`, {
           params,
         });
       } catch (e) {
@@ -54,6 +60,7 @@ export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path: strin
         throw e;
       }
     },
+    retry: false,
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam, _allPageParams) => {
       if ('count' in lastPage.data) {
