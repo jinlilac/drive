@@ -12,13 +12,12 @@ import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import UploadFileTemplate from '@/components/templates/Alert.template/UploadFileAlert.template';
 import { ICON } from '@/constants/icon';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
-import { useAuthStore } from '@/stores/useAuthStore';
 import useOverlayStore from '@/stores/useOverlayStore';
 import useUploadFileStore from '@/stores/useUploadFileStore';
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBarWrap = styled(Container.FlexRow)`
   width: 100%;
@@ -62,14 +61,12 @@ const ButtonItem = styled(DropBoxItem)`
 `;
 
 export default function SearchBar() {
-  const { user } = useAuthStore();
-  const { add, remove, get } = useSetSearchParam();
-  const [searchTerm, setSearchTerm] = useState(get('name') || '');
+  const { remove, get } = useSetSearchParam();
+  const [searchTerm, setSearchTerm] = useState(get('search') ?? '');
   const { openOverlay, closeOverlay } = useOverlayStore();
   const [createFolder, setCreateFolder] = useState<boolean>(false);
   const { openUploadFile } = useUploadFileStore();
-  // const { patchDrive, isPatching } = usePatchDrive();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const formValue = useForm({
     mode: 'onChange',
@@ -123,35 +120,9 @@ export default function SearchBar() {
     },
   ];
 
-  // 디바운싱 처리 (300ms)
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (!user?.currentId) return;
-      const payload = {
-        parentId: user.currentId,
-        name: searchTerm.trim() || '',
-      };
-
-      // patchDrive(
-      //   { ...payload },
-      //   {
-      //     onSuccess: () => {
-      //       queryClient.invalidateQueries({
-      //         queryKey: ['drive', user.currentId],
-      //       });
-      //     },
-      //   },
-      // );
-
-      if (searchTerm.trim()) {
-        add([['name', encodeURIComponent(searchTerm)]]);
-      } else {
-        remove(['name']);
-      }
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [searchTerm]);
+  const handleSearch = (search: string) => {
+    navigate(`/workspace/drive?page=1&category=all&name=내 드라이브&search=${search}`);
+  };
 
   return (
     <SearchBarWrap>
@@ -165,7 +136,7 @@ export default function SearchBar() {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 // 검색 실행 함수 호출
-                // handleSearch(searchTerm);
+                handleSearch(searchTerm);
               }
             }}
           />
