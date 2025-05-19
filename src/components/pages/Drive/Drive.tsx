@@ -66,6 +66,11 @@ export default function Drive() {
     add([['view', mode]]);
   };
   const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(useGetDrive(filters));
+  useEffect(() => {
+    if ('count' in data.pages[0].data && data?.pages[0].data?.count === -2) {
+      navigate(`/workspace/drive?page=1&category=all&path=${user?.rootFolder}`);
+    }
+  }, [data, navigate, user?.rootFolder]);
   const responseData = data.pages[0].data;
   const { setUser } = useAuthStore();
 

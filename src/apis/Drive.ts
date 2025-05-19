@@ -56,7 +56,10 @@ export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: stri
           params,
         });
       } catch (e) {
-        if (e instanceof AxiosError && e.response?.status === 400) return { data: { count: -1 } };
+        if (e instanceof AxiosError) {
+          if (e.response?.status === 400) return { data: { count: -1 } };
+          if (e.response?.status === 404) return { data: { count: -2 } };
+        }
         throw e;
       }
     },
