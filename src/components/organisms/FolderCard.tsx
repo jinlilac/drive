@@ -84,13 +84,13 @@ export default function FolderCard(
   };
 
   const handleSetState = (menu: MoreItemAlertType) => {
-    console.log('menu', menu);
     setState((prev) => ({
       ...prev,
       isOpen: false,
       menu,
       defaultName: name,
       parentId,
+      fileSystemId,
       selectedIds: [fileSystemId],
     }));
   };
@@ -102,6 +102,7 @@ export default function FolderCard(
       menu,
       defaultName: name,
       parentId,
+      fileSystemId,
       selectedIds: [fileSystemId],
     }));
     openOverlay();

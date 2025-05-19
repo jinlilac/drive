@@ -14,7 +14,7 @@ import {
 } from '@/types/workspace.type';
 import Container from '@/components/atoms/Container';
 import Typography from '@/components/atoms/Typography';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
@@ -28,6 +28,8 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import useOverlayStore from '@/stores/useOverlayStore';
 import WorkSpaceFolderTemplate from '@/components/templates/WorkSpace.template/WorkSpaceFolderAndItem.template/WorkSpaceFolderTemplate';
 import WorkSpaceItemTemplate from '@/components/templates/WorkSpace.template/WorkSpaceFolderAndItem.template/WorkSpaceItem.template';
+import { useQuery } from '@tanstack/react-query';
+import { useDownLoad, useDownloadStatus } from '@/apis/Drive';
 
 type WorkSpaceTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
@@ -71,6 +73,39 @@ const StarredBreadcrumbItemContainer = styled(Container.FlexRow)`
 const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
 const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
 
+// 스피너 애니메이션
+const spin = keyframes`
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+`;
+
+// 스피너 스타일
+const SpinnerWrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SpinnerCircle = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid #eee;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+  margin-bottom: 16px;
+`;
+
+// 스피너 컴포넌트
+const Spinner = ({ text }: { text?: string }) => (
+  <SpinnerWrapper>
+    <SpinnerCircle />
+  </SpinnerWrapper>
+);
+
 const extractFileSystemPath = (path: string): string[] => {
   return ['내 드라이브', ...path.split('/').slice(1)];
 };
@@ -83,7 +118,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const { pathname } = useLocation();
   const [moveFolderPosition, setMoveFolderPosition] = useState<{ left: number; top: number } | null>(null);
   const [openMoveFolder, setOpenMoveFolder] = useState<boolean>(false);
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { closeOverlay } = useOverlayStore();
 
   useEffect(() => {
@@ -108,6 +143,54 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const { deleteWorkSpace, isDeleting } = useDeleteWorkSpace();
   const { restoreWorkSpace, isRestoring } = useRestoreWorkSpace();
   const { destroyWorkSpace, isDestroying } = useDestroyWorkSpace();
+  // 다운로드 초기 요청 훅 (jobId 혹은 url 획득)
+  const { data: downloadData } = useQuery(useDownLoad(updateState.fileSystemId, updateState.menu === 'download'));
+  console.log('data => ', downloadData);
+
+  // jobId 상태 관리
+  const [downloadJobId, setDownloadJobId] = useState<string>('');
+  const [isPulling, setIsPulling] = useState<boolean>(false);
+
+  const downloadFile = (url: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'download';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // 1. 다운로드 결과 처리
+  useEffect(() => {
+    if (!downloadData) return;
+
+    // 폴더인 경우: jobId 저장 → 폴링 시작
+    if (downloadData.jobId) {
+      setDownloadJobId(downloadData.jobId);
+      setIsPulling(true);
+    }
+    // 파일인 경우: URL 바로 열기
+    else if (downloadData) {
+      downloadFile(downloadData);
+      resetUpdateState();
+    }
+  }, [downloadData]);
+
+  // 2. jobId 기반 상태 폴링
+  const { data: jobStatus } = useQuery(useDownloadStatus(downloadJobId, !!downloadJobId));
+
+  // 3. 폴더 다운로드 완료 시 처리
+  useEffect(() => {
+    if (jobStatus?.status) {
+      console.log('jobStatus ===>', jobStatus);
+    } else if (jobStatus && typeof jobStatus === 'string') {
+      window.open(jobStatus);
+      setIsPulling(false);
+      setDownloadJobId('');
+      resetUpdateState();
+    }
+  }, [jobStatus]);
 
   const handleMoveConfirm = (folderId: string) => {
     updateWorkSpace(
@@ -130,7 +213,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   };
 
   const resetUpdateState = () => {
-    setUpdateState((prev) => ({ ...prev, isOpen: false, menu: '', selectedIds: [] }));
+    setUpdateState((prev) => ({ ...prev, isOpen: false, menu: '', selectedIds: [], fileSystemId: '' }));
     setHasChecked(false);
     closeOverlay();
   };
@@ -138,7 +221,8 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const isPending = isUpdating || isDeleting || isRestoring || isDestroying;
 
   useEffect(() => {
-    if (!updateState.menu || (!updateState.fileSystemId && !updateState.selectedIds)) return;
+    if (!updateState.menu || updateState.menu === 'download' || (!updateState.fileSystemId && !updateState.selectedIds))
+      return;
 
     const handleAction = () => {
       const ids = updateState.selectedIds.length > 0 ? updateState.selectedIds : [updateState.fileSystemId];
@@ -153,6 +237,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
                   text: '즐겨찾기에서 추가되었습니다.',
                   button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
+                resetUpdateState();
               },
             },
           );
@@ -167,6 +252,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
                   text: '즐겨찾기에서 제거되었습니다.',
                   button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
+                resetUpdateState();
               },
             },
           );
@@ -188,7 +274,16 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           break;
 
         case 'hardDelete':
-          destroyWorkSpace({ ids }, { onSuccess: () => resetUpdateState() });
+          destroyWorkSpace(
+            { ids },
+            {
+              onSuccess: (data) => {
+                console.log('data', data);
+                setUser({ storageLimit: data?.data.storageLimit, storageUsed: data?.data.storageUsed });
+                resetUpdateState();
+              },
+            },
+          );
           break;
 
         case 'rename':
@@ -370,6 +465,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           onConfirm={handleMoveConfirm}
         />
       )}
+      {isPulling && <Spinner />}
     </>
   );
 }

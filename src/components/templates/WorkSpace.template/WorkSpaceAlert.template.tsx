@@ -145,9 +145,15 @@ export default function WorkSpaceAlertTemplate(props: WorkSpaceAlertTemplateProp
 
             {menu === 'destroy' && (
               <>
-                <Typography.B1 fontWeight="regular">
-                  {`'${state.defaultName}' 항목이 영구적으로 삭제되며,`}
-                </Typography.B1>
+                {state.selectedIds.length >= 2 ? (
+                  <Typography.B1 fontWeight="regular">
+                    {`${state.selectedIds.length}개의 항목이 영구적으로 삭제되며,`}
+                  </Typography.B1>
+                ) : (
+                  <Typography.B1 fontWeight="regular">
+                    {`'${state.defaultName}' 항목이 영구적으로 삭제되며,`}
+                  </Typography.B1>
+                )}
                 <Typography.B1 fontWeight="regular">이후 복원은 불가능 합니다.</Typography.B1>
               </>
             )}

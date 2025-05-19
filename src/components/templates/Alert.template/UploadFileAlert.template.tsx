@@ -70,7 +70,7 @@ export default function UploadFileTemplate() {
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { uploadFiles, isUploading } = useUploadFile();
   const isComplete = files.length === 0 && successFiles.length > 0;
   const handleComplete = () => {
@@ -173,11 +173,12 @@ export default function UploadFileTemplate() {
     // API 호출
     uploadFiles(formData, {
       onSuccess: (response) => {
-        response.forEach((value) => {
+        response.result.forEach((value) => {
           if (!value.success) setFailedFiles((prev) => [...prev, files[value.index]]);
           else setSuccessFiles((prev) => [...prev, files[value.index]]);
         });
         setFiles([]);
+        setUser({ storageLimit: response.storageLimit, storageUsed: response.storageUsed });
       },
     });
   };
@@ -199,7 +200,7 @@ export default function UploadFileTemplate() {
         const newFailed: FileWithTag[] = [];
         const newSuccess: FileWithTag[] = [];
 
-        response.forEach((value) => {
+        response.result.forEach((value) => {
           const targetFile = failedFiles[value.index];
           if (!value.success) {
             newFailed.push(targetFile);

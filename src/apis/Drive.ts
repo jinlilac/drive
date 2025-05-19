@@ -1,9 +1,10 @@
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 import { axiosFormDataInstance, axiosInstance } from '@/libs/axios';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { UserAuthType } from '@/types/auth.type';
 import { GetDrivePayloadType, UploadFileResponseType } from '@/types/drive.type';
 import { FileSystemAllResponseType, FileSystemListResponseType, FileSystemType } from '@/types/workspace.type';
-import { infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const useUploadFile = () => {
@@ -17,7 +18,9 @@ export const useUploadFile = () => {
   };
   const { mutate: uploadFiles, isPending: isUploading } = useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await axiosFormDataInstance.post<UploadFileResponseType[]>('/drive/file', formData, {
+      const response = await axiosFormDataInstance.post<
+        { result: UploadFileResponseType[] } & Pick<UserAuthType, 'storageLimit' | 'storageUsed'>
+      >('/drive/file', formData, {
         headers: {
           Authorization: `Bearer ${user?.accessToken}`,
         },
@@ -99,9 +102,26 @@ export const usePostFolder = () => {
   return { addFolder, isPending };
 };
 
-export const useDownLoad = (fileSystemId: Pick<FileSystemType, 'fileSystemId'>) => {
+export const useDownLoad = (fileSystemId: string, enabled: boolean) => {
   return queryOptions({
     queryKey: ['download', fileSystemId],
-    queryFn: async () => axiosInstance.get(`/drive/download/${fileSystemId}`),
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/drive/download/${fileSystemId}`);
+      return response.data;
+    },
+    enabled: enabled && !!fileSystemId,
+  });
+};
+
+// 다운로드 상태 폴링 (jobId로 상태 확인)
+export const useDownloadStatus = (jobId: string, enabled = false) => {
+  return queryOptions({
+    queryKey: ['downloadStatus', jobId],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/drive/status/${jobId}`);
+      return response.data;
+    },
+    enabled: enabled && !!jobId,
+    refetchInterval: 2000, // 진행중이면 2초마다 폴링
   });
 };
