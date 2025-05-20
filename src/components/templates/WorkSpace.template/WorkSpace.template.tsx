@@ -327,19 +327,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     };
 
     handleAction();
-  }, [
-    deleteWorkSpace,
-    destroyWorkSpace,
-    resetUpdateState,
-    restoreWorkSpace,
-    setDriveLastJob,
-    setUser,
-    updateState.defaultName,
-    updateState.fileSystemId,
-    updateState.menu,
-    updateState.selectedIds,
-    updateWorkSpace,
-  ]);
+  }, [updateState.menu, updateState.selectedIds]);
 
   const handleCheck = (id: string, checked: boolean, path?: string, name?: string) => {
     setUpdateState((prev) => {
