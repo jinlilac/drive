@@ -55,6 +55,7 @@ export default function WorkSpaceAlertTemplate(props: WorkSpaceAlertTemplateProp
     } else if (menu === 'delete') {
       setState((prev) => ({
         ...prev,
+        isOpen: false,
         menu: 'moveTrash',
         selectedIds: state.selectedIds,
       }));

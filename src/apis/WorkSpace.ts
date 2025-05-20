@@ -62,8 +62,7 @@ export const useDestroyWorkSpace = () => {
   const { mutate: destroyWorkSpace, isPending: isDestroying } = useMutation({
     mutationFn: async (payload: DefaultMutateWorkSpaceType) =>
       await axiosInstance.delete('/drive/destroy', { data: payload }),
-    onSuccess: (data) => {
-      console.log('data .....', data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'trash', workSpaceParams] });
     },
   });

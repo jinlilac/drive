@@ -30,6 +30,8 @@ import WorkSpaceFolderTemplate from '@/components/templates/WorkSpace.template/W
 import WorkSpaceItemTemplate from '@/components/templates/WorkSpace.template/WorkSpaceFolderAndItem.template/WorkSpaceItem.template';
 import { useQuery } from '@tanstack/react-query';
 import { useDownLoad, useDownloadStatus } from '@/apis/Drive';
+import Overlay from '@/components/atoms/Overlay';
+import { useSetSearchParam } from '@/hooks/useSearchParam';
 
 type WorkSpaceTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
@@ -87,6 +89,7 @@ const SpinnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 99999;
 `;
 
 const SpinnerCircle = styled.div`
@@ -119,7 +122,14 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const [moveFolderPosition, setMoveFolderPosition] = useState<{ left: number; top: number } | null>(null);
   const [openMoveFolder, setOpenMoveFolder] = useState<boolean>(false);
   const { user, setUser } = useAuthStore();
-  const { closeOverlay } = useOverlayStore();
+  const { closeOverlay, openOverlay } = useOverlayStore();
+  const { get } = useSetSearchParam();
+  const idPath = get('path');
+
+  // id 바뀔 때마다 ActionBar 닫기 및 선택값 초기화
+  useEffect(() => {
+    resetUpdateState();
+  }, [idPath]);
 
   useEffect(() => {
     if (isShow && hasNextPage) fetchNextPage();
@@ -133,7 +143,6 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     parentId: '',
     selectedIds: [],
   });
-  console.log('updateState', updateState);
 
   useEffect(() => {
     if (updateState.selectedIds.length !== 1) setFileSystemPath('');
@@ -145,7 +154,6 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const { destroyWorkSpace, isDestroying } = useDestroyWorkSpace();
   // 다운로드 초기 요청 훅 (jobId 혹은 url 획득)
   const { data: downloadData } = useQuery(useDownLoad(updateState.fileSystemId, updateState.menu === 'download'));
-  console.log('data => ', downloadData);
 
   // jobId 상태 관리
   const [downloadJobId, setDownloadJobId] = useState<string>('');
@@ -169,6 +177,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     if (downloadData.jobId) {
       setDownloadJobId(downloadData.jobId);
       setIsPulling(true);
+      openOverlay();
     }
     // 파일인 경우: URL 바로 열기
     else if (downloadData) {
@@ -278,7 +287,6 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { ids },
             {
               onSuccess: (data) => {
-                console.log('data', data);
                 setUser({ storageLimit: data?.data.storageLimit, storageUsed: data?.data.storageUsed });
                 resetUpdateState();
               },
@@ -465,7 +473,12 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           onConfirm={handleMoveConfirm}
         />
       )}
-      {isPulling && <Spinner />}
+      {isPulling && (
+        <>
+          <Overlay />
+          <Spinner />
+        </>
+      )}
     </>
   );
 }
