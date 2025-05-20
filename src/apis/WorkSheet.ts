@@ -10,10 +10,9 @@ import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 export const useGetWorkSheet = (filters: WorkSheetListType) => {
   const isSignIn = !!localStorage.getItem('auth-store');
   const { user } = useAuthStore();
-  const queryKey = useGetQueryKey();
 
   return infiniteQueryOptions({
-    queryKey,
+    queryKey: ['worksheet', 'list', filters],
     queryFn: async ({ pageParam }) => {
       try {
         const filterParams = Object.fromEntries(
