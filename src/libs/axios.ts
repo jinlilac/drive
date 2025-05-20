@@ -15,16 +15,6 @@ export const axiosFormDataInstance = axios.create({
   withCredentials: true,
 });
 
-axiosFormDataInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.data?.message) {
-      return Promise.reject(error.response.data.message);
-    }
-    return Promise.reject(error.message || '서버 에러가 발생하였습니다.');
-  },
-);
-
 const axiosRequestInterceptor = axiosInstance.interceptors.request.use(
   (config) => {
     const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
@@ -89,19 +79,7 @@ const axiosResponseInterceptor = axiosInstance.interceptors.response.use(
         await router.navigate('/sign/in');
       }
     }
-    return null;
-  },
-);
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.data?.message) {
-      return Promise.reject({ message: error.response.data.message, status: error.response.status });
-    }
-    return Promise.reject({
-      message: error.response.data.message || '서버 에러가 발생하였습니다.',
-      status: error.response.status,
-    });
+    return Promise.reject(error);
   },
 );
 export const removeDefaultInterceptors = () => {
