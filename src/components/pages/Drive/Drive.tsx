@@ -64,7 +64,7 @@ export default function Drive() {
       page: Number(get('page')),
       search: get('search'),
     });
-  }, [get('category'), get('path'), get('page'), get('name')]);
+  }, [get('category'), get('path'), get('page'), get('name'), get('search')]);
 
   const handleViewMode = (mode: 'card' | 'list') => {
     add([['view', mode]]);
