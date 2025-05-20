@@ -371,7 +371,6 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
 
   // count 조건 검사 (공통 속성인 경우)
   const noCount = !('count' in fileSystem[0].data) || fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count;
-
   return (
     <>
       <WorkSpaceContainer>
@@ -404,7 +403,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
                 {EngToKorDriveCategory[currentTab]}
               </Typography.T3>
               <Typography.B2 fontWeight="medium" color="gray_70">
-                {('files' in fileSystem[0].data && fileSystem[0].data?.files?.length) ??
+                {('files' in fileSystem[0].data && fileSystem[0].data?.files?.length) ||
                   ('count' in fileSystem[0].data && fileSystem[0].data?.count)}
                 개
               </Typography.B2>
