@@ -207,7 +207,7 @@ export default function SearchBar() {
                   type="text"
                   autoFocus
                   onKeyDown={(e: KeyboardEvent) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                       e.preventDefault();
                       handleSubmit(onAddFolder)();
                     }
