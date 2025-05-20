@@ -3,12 +3,13 @@ import { axiosInstance } from '@/libs/axios';
 import { AxiosError } from 'axios';
 import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
 import { GetDrivePayloadType } from '@/types/drive.type';
+import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 
 export const useGetTrash = (workSpaceParams: GetDrivePayloadType) => {
   const isSignIn = !!localStorage.getItem('auth-store');
-  console.log(['workspace', 'list', 'trash', workSpaceParams]);
+  const queryKey = useGetQueryKey();
   return infiniteQueryOptions({
-    queryKey: ['workspace', 'list', 'trash', workSpaceParams],
+    queryKey,
     queryFn: async ({ pageParam }) => {
       try {
         if (workSpaceParams.category === 'all')

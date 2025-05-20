@@ -1,21 +1,16 @@
-import { useSetSearchParam } from '@/hooks/useSearchParam';
+import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 import { axiosFormDataInstance, axiosInstance } from '@/libs/axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { UserAuthType } from '@/types/auth.type';
 import { GetDrivePayloadType, UploadFileResponseType } from '@/types/drive.type';
-import { FileSystemAllResponseType, FileSystemListResponseType, FileSystemType } from '@/types/workspace.type';
-import { infiniteQueryOptions, queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
+import { infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const useUploadFile = () => {
   const { user } = useAuthStore();
+  const queryKey = useGetQueryKey();
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    path: get('path'),
-    page: Number(get('page')),
-  };
   const { mutate: uploadFiles, isPending: isUploading } = useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await axiosFormDataInstance.post<
@@ -28,7 +23,7 @@ export const useUploadFile = () => {
       return response.data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+      await queryClient.invalidateQueries({ queryKey });
     },
   });
   return { uploadFiles, isUploading };
@@ -36,9 +31,10 @@ export const useUploadFile = () => {
 
 export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: string; search?: string }) => {
   const isSignIn = !!localStorage.getItem('auth-store');
+  const queryKey = useGetQueryKey();
 
   return infiniteQueryOptions({
-    queryKey: ['workspace', 'list', 'drive', workSpaceParams],
+    queryKey,
     queryFn: async ({ pageParam }) => {
       try {
         if (workSpaceParams.category === 'all') {
@@ -81,12 +77,7 @@ export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: stri
 export const usePostFolder = () => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    path: get('path'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
   const { mutate: addFolder, isPending } = useMutation({
     mutationFn: async (payload: { name: string }) => {
       const response = await axiosInstance.post('/drive/folder', {
@@ -96,7 +87,7 @@ export const usePostFolder = () => {
       return response.data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+      await queryClient.invalidateQueries({ queryKey });
     },
   });
   return { addFolder, isPending };
