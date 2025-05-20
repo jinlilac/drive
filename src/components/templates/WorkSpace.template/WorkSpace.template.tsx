@@ -72,9 +72,6 @@ const StarredBreadcrumbItemContainer = styled(Container.FlexRow)`
 
   flex-wrap: wrap;
 `;
-const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
-const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
-
 // 스피너 애니메이션
 const spin = keyframes`
   0% { transform: rotate(0deg);}
@@ -103,7 +100,7 @@ const SpinnerCircle = styled.div`
 `;
 
 // 스피너 컴포넌트
-const Spinner = ({ text }: { text?: string }) => (
+const Spinner = () => (
   <SpinnerWrapper>
     <SpinnerCircle />
   </SpinnerWrapper>
@@ -365,14 +362,28 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     } else if ('data' in item.data) result.push(...item.data.data.map((content) => content.fileSystemId));
     return result;
   });
+
+  const noFiles =
+    !('files' in fileSystem[0].data) || fileSystem[0].data.files?.length <= 0 || !fileSystem[0].data.files;
+
+  const noFolders =
+    !('folders' in fileSystem[0].data) || fileSystem[0].data.folders?.length <= 0 || !fileSystem[0].data.folders;
+
+  // count 조건 검사 (공통 속성인 경우)
+  const noCount = !('count' in fileSystem[0].data) || fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count;
+
   return (
     <>
       <WorkSpaceContainer>
         {'folders' in fileSystem[0].data && fileSystem[0].data.folders.length > 0 && (
           <>
             <Container.FlexRow alignItems="baseline" gap="8">
-              <CategoryTitleTypo>{EngToKorDriveCategory.folder}</CategoryTitleTypo>
-              <CategoryCountTypo>{fileSystem[0].data.folders.length}개</CategoryCountTypo>
+              <Typography.T3 fontWeight="semiBold" color="gray_100">
+                {EngToKorDriveCategory.folder}
+              </Typography.T3>
+              <Typography.B2 fontWeight="medium" color="gray_70">
+                {fileSystem[0].data.folders.length}개
+              </Typography.B2>
             </Container.FlexRow>
             <WorkSpaceFolderTemplate
               folders={fileSystem[0].data.folders}
@@ -389,8 +400,14 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           ('count' in fileSystem[0].data && fileSystem[0].data.count > 0)) && (
           <>
             <Container.FlexRow alignItems="baseline" gap="8">
-              <CategoryTitleTypo>{EngToKorDriveCategory[currentTab]}</CategoryTitleTypo>
-              <CategoryCountTypo>{fileSystem[0].data?.files?.length ?? fileSystem[0].data?.count}개</CategoryCountTypo>
+              <Typography.T3 fontWeight="semiBold" color="gray_100">
+                {EngToKorDriveCategory[currentTab]}
+              </Typography.T3>
+              <Typography.B2 fontWeight="medium" color="gray_70">
+                {('files' in fileSystem[0].data && fileSystem[0].data?.files?.length) ??
+                  ('count' in fileSystem[0].data && fileSystem[0].data?.count)}
+                개
+              </Typography.B2>
             </Container.FlexRow>
             <WorkSpaceItemTemplate
               state={updateState}
@@ -402,31 +419,29 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             />
           </>
         )}
-        {(fileSystem[0].data.files?.length <= 0 || !fileSystem[0].data.files) &&
-          (fileSystem[0].data.folders?.length <= 0 || !fileSystem[0].data.folders) &&
-          (fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count) && (
-            <Container.FlexCol
-              style={{
-                width: '100%',
-                height: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {pathname.includes('drive') ? (
-                <DriveEmptyTemplate />
-              ) : pathname.includes('trash') ? (
-                <Typography.B1 fontWeight="medium" color="gray_70">
-                  휴지통이 비어있습니다.
-                </Typography.B1>
-              ) : pathname.includes('starred') ? (
-                <Typography.B1 fontWeight="medium" color="gray_70">
-                  즐겨찾기가 비어있습니다.
-                </Typography.B1>
-              ) : null}
-            </Container.FlexCol>
-          )}
-        {fileSystemPath && !pathname.includes('drive') && (
+        {noFiles && noFolders && noCount && (
+          <Container.FlexCol
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {pathname.includes('drive') ? (
+              <DriveEmptyTemplate />
+            ) : pathname.includes('trash') ? (
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                휴지통이 비어있습니다.
+              </Typography.B1>
+            ) : pathname.includes('starred') ? (
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                즐겨찾기가 비어있습니다.
+              </Typography.B1>
+            ) : null}
+          </Container.FlexCol>
+        )}
+        {fileSystemPath && (!pathname.includes('drive') || get('search')) && (
           <StarredBreadcrumb>
             <StarredBreadcrumbItemContainer>
               {extractFileSystemPath(fileSystemPath).map((value, index, array) => (
