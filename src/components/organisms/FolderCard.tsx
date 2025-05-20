@@ -114,7 +114,7 @@ export default function FolderCard(
 
   const MORE_ITEMS = useGetMoreItems(isStarred);
   const { setUser } = useAuthStore();
-  const { add } = useSetSearchParam();
+  const { get, add } = useSetSearchParam();
 
   const handleDoubleClick = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -127,7 +127,7 @@ export default function FolderCard(
       ['name', name],
       ['path', id],
     ]);
-    if (!pathname.startsWith('/workspace/drive'))
+    if (!pathname.startsWith('/workspace/drive') || get('search'))
       navigate(`/workspace/drive?page=1&path=${id}&category=all&name=${name}`);
   };
   return (
