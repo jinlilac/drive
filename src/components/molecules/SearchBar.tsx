@@ -145,7 +145,7 @@ export default function SearchBar() {
             <ClearButton
               onClick={() => {
                 setSearchTerm('');
-                remove(['name']);
+                remove(['search']);
               }}
               aria-label="검색어 지우기"
             >
