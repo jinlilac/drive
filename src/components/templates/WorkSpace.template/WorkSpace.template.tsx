@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import ActionToolbar from '@/components/organisms/ActionToolBar';
 import useToastStore from '@/stores/useToastStore';
-import Button from '@/components/atoms/Button';
 import { AxiosResponse } from 'axios';
 import {
   EngToKorDriveCategory,
@@ -32,6 +31,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useDownLoad, useDownloadStatus } from '@/apis/Drive';
 import Overlay from '@/components/atoms/Overlay';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
+import useWorkStack from '@/stores/useWorkStack';
 
 type WorkSpaceTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
@@ -154,6 +154,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const { destroyWorkSpace, isDestroying } = useDestroyWorkSpace();
   // 다운로드 초기 요청 훅 (jobId 혹은 url 획득)
   const { data: downloadData } = useQuery(useDownLoad(updateState.fileSystemId, updateState.menu === 'download'));
+  const { setDriveLastJob } = useWorkStack();
 
   // jobId 상태 관리
   const [downloadJobId, setDownloadJobId] = useState<string>('');
@@ -210,9 +211,11 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
       },
       {
         onSuccess: () => {
+          setDriveLastJob(() =>
+            updateWorkSpace({ id: updateState.selectedIds, parentId: user?.currentId, currentId: folderId }),
+          );
           useToastStore.getState().showToast({
             text: `파일 ${updateState.selectedIds.length}개가 이동되었습니다.`,
-            button: <Button.Ghost>실행취소</Button.Ghost>,
           });
           setOpenMoveFolder(false);
         },
@@ -242,9 +245,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { id: ids, isStarred: true },
             {
               onSuccess: () => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, isStarred: false }));
                 useToastStore.getState().showToast({
                   text: '즐겨찾기에서 추가되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -257,9 +260,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { id: ids, isStarred: false },
             {
               onSuccess: () => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, isStarred: true }));
                 useToastStore.getState().showToast({
                   text: '즐겨찾기에서 제거되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -272,9 +275,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { ids },
             {
               onSuccess: () => {
+                setDriveLastJob(() => restoreWorkSpace({ ids }));
                 useToastStore.getState().showToast({
                   text: '파일이 삭제되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -298,10 +301,10 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           updateWorkSpace(
             { id: ids, name: updateState.defaultName },
             {
-              onSuccess: () => {
+              onSuccess: (data) => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, name: data.data[0].oldName }));
                 useToastStore.getState().showToast({
                   text: '파일 이름이 변경되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -314,9 +317,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { ids },
             {
               onSuccess: () => {
+                setDriveLastJob(() => deleteWorkSpace({ ids }));
                 useToastStore.getState().showToast({
                   text: '파일이 복원되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -327,7 +330,19 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     };
 
     handleAction();
-  }, [updateState.menu, updateState.selectedIds]);
+  }, [
+    deleteWorkSpace,
+    destroyWorkSpace,
+    resetUpdateState,
+    restoreWorkSpace,
+    setDriveLastJob,
+    setUser,
+    updateState.defaultName,
+    updateState.fileSystemId,
+    updateState.menu,
+    updateState.selectedIds,
+    updateWorkSpace,
+  ]);
 
   const handleCheck = (id: string, checked: boolean, path?: string, name?: string) => {
     setUpdateState((prev) => {
