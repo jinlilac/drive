@@ -118,6 +118,7 @@ export default function FolderCard(
 
   const handleDoubleClick = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    if (pathname.includes('/workspace/trash')) return;
     setUser({
       currentId: id,
       currentFolderName: name,
