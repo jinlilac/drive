@@ -5,15 +5,15 @@ import { KorToEngDriveCategory } from '@/types/workspace.type';
 export const MENU_ITEMS = [
   {
     label: '프로필',
-    path: '/mypage',
+    path: '/mypage/profile',
   },
   {
     label: '공지사항',
-    path: '/notices',
+    path: '/mypage/notices',
   },
   {
-    label: '1:1 문의하기',
-    path: '/inquiry',
+    label: '구독 관리',
+    path: '/mypage/pricing',
   },
 ] as const;
 
