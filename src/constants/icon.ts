@@ -61,6 +61,11 @@ export const ICON_LIST = [
   'caret-right',
   'caret-left',
   'stroke-star-s',
+  'mypage-bell',
+  'mypage-customer',
+  'mypage-bill-list',
+  'mypage-bill-card',
+  'radio',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {
