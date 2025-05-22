@@ -20,7 +20,7 @@ const SideBarHeader = styled.div`
 export default function SideBar({ header, children, style, ...others }: SideBarProps) {
   return (
     <SideBarWrap style={style}>
-      <SideBarHeader>{header}</SideBarHeader>
+      {header && <SideBarHeader>{header}</SideBarHeader>}
       {children}
     </SideBarWrap>
   );
