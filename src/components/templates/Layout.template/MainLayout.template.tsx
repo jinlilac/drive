@@ -3,7 +3,7 @@ import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import ProfileCard, { DropBoxItem } from '@/components/molecules/ProfileCard';
-import SearchBar from '@/components/molecules/SearchBar';
+// import SearchBar from '@/components/molecules/SearchBar';
 import StorageProgressBar from '@/components/molecules/StorageProgressBar';
 import WindowBar from '@/components/molecules/WindowBar';
 import SideBar from '@/components/organisms/SideBar';
@@ -32,10 +32,7 @@ const SideBarContentWrap = styled(Container.FlexCol)`
   justify-content: space-between;
   margin-bottom: 16px;
 `;
-const WorkSpaceBar = styled(Container.FlexCol)`
-  width: 100%;
-  padding: 24px 16px;
-`;
+
 const Storage = styled(Container.FlexCol)`
   padding: 16px;
   gap: 24px;
@@ -79,13 +76,7 @@ export default function MainLayoutTemplate() {
             </Storage>
           </SideBarContentWrap>
         </SideBar>
-        <WorkSpaceBar gap="16" style={{ width: 'calc(100% - 300px)', flex: '1' }}>
-          <Container.FlexCol gap="16" alignItems="flex-end">
-            <SearchBar />
-            <Divider.Row size="thin" />
-          </Container.FlexCol>
-          <Outlet />
-        </WorkSpaceBar>
+        <Outlet />
       </MainLayoutContainer>
     </>
   );

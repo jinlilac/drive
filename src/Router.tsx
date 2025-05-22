@@ -11,6 +11,9 @@ import Starred from '@/components/pages/WorkSpace/Starred';
 import Trash from '@/components/pages/WorkSpace/Trash';
 import WorkSheet from '@/components/pages/WorkSheet/WorkSheet';
 import Drive from '@/components/pages/Drive/Drive';
+import SearchLayoutTemplate from '@/components/templates/Layout.template/SearchLayout.template';
+import MyPageLayoutTemplate from '@/components/templates/Layout.template/MypageLayout.template';
+import MyProfileTemplate from '@/components/templates/Mypage.template/MyProfile.template';
 
 export const router = createBrowserRouter([
   {
@@ -33,16 +36,29 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/workspace',
     element: <MainLayoutTemplate />,
     children: [
-      { path: 'work-sheet', element: <WorkSheet /> },
-      { path: 'drive', element: <Drive /> },
-      { path: 'starred', element: <Starred /> },
-      { path: 'trash', element: <Trash /> },
+      {
+        path: '/workspace',
+        element: <SearchLayoutTemplate />,
+        children: [
+          { path: 'work-sheet', element: <WorkSheet /> },
+          { path: 'drive', element: <Drive /> },
+          { path: 'starred', element: <Starred /> },
+          { path: 'trash', element: <Trash /> },
+        ],
+      },
+      {
+        path: '/mypage',
+        element: <MyPageLayoutTemplate />,
+        children: [
+          { path: 'profile', element: <MyProfileTemplate /> },
+          { path: 'notices', element: <div>공지사항</div> },
+          { path: 'help', element: <div>고객센터</div> },
+        ],
+      },
     ],
   },
-
   {
     path: '/test',
     element: <ComponentTest />,
