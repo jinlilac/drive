@@ -31,6 +31,7 @@ import { MoreItemAlertType } from '@/types/workspace.type';
 import { MORE_ITEMS } from '@/constants/worksheet';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
 import { STARRED_MORE_ITEMS } from '@/constants/workspace';
+import DeleteAccountAlert from '@/components/templates/Alert.template/DeleteAccountAlert.template';
 
 const TestLayoutContainer = styled(Container.Grid)`
   height: 100dvh;
@@ -297,6 +298,9 @@ export default function ComponentTest() {
           setState={setState}
           isPending={false}
         />
+      </Wrapper>
+      <Wrapper title="회원탈퇴 알럿">
+        <DeleteAccountAlert />
       </Wrapper>
     </TestLayoutContainer>
   );

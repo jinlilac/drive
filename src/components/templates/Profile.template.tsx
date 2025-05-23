@@ -33,7 +33,7 @@ const EditImageButton = styled(Button.Ghost)`
 `;
 
 export default function ProfileTemplate() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const navigate = useNavigate();
   const { openOverlay, closeOverlay } = useOverlayStore();
   const { updateProfile, isPending } = useUpdateProfile();
@@ -93,7 +93,17 @@ export default function ProfileTemplate() {
 
   const handleSubmit = (data: ProfileInput) => {
     if (fileError) return; //
-    updateProfile(data);
+    updateProfile(data, {
+      onSuccess: (data) => {
+        setUser({
+          name: data.name,
+          profileImg: data.profileImg as string,
+          accessToken: undefined,
+          isInitialized: true,
+        });
+        navigate('sign/outro');
+      },
+    });
 
     // 소셜 로그인 시 update 로직
   };
@@ -126,14 +136,7 @@ export default function ProfileTemplate() {
       <FormProvider {...formValues}>
         <form onSubmit={formValues.handleSubmit(handleSubmit)}>
           <Container.FlexRow style={{ marginBottom: '48px', position: 'relative' }} justifyContent="center">
-            <Avatar
-              src={
-                previewImage ||
-                (user?.profileImg?.startsWith('https')
-                  ? user?.profileImg
-                  : `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`)
-              }
-            />
+            <Avatar size={168} previewImg={previewImage} />
             <EditImageButton type="button" onClick={handleImageClick}>
               <Img src={ICON['edit-img']} />
             </EditImageButton>

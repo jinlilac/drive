@@ -44,7 +44,10 @@ const DefaultInput = styled.input<InputProps>`
     &::placeholder {
       color: ${(props) => props.theme.Colors.gray_20};
     }
+    color: ${(props) => props.theme.Colors.gray_70};
     outline: none;
+    border: none;
+    background-color: ${(props) => props.theme.Colors.gray_20};
   }
 `;
 

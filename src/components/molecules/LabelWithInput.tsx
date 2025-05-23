@@ -5,6 +5,7 @@ import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
 import Input from '@/components/atoms/Input';
+import theme from '@/styles/theme';
 
 export type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
   label?: string;
@@ -15,6 +16,8 @@ export type LabelWithInputProps = Omit<ComponentProps<'input'>, 'name'> & {
   successMessage?: string;
   iconTop?: number;
   containerStyle?: CSSProperties;
+  color?: keyof (typeof theme)['Colors'];
+  style?: CSSProperties;
 };
 
 type InfoType = 'default' | 'error' | 'success';
@@ -25,11 +28,11 @@ type InfoBoxProps = {
   style?: CSSProperties;
 };
 
-const Label = styled.label`
+const Label = styled.label<{ color?: keyof (typeof theme)['Colors'] }>`
   display: block;
   font-size: ${(props) => props.theme.Font.fontSize.t3};
   font-weight: ${(props) => props.theme.Font.fontWeight.medium};
-  color: ${(props) => props.theme.Colors.gray_60};
+  color: ${(props) => (props.color ? props.color : props.theme.Colors.gray_60)};
   padding-bottom: 12px;
 `;
 
@@ -110,14 +113,19 @@ export const InfoBoxComponent = (props: InfoBoxProps) => {
 
 export default function LabelWithInput(props: LabelWithInputProps) {
   const { register, formState } = useFormContext();
-  const { id, label, icon, name, successMessage, iconTop, containerStyle, ...others } = props;
+  const { id, label, icon, name, successMessage, iconTop, containerStyle, color, style, ...others } = props;
   let currentState: InfoType = 'default';
   if (formState.errors[name]?.message) currentState = 'error';
   else if (!formState.errors[name]?.message && successMessage) currentState = 'success';
   return (
     <Container.FlexCol style={{ position: 'relative', ...containerStyle }}>
-      {label && <Label htmlFor={id}>{label}</Label>}
+      {label && (
+        <Label color={color} htmlFor={id}>
+          {label}
+        </Label>
+      )}
       <TextInput
+        style={style}
         id={id}
         isError={!!formState.errors[name]?.message}
         option={currentState}

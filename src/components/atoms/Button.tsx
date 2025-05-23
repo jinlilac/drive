@@ -8,10 +8,10 @@ type ButtonProps = ComponentProps<'button'> & {
   strokeColor?: keyof (typeof theme)['Colors'];
 };
 
-const DefaultButton = styled.button`
+const DefaultButton = styled.button<{ small?: boolean }>`
   padding: 18px 36px;
   width: 100%;
-  font-size: ${(props) => props.theme.Font.fontSize.t3};
+  font-size: ${(props) => (props.small ? props.theme.Font.fontSize.b1 : props.theme.Font.fontSize.t3)};
   height: 100%;
   display: flex;
   justify-content: center;

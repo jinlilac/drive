@@ -48,15 +48,7 @@ export default function ProfileCard() {
   return (
     <ProfileCardWrap>
       <Container.FlexRow gap="8" alignItems="center">
-        <Avatar
-          size="s"
-          src={
-            user?.profileImg &&
-            (user?.profileImg?.startsWith('https')
-              ? user?.profileImg
-              : `${import.meta.env.VITE_PROFILE_IMG_URL}/${user?.profileImg}`)
-          }
-        />
+        <Avatar size={42} />
         <ContentWrap gap="8">
           <Typography.B1
             style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '162px' }}

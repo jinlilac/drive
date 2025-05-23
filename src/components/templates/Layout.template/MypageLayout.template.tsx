@@ -17,6 +17,8 @@ const SideBarMenuWrap = styled(Container.FlexCol)`
   padding: 8px 0;
 `;
 
+const TitleWrap = styled(Container.Container)``;
+
 export default function MyPageLayoutTemplate() {
   const { pathname } = useLocation();
   return (
@@ -40,6 +42,11 @@ export default function MyPageLayoutTemplate() {
           </SideBarMenuWrap>
         ))}
       </SideBar>
+      {/* <TitleWrap>
+        <Typography.T1 fontWeight="semiBold" color="gray_100">
+          프로필
+        </Typography.T1>
+      </TitleWrap> */}
       <Outlet />
     </MypageLayoutWrap>
   );
