@@ -23,27 +23,22 @@ export const useSignUp = () => {
 
 export const useUpdateProfile = () => {
   const { user, setUser } = useAuthStore();
-  const navigate = useNavigate();
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: async (inputData: Omit<ProfileInputType, 'userId'>) => {
       const formData = new FormData();
       formData.append('userId', user?.userId as string);
       formData.append('name', inputData.name);
-      formData.append('profileImg', inputData.profileImg);
+      if (inputData.profileImg) {
+        formData.append('profileImg', inputData.profileImg);
+      }
       const response = await axiosFormDataInstance.patch<Omit<ProfileInputType, 'userId'>>(
         '/user/update-user',
         formData,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.accessToken}`,
-          },
-        },
       );
       return response.data;
     },
     onSuccess: (data) => {
-      setUser({ name: data.name, profileImg: data.profileImg as string, accessToken: undefined, isInitialized: true });
-      navigate('sign/outro');
+      // setUser({ name: data.name, profileImg: data.profileImg as string, accessToken: undefined, isInitialized: true });
     },
   });
   return { updateProfile, isPending };
