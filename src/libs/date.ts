@@ -1,4 +1,5 @@
-import { toZonedTime } from 'date-fns-tz';
+import { parseISO } from 'date-fns';
+import { format, toZonedTime } from 'date-fns-tz';
 
 export default function getCustomRelativeTime(dateString: string): string {
   const now = new Date();
@@ -21,3 +22,13 @@ export default function getCustomRelativeTime(dateString: string): string {
 
 // 테스트 예시
 // console.log(getCustomRelativeTime('2025-04-11T07:42:07.000Z'));
+export function useFormatDate(dateString?: string): string {
+  if (!dateString) return '';
+  try {
+    // UTC로 변환
+    const utcDate = toZonedTime(dateString, 'UTC');
+    return format(utcDate, 'yyyy.MM.dd');
+  } catch {
+    return '';
+  }
+}
