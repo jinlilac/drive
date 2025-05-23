@@ -1,5 +1,5 @@
 import { RefreshManager } from '@/libs/refresh';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { router } from '@/Router';
 
@@ -25,20 +25,19 @@ axiosFormDataInstance.interceptors.response.use(
   },
 );
 
-const axiosRequestInterceptor = axiosInstance.interceptors.request.use(
-  (config) => {
-    const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
-    const newConfig = config;
-    if (userLocal.state?.user?.accessToken) {
-      newConfig.headers.Authorization = `Bearer ${userLocal.state.user.accessToken}`;
-    }
+const interceptorRequest = (config: InternalAxiosRequestConfig) => {
+  const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
+  const newConfig = config;
+  if (userLocal.state?.user?.accessToken) {
+    newConfig.headers.Authorization = `Bearer ${userLocal.state.user.accessToken}`;
+  }
+  return newConfig;
+};
+axiosFormDataInstance.interceptors.request.use(interceptorRequest, (error) => Promise.reject(error));
 
-    return newConfig;
-  },
-  (error) => Promise.reject(error),
-);
+axiosInstance.interceptors.request.use(interceptorRequest, (error) => Promise.reject(error));
 
-const axiosResponseInterceptor = axiosInstance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const userLocal = JSON.parse(localStorage.getItem('auth-store') ?? '{}');
@@ -104,11 +103,3 @@ axiosInstance.interceptors.response.use(
     });
   },
 );
-export const removeDefaultInterceptors = () => {
-  if (axiosRequestInterceptor !== undefined) {
-    axiosInstance.interceptors.request.eject(axiosRequestInterceptor);
-  }
-  if (axiosResponseInterceptor !== undefined) {
-    axiosInstance.interceptors.response.eject(axiosResponseInterceptor);
-  }
-};
