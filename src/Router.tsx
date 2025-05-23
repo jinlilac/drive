@@ -14,6 +14,7 @@ import Drive from '@/components/pages/Drive/Drive';
 import SearchLayoutTemplate from '@/components/templates/Layout.template/SearchLayout.template';
 import MyPageLayoutTemplate from '@/components/templates/Layout.template/MypageLayout.template';
 import MyProfileTemplate from '@/components/templates/Mypage.template/MyProfile.template';
+import NoticeListTemplate from '@/components/templates/Mypage.template/NoticeList.template';
 
 export const router = createBrowserRouter([
   {
@@ -53,7 +54,7 @@ export const router = createBrowserRouter([
         element: <MyPageLayoutTemplate />,
         children: [
           { path: 'profile', element: <MyProfileTemplate /> },
-          { path: 'notices', element: <div>공지사항</div> },
+          { path: 'notices', element: <NoticeListTemplate /> },
           { path: 'help', element: <div>고객센터</div> },
         ],
       },
