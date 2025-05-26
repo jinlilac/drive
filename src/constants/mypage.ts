@@ -10,7 +10,7 @@ export const MYPAGE_SIDEBAR_ITEMS = {
     },
     {
       label: '공지사항',
-      path: '/mypage/notices',
+      path: '/mypage/notices/list?page=1',
       icon: ICON['mypage-bell'],
       isReady: true,
     },

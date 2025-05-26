@@ -9,7 +9,6 @@ import styled from 'styled-components';
 const MypageLayoutWrap = styled(Container.FlexRow)`
   width: 100%;
   height: 100%;
-  padding-top: 42px;
 `;
 
 const SideBarMenuWrap = styled(Container.FlexCol)`
@@ -17,13 +16,11 @@ const SideBarMenuWrap = styled(Container.FlexCol)`
   padding: 8px 0;
 `;
 
-const TitleWrap = styled(Container.Container)``;
-
 export default function MyPageLayoutTemplate() {
   const { pathname } = useLocation();
   return (
     <MypageLayoutWrap>
-      <SideBar style={{ height: '100%' }}>
+      <SideBar style={{ height: '100%', paddingTop: '42px' }}>
         {Object.entries(MYPAGE_SIDEBAR_ITEMS).map(([category, items]) => (
           <SideBarMenuWrap key={category}>
             <Typography.B2 fontWeight="semiBold" color="gray_70">
@@ -42,11 +39,7 @@ export default function MyPageLayoutTemplate() {
           </SideBarMenuWrap>
         ))}
       </SideBar>
-      {/* <TitleWrap>
-        <Typography.T1 fontWeight="semiBold" color="gray_100">
-          프로필
-        </Typography.T1>
-      </TitleWrap> */}
+
       <Outlet />
     </MypageLayoutWrap>
   );

@@ -9,7 +9,7 @@ export const MENU_ITEMS = [
   },
   {
     label: '공지사항',
-    path: '/mypage/notices',
+    path: '/mypage/notices/list?page=1',
   },
   {
     label: '구독 관리',

@@ -44,6 +44,7 @@ export default function ProfileCard() {
   };
   const handleSignOut = () => {
     logout();
+    navigate('/sign/in');
   };
   return (
     <ProfileCardWrap>

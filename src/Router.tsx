@@ -15,6 +15,8 @@ import SearchLayoutTemplate from '@/components/templates/Layout.template/SearchL
 import MyPageLayoutTemplate from '@/components/templates/Layout.template/MypageLayout.template';
 import MyProfileTemplate from '@/components/templates/Mypage.template/MyProfile.template';
 import NoticeListTemplate from '@/components/templates/Mypage.template/NoticeList.template';
+import Notice from '@/components/pages/Mypage/Notice';
+import NoticeDetailTemplate from '@/components/templates/Mypage.template/NoticeDetail.template';
 
 export const router = createBrowserRouter([
   {
@@ -54,7 +56,14 @@ export const router = createBrowserRouter([
         element: <MyPageLayoutTemplate />,
         children: [
           { path: 'profile', element: <MyProfileTemplate /> },
-          { path: 'notices', element: <NoticeListTemplate /> },
+          {
+            path: 'notices',
+            element: <Notice />,
+            children: [
+              { path: 'list', element: <NoticeListTemplate /> },
+              { path: ':id', element: <NoticeDetailTemplate /> },
+            ],
+          },
           { path: 'help', element: <div>고객센터</div> },
         ],
       },

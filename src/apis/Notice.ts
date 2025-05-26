@@ -1,19 +1,19 @@
-import { infiniteQueryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { axiosInstance } from '@/libs/axios';
 import { AxiosError } from 'axios';
-import { NoticeListResponseType } from '@/types/notice.type';
+import { NoticeDetail, NoticeListResponseType } from '@/types/notice.type';
 
 // 공지사항 무한 스크롤 훅
-export const useGetNotices = () => {
+export const useGetNotices = (page: number) => {
   const isSignIn = !!localStorage.getItem('auth-store');
 
   return infiniteQueryOptions({
-    queryKey: ['notice', 'list'],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryKey: ['mypage', 'notice', 'list', page],
+    queryFn: async () => {
       try {
         // page 파라미터만 전달
         return await axiosInstance.get<NoticeListResponseType>('/notice', {
-          params: { page: pageParam },
+          params: { page },
         });
       } catch (e) {
         if (e instanceof AxiosError && e.response?.status === 400) {
@@ -35,3 +35,9 @@ export const useGetNotices = () => {
     enabled: isSignIn,
   });
 };
+
+export const useGetNoticeDetail = (noticeId: number) =>
+  queryOptions({
+    queryKey: ['mypage', 'notice', noticeId],
+    queryFn: () => axiosInstance.get<NoticeDetail>(`/notice/${noticeId}`),
+  });
