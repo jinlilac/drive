@@ -88,18 +88,6 @@ axiosInstance.interceptors.response.use(
         await router.navigate('/sign/in');
       }
     }
-    return null;
-  },
-);
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.data?.message) {
-      return Promise.reject({ message: error.response.data.message, status: error.response.status });
-    }
-    return Promise.reject({
-      message: error.response.data.message || '서버 에러가 발생하였습니다.',
-      status: error.response.status,
-    });
+    return Promise.reject(error);
   },
 );

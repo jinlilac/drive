@@ -8,9 +8,11 @@ import { ICON } from '@/constants/icon';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { FileSystemListResponseType, FileSystemType, KorToEngDriveCategory } from '@/types/workspace.type';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
+import { useObserver } from '@/hooks/useObserver';
+import LoaderBox from '@/components/molecules/LoaderBox';
 
 type MoveFolderProps = {
   position: { left: number; top: number };
@@ -94,16 +96,16 @@ export default function MoveFolder(props: MoveFolderProps) {
     parentId: user?.rootFolder as string,
     pathName: '내 드라이브',
   });
+  const { ref: loaderRef, isShow } = useObserver<HTMLDivElement>();
 
-  const { data } = useSuspenseInfiniteQuery(
-    useGetDrive({
+  const { data, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
+    useGetDrive<FileSystemListResponseType>({
       category: KorToEngDriveCategory.폴더,
       path: currentFolder.parentId,
       page: 1,
+      ignoreQueryKey: true,
     }),
   );
-
-  const folders = data.pages[0].data as unknown as keyof FileSystemListResponseType;
 
   const handleEnterFolder = (folderId: string, name: string) => {
     setCurrentFolder({ parentId: folderId, pathName: name });
@@ -115,6 +117,9 @@ export default function MoveFolder(props: MoveFolderProps) {
       pathName: '내 드라이브',
     });
   };
+  useEffect(() => {
+    if (isShow && hasNextPage) fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isShow]);
 
   return createPortal(
     <MoveFolderContainer left={position.left} top={position.top}>
@@ -133,10 +138,15 @@ export default function MoveFolder(props: MoveFolderProps) {
         </Button.Ghost>
       </TitleWrap>
       <Divider.Row size="thin" />
-      {folders.data.length > 0 ? (
-        folders.data.map((folder) => (
-          <FolderList key={folder.name} {...folder} onEnter={handleEnterFolder} selectedIds={selectedIds} />
-        ))
+      {data.pages[0].data.count > 0 ? (
+        data.pages.map((page) =>
+          page.data.data.map((folder) => (
+            <>
+              <FolderList key={folder.name} {...folder} onEnter={handleEnterFolder} selectedIds={selectedIds} />
+              {hasNextPage && <LoaderBox ref={loaderRef} />}
+            </>
+          )),
+        )
       ) : (
         <Container.FlexCol
           justifyContent="center"

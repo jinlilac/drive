@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosInstance } from '@/libs/axios';
-import { useSetSearchParam } from '@/hooks/useSearchParam';
-import { useLocation } from 'react-router-dom';
+import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 
 type DefaultMutateWorkSpaceType = {
   ids: string[];
@@ -17,20 +16,11 @@ type UpdateWorkSpaceType = {
 
 export const useDeleteWorkSpace = () => {
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const { pathname } = useLocation();
-  const workSpaceParams = {
-    category: get('category'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
   const { mutate: deleteWorkSpace, isPending: isDeleting } = useMutation({
     mutationFn: async (payload: DefaultMutateWorkSpaceType) => await axiosInstance.delete('/drive', { data: payload }),
     onSuccess: () => {
-      if (pathname.includes('drive')) {
-        queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
-      } else if (pathname.includes('starred')) {
-        queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'starred', workSpaceParams] });
-      }
+      queryClient.invalidateQueries({ queryKey });
     },
   });
   return { deleteWorkSpace, isDeleting };
@@ -38,15 +28,12 @@ export const useDeleteWorkSpace = () => {
 
 export const useRestoreWorkSpace = () => {
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
   const { mutate: restoreWorkSpace, isPending: isRestoring } = useMutation({
-    mutationFn: async (payload: DefaultMutateWorkSpaceType) => await axiosInstance.patch('/drive/restore', payload),
+    mutationFn: async (payload: DefaultMutateWorkSpaceType & { isUndo?: boolean }) =>
+      await axiosInstance.patch('/drive/restore', payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'trash', workSpaceParams] });
+      queryClient.invalidateQueries({ queryKey });
     },
   });
   return { restoreWorkSpace, isRestoring };
@@ -54,16 +41,13 @@ export const useRestoreWorkSpace = () => {
 
 export const useDestroyWorkSpace = () => {
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
+
   const { mutate: destroyWorkSpace, isPending: isDestroying } = useMutation({
     mutationFn: async (payload: DefaultMutateWorkSpaceType) =>
       await axiosInstance.delete('/drive/destroy', { data: payload }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'trash', workSpaceParams] });
+      queryClient.invalidateQueries({ queryKey });
     },
   });
   return { destroyWorkSpace, isDestroying };
@@ -71,23 +55,11 @@ export const useDestroyWorkSpace = () => {
 
 export const useUpdateWorkSpace = () => {
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const { pathname } = useLocation();
-  const workSpaceParams = {
-    category: get('category'),
-    path: get('path'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
   const { mutate: updateWorkSpace, isPending: isUpdating } = useMutation({
     mutationFn: async (payload: UpdateWorkSpaceType) => await axiosInstance.patch('/drive', payload),
     onSuccess: () => {
-      if (pathname.includes('drive')) {
-        queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
-      } else if (pathname.includes('starred')) {
-        queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'starred', workSpaceParams] });
-      } else if (pathname.includes('trash')) {
-        queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'trash', workSpaceParams] });
-      }
+      queryClient.invalidateQueries({ queryKey });
     },
   });
   return { updateWorkSpace, isUpdating };

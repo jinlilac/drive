@@ -1,21 +1,16 @@
-import { useSetSearchParam } from '@/hooks/useSearchParam';
+import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 import { axiosFormDataInstance, axiosInstance } from '@/libs/axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { UserAuthType } from '@/types/auth.type';
 import { GetDrivePayloadType, UploadFileResponseType } from '@/types/drive.type';
-import { FileSystemAllResponseType, FileSystemListResponseType, FileSystemType } from '@/types/workspace.type';
-import { infiniteQueryOptions, queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
+import { infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
 export const useUploadFile = () => {
   const { user } = useAuthStore();
+  const queryKey = useGetQueryKey();
   const queryClient = useQueryClient();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    path: get('path'),
-    page: Number(get('page')),
-  };
   const { mutate: uploadFiles, isPending: isUploading } = useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await axiosFormDataInstance.post<
@@ -28,40 +23,48 @@ export const useUploadFile = () => {
       return response.data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+      await queryClient.invalidateQueries({ queryKey });
     },
   });
   return { uploadFiles, isUploading };
 };
-
-export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: string; search?: string }) => {
+export const useGetDrive = <T extends FileSystemAllResponseType | FileSystemListResponseType>(
+  workSpaceParams: GetDrivePayloadType & { path?: string; search?: string; ignoreQueryKey?: boolean },
+) => {
   const isSignIn = !!localStorage.getItem('auth-store');
+  const queryKey = useGetQueryKey();
+  const { ignoreQueryKey, ...workSpaceParamsValue } = workSpaceParams;
 
   return infiniteQueryOptions({
-    queryKey: ['workspace', 'list', 'drive', workSpaceParams],
-    queryFn: async ({ pageParam }) => {
+    queryKey: ignoreQueryKey ? ['workspace', 'drive', workSpaceParamsValue] : queryKey,
+    queryFn: async ({ pageParam }): Promise<AxiosResponse<T>> => {
       try {
-        if (workSpaceParams.category === 'all') {
-          const params = workSpaceParams.search ? { search: workSpaceParams.search } : { path: workSpaceParams.path };
-          return await axiosInstance.get<FileSystemAllResponseType>(
-            `/drive/${workSpaceParams.search ? 'search-' : ''}all`,
+        if (workSpaceParamsValue.category === 'all') {
+          const params = workSpaceParamsValue.search
+            ? { search: workSpaceParamsValue.search }
+            : { path: workSpaceParamsValue.path };
+          return (await axiosInstance.get<FileSystemAllResponseType>(
+            `/drive/${workSpaceParamsValue.search ? 'search-' : ''}all`,
             {
               params,
             },
-          );
+          )) as AxiosResponse<T>;
         }
         const filterParams = Object.fromEntries(
-          Object.entries(workSpaceParams).filter(([_, v]) => v !== undefined && v !== null),
+          Object.entries(workSpaceParamsValue).filter(([_, v]) => v !== undefined && v !== null),
         );
         // page는 항상 pageParam으로 덮어쓰기
         const params = { ...filterParams, page: pageParam };
-        return await axiosInstance.get<FileSystemListResponseType>(`/drive${workSpaceParams.search ? '/search' : ''}`, {
-          params,
-        });
+        return (await axiosInstance.get<FileSystemListResponseType>(
+          `/drive${workSpaceParamsValue.search ? '/search' : ''}`,
+          {
+            params,
+          },
+        )) as AxiosResponse<T>;
       } catch (e) {
         if (e instanceof AxiosError) {
-          if (e.response?.status === 400) return { data: { count: -1 } };
-          if (e.response?.status === 404) return { data: { count: -2 } };
+          if (e.response?.status === 400) return { data: { count: -1 } } as AxiosResponse<T>;
+          if (e.response?.status === 404) return { data: { count: -2 } } as AxiosResponse<T>;
         }
         throw e;
       }
@@ -81,12 +84,7 @@ export const useGetDrive = (workSpaceParams: GetDrivePayloadType & { path?: stri
 export const usePostFolder = () => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
-  const { get } = useSetSearchParam();
-  const workSpaceParams = {
-    category: get('category'),
-    path: get('path'),
-    page: Number(get('page')),
-  };
+  const queryKey = useGetQueryKey();
   const { mutate: addFolder, isPending } = useMutation({
     mutationFn: async (payload: { name: string }) => {
       const response = await axiosInstance.post('/drive/folder', {
@@ -96,7 +94,7 @@ export const usePostFolder = () => {
       return response.data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['workspace', 'list', 'drive', workSpaceParams] });
+      await queryClient.invalidateQueries({ queryKey });
     },
   });
   return { addFolder, isPending };

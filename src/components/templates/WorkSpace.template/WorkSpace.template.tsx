@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import ActionToolbar from '@/components/organisms/ActionToolBar';
 import useToastStore from '@/stores/useToastStore';
-import Button from '@/components/atoms/Button';
 import { AxiosResponse } from 'axios';
 import {
   EngToKorDriveCategory,
@@ -32,6 +31,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useDownLoad, useDownloadStatus } from '@/apis/Drive';
 import Overlay from '@/components/atoms/Overlay';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
+import useWorkStack from '@/stores/useWorkStack';
 
 type WorkSpaceTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];
@@ -72,9 +72,6 @@ const StarredBreadcrumbItemContainer = styled(Container.FlexRow)`
 
   flex-wrap: wrap;
 `;
-const CategoryTitleTypo = styled(Typography.T3).attrs({ fontWeight: 'semiBold', color: 'gray_100' })``;
-const CategoryCountTypo = styled(Typography.B2).attrs({ fontWeight: 'medium', color: 'gray_70' })``;
-
 // 스피너 애니메이션
 const spin = keyframes`
   0% { transform: rotate(0deg);}
@@ -103,7 +100,7 @@ const SpinnerCircle = styled.div`
 `;
 
 // 스피너 컴포넌트
-const Spinner = ({ text }: { text?: string }) => (
+const Spinner = () => (
   <SpinnerWrapper>
     <SpinnerCircle />
   </SpinnerWrapper>
@@ -154,6 +151,7 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
   const { destroyWorkSpace, isDestroying } = useDestroyWorkSpace();
   // 다운로드 초기 요청 훅 (jobId 혹은 url 획득)
   const { data: downloadData } = useQuery(useDownLoad(updateState.fileSystemId, updateState.menu === 'download'));
+  const { setDriveLastJob } = useWorkStack();
 
   // jobId 상태 관리
   const [downloadJobId, setDownloadJobId] = useState<string>('');
@@ -210,9 +208,11 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
       },
       {
         onSuccess: () => {
+          setDriveLastJob(() =>
+            updateWorkSpace({ id: updateState.selectedIds, parentId: user?.currentId, currentId: folderId }),
+          );
           useToastStore.getState().showToast({
             text: `파일 ${updateState.selectedIds.length}개가 이동되었습니다.`,
-            button: <Button.Ghost>실행취소</Button.Ghost>,
           });
           setOpenMoveFolder(false);
         },
@@ -242,9 +242,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { id: ids, isStarred: true },
             {
               onSuccess: () => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, isStarred: false }));
                 useToastStore.getState().showToast({
                   text: '즐겨찾기에서 추가되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -257,9 +257,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { id: ids, isStarred: false },
             {
               onSuccess: () => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, isStarred: true }));
                 useToastStore.getState().showToast({
                   text: '즐겨찾기에서 제거되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -272,9 +272,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { ids },
             {
               onSuccess: () => {
+                setDriveLastJob(() => restoreWorkSpace({ ids }));
                 useToastStore.getState().showToast({
                   text: '파일이 삭제되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -298,10 +298,10 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           updateWorkSpace(
             { id: ids, name: updateState.defaultName },
             {
-              onSuccess: () => {
+              onSuccess: (data) => {
+                setDriveLastJob(() => updateWorkSpace({ id: ids, name: data.data[0].oldName }));
                 useToastStore.getState().showToast({
                   text: '파일 이름이 변경되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -314,9 +314,9 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             { ids },
             {
               onSuccess: () => {
+                setDriveLastJob(() => deleteWorkSpace({ ids }));
                 useToastStore.getState().showToast({
                   text: '파일이 복원되었습니다.',
-                  button: <Button.Ghost>실행취소</Button.Ghost>,
                 });
                 resetUpdateState();
               },
@@ -350,14 +350,27 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
     } else if ('data' in item.data) result.push(...item.data.data.map((content) => content.fileSystemId));
     return result;
   });
+
+  const noFiles =
+    !('files' in fileSystem[0].data) || fileSystem[0].data.files?.length <= 0 || !fileSystem[0].data.files;
+
+  const noFolders =
+    !('folders' in fileSystem[0].data) || fileSystem[0].data.folders?.length <= 0 || !fileSystem[0].data.folders;
+
+  // count 조건 검사 (공통 속성인 경우)
+  const noCount = !('count' in fileSystem[0].data) || fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count;
   return (
     <>
       <WorkSpaceContainer>
         {'folders' in fileSystem[0].data && fileSystem[0].data.folders.length > 0 && (
           <>
             <Container.FlexRow alignItems="baseline" gap="8">
-              <CategoryTitleTypo>{EngToKorDriveCategory.folder}</CategoryTitleTypo>
-              <CategoryCountTypo>{fileSystem[0].data.folders.length}개</CategoryCountTypo>
+              <Typography.T3 fontWeight="semiBold" color="gray_100">
+                {EngToKorDriveCategory.folder}
+              </Typography.T3>
+              <Typography.B2 fontWeight="medium" color="gray_70">
+                {fileSystem[0].data.folders.length}개
+              </Typography.B2>
             </Container.FlexRow>
             <WorkSpaceFolderTemplate
               folders={fileSystem[0].data.folders}
@@ -374,8 +387,14 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
           ('count' in fileSystem[0].data && fileSystem[0].data.count > 0)) && (
           <>
             <Container.FlexRow alignItems="baseline" gap="8">
-              <CategoryTitleTypo>{EngToKorDriveCategory[currentTab]}</CategoryTitleTypo>
-              <CategoryCountTypo>{fileSystem[0].data?.files?.length ?? fileSystem[0].data?.count}개</CategoryCountTypo>
+              <Typography.T3 fontWeight="semiBold" color="gray_100">
+                {EngToKorDriveCategory[currentTab]}
+              </Typography.T3>
+              <Typography.B2 fontWeight="medium" color="gray_70">
+                {('files' in fileSystem[0].data && fileSystem[0].data?.files?.length) ||
+                  ('count' in fileSystem[0].data && fileSystem[0].data?.count)}
+                개
+              </Typography.B2>
             </Container.FlexRow>
             <WorkSpaceItemTemplate
               state={updateState}
@@ -387,31 +406,29 @@ export default function WorkSpaceTemplate(props: WorkSpaceTemplateProps) {
             />
           </>
         )}
-        {(fileSystem[0].data.files?.length <= 0 || !fileSystem[0].data.files) &&
-          (fileSystem[0].data.folders?.length <= 0 || !fileSystem[0].data.folders) &&
-          (fileSystem[0].data?.count <= 0 || !fileSystem[0].data.count) && (
-            <Container.FlexCol
-              style={{
-                width: '100%',
-                height: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {pathname.includes('drive') ? (
-                <DriveEmptyTemplate />
-              ) : pathname.includes('trash') ? (
-                <Typography.B1 fontWeight="medium" color="gray_70">
-                  휴지통이 비어있습니다.
-                </Typography.B1>
-              ) : pathname.includes('starred') ? (
-                <Typography.B1 fontWeight="medium" color="gray_70">
-                  즐겨찾기가 비어있습니다.
-                </Typography.B1>
-              ) : null}
-            </Container.FlexCol>
-          )}
-        {fileSystemPath && !pathname.includes('drive') && (
+        {noFiles && noFolders && noCount && (
+          <Container.FlexCol
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {pathname.includes('drive') ? (
+              <DriveEmptyTemplate />
+            ) : pathname.includes('trash') ? (
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                휴지통이 비어있습니다.
+              </Typography.B1>
+            ) : pathname.includes('starred') ? (
+              <Typography.B1 fontWeight="medium" color="gray_70">
+                즐겨찾기가 비어있습니다.
+              </Typography.B1>
+            ) : null}
+          </Container.FlexCol>
+        )}
+        {fileSystemPath && (!pathname.includes('drive') || get('search')) && (
           <StarredBreadcrumb>
             <StarredBreadcrumbItemContainer>
               {extractFileSystemPath(fileSystemPath).map((value, index, array) => (

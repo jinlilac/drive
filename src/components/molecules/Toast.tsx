@@ -4,6 +4,8 @@ import useToastStore from '@/stores/useToastStore';
 import Button from '@/components/atoms/Button';
 import Img from '@/components/atoms/Img';
 import { ICON } from '@/constants/icon';
+import Typography from '@/components/atoms/Typography';
+import useWorkStack from '@/stores/useWorkStack';
 
 const ToastContainer = styled(Container.FlexRow)<{
   isActive: boolean;
@@ -25,15 +27,19 @@ const ToastContainer = styled(Container.FlexRow)<{
   transition: transform 0.5s ease;
   justify-content: ${(props) => (props.isCenter ? 'center' : 'space-between')};
 `;
-
+const CancelButton = ({ onClick }: { onClick: () => void }) => (
+  <Button.Ghost onClick={onClick}>
+    <Typography.B2 color="gray_50">실행취소</Typography.B2>
+  </Button.Ghost>
+);
 export default function Toast({ ...others }) {
   const { active, text, center, bottomLocation, button, resetToast } = useToastStore();
-
+  const { undoLastJob } = useWorkStack();
   return (
     <ToastContainer isActive={active} isCenter={!!center} bottomLocation={bottomLocation ?? 16} {...others}>
       <Container.FlexRow gap="16">
         <pre>{text}</pre>
-        {button}
+        {button && <CancelButton onClick={undoLastJob} />}
       </Container.FlexRow>
       <Button.Ghost onClick={resetToast}>
         <Img src={ICON['all-clear']} />

@@ -5,6 +5,7 @@ import { WorkSheetListType, WorkSheetResponseType } from '@/types/worksheet.type
 import { infiniteQueryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useGetQueryKey } from '@/hooks/useGetQueryKey';
 
 export const useGetWorkSheet = (filters: WorkSheetListType) => {
   const isSignIn = !!localStorage.getItem('auth-store');
@@ -40,13 +41,14 @@ export const useGetWorkSheet = (filters: WorkSheetListType) => {
 export const usePatchWorkSheet = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const queryKey = useGetQueryKey();
   const { user } = useAuthStore();
 
   const { mutate: patchWorkSheet, isPending } = useMutation({
     mutationFn: async (payload: DrivePatchPayloadType) =>
       axiosInstance.patch('/drive', payload, { headers: { Authorization: `Bearer ${user?.accessToken}` } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['worksheet', 'list'] }).then(() => navigate('/workspace/work-sheet'));
+      queryClient.invalidateQueries({ queryKey }).then(() => navigate('/workspace/work-sheet'));
     },
   });
   return { patchWorkSheet, isPending };

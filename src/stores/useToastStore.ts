@@ -20,7 +20,7 @@ const useToastStore = create<ToastState & ToastActions>((set, get) => ({
   text: null,
   center: false,
   bottomLocation: 16,
-  button: null,
+  button: true,
   timeoutId: null,
 
   showToast: (options) => {
@@ -52,7 +52,7 @@ const useToastStore = create<ToastState & ToastActions>((set, get) => ({
       text: null,
       center: false,
       bottomLocation: 16,
-      button: null,
+      button: true,
       timeoutId: null,
     });
   },
