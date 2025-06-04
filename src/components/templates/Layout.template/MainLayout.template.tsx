@@ -1,8 +1,6 @@
 import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
-import Img from '@/components/atoms/Img';
-import Typography from '@/components/atoms/Typography';
-import ProfileCard, { DropBoxItem } from '@/components/molecules/ProfileCard';
+import ProfileCard from '@/components/molecules/ProfileCard';
 import { SideBarMenu } from '@/components/molecules/SideBarMenu';
 import StorageProgressBar from '@/components/molecules/StorageProgressBar';
 import SideBar from '@/components/organisms/SideBar';
@@ -15,16 +13,6 @@ const MainLayoutContainer = styled(Container.FlexRow)`
   width: 100%;
   height: 100dvh;
   padding-top: 8px;
-`;
-const LinkItem = styled(DropBoxItem)`
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: center;
-  flex: 1;
-  &:focus {
-    background-color: ${(props) => props.theme.Colors.gray_20};
-  }
 `;
 const SideBarContentWrap = styled(Container.FlexCol)`
   padding: 16px 0;

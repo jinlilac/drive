@@ -1,5 +1,5 @@
 import FileList from '@/components/organisms/FileList';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { FileSystemType } from '@/types/workspace.type';
 

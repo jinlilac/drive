@@ -5,7 +5,7 @@ import Container from '@/components/atoms/Container';
 import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 import { ICON } from '@/constants/icon';
 import useGetActionBarItem from '@/hooks/useGetActionBarItems';
 import useOverlayStore from '@/stores/useOverlayStore';

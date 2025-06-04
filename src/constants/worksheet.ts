@@ -1,5 +1,3 @@
-import { ICON } from '@/constants/icon';
-
 export const GENDER_FILTERS = [
   { label: '성별 전체', value: undefined },
   { label: '남성', value: 1 },

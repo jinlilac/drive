@@ -55,7 +55,7 @@ const Loader = styled.span`
   }
 `;
 
-const LoaderBox = forwardRef<HTMLDivElement>((props, ref) => {
+const LoaderBox = forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <LoaderContainer ref={ref}>
       <Loader />

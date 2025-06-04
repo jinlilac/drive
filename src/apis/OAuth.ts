@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import useOverlayStore from '@/stores/useOverlayStore';
 
 export const useOAuth = (social: string) => {
-  const { setUser, login, user } = useAuthStore();
+  const { setUser, user } = useAuthStore();
   const { closeOverlay } = useOverlayStore();
   const navigate = useNavigate();
   const { mutate: oauth, isPending } = useMutation({
@@ -15,7 +15,7 @@ export const useOAuth = (social: string) => {
       return response.data;
     },
     onSuccess: (data) => {
-      login({ ...data });
+      setUser({ ...data });
       closeOverlay();
 
       if (!user?.isInitialized) {

@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import Container from '@/components/atoms/Container';
 import Input from '@/components/atoms/Input';
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { MoreItemAlertType } from '@/types/workspace.type';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 type WorkSpaceAlertTemplateProps = {
   menu: MoreItemAlertType;
@@ -32,6 +32,11 @@ enum CONFIRM {
   delete = '휴지통으로 이동',
   destroy = '영구삭제',
   download = '다운로드',
+  restore = '복원하기',
+  starred = '즐겨찾기',
+  unstarred = '즐겨찾기 제거',
+  moveTrash = '휴지통',
+  hardDelete = '영구 삭제',
 }
 
 export default function WorkSpaceAlertTemplate(props: WorkSpaceAlertTemplateProps) {

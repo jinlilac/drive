@@ -17,7 +17,7 @@ const SideBarHeader = styled.div`
   padding-top: 24px;
 `;
 
-export default function SideBar({ header, children, style, ...others }: SideBarProps) {
+export default function SideBar({ header, children, style }: SideBarProps) {
   return (
     <SideBarWrap style={style}>
       {header && <SideBarHeader>{header}</SideBarHeader>}

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Img from '@/components/atoms/Img';
 import { DropBoxItem } from '@/components/molecules/ProfileCard';

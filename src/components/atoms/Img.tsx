@@ -6,7 +6,7 @@ type ImgProps = {
   fit?: CSSProperties['objectFit'];
 };
 
-const Img = styled.img.attrs<ImgProps>((props) => ({ loading: 'lazy' }))`
+const Img = styled.img.attrs<ImgProps>(() => ({ loading: 'lazy' }))`
   ${(props) =>
     props.full &&
     css`

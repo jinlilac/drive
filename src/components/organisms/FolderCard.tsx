@@ -5,7 +5,6 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecules/DropdownButton';
 import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import { TagLabelProps } from '@/components/molecules/TagLabel';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { FolderListResponse } from '@/types/file.type';
@@ -16,6 +15,7 @@ import useGetMoreItems from '@/hooks/useGetMoreItems';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 const CardContainer = styled(Container.FlexRow)<{ checked: boolean }>`
   gap: 8px;

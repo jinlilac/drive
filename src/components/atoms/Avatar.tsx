@@ -24,7 +24,7 @@ const AvatarWrap = styled.div<AvatarProps>`
   flex-shrink: 0;
 `;
 
-const Avatar = ({ size, src, previewImg, alt, style, ...others }: AvatarProps) => {
+const Avatar = ({ size, previewImg, alt, style }: AvatarProps) => {
   const { user } = useAuthStore();
   const resolvedSrc =
     previewImg ||

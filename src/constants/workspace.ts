@@ -7,10 +7,10 @@ export const MENU_ITEMS = [
     label: '프로필',
     path: '/mypage/profile',
   },
-  {
-    label: '프로젝트 소개',
-    path: '/mypage/introduce',
-  },
+  // {
+  //   label: '프로젝트 소개',
+  //   path: '/mypage/introduce',
+  // },
 ] as const;
 
 // 타입 정의 (자동 추론 가능)

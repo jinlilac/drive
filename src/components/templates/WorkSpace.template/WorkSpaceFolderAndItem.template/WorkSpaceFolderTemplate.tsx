@@ -1,13 +1,13 @@
 import Container from '@/components/atoms/Container';
 import { FileSystemType } from '@/types/workspace.type';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { CardItems } from '@/components/organisms/CardItems';
 import { ListItems } from '@/components/organisms/ListItems';
 import { Dispatch, SetStateAction } from 'react';
 import Typography from '@/components/atoms/Typography';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { DRIVE_SHEET_LABEL } from '@/constants/workspace';
 import { ItemContainer } from '@/components/templates/WorkSpace.template/WorkSpaceFolderAndItem.template/WorkSpaceItem.template';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 type WorkSpaceFolderCardTemplateProps = {
   folders: FileSystemType[];

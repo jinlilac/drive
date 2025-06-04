@@ -1,9 +1,9 @@
 import FileCard from '@/components/organisms/FileCard';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { FileSystemType } from '@/types/workspace.type';
 import FolderCard from '@/components/organisms/FolderCard';
 import { Dispatch, SetStateAction } from 'react';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 export const CardItems = ({
   content,

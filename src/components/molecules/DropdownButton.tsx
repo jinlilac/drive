@@ -63,7 +63,6 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   chevron,
   label,
   disabled,
-  ...others
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

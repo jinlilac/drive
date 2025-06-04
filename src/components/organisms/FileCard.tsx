@@ -6,7 +6,6 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecules/DropdownButton';
 import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecules/TagLabel';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import getCustomRelativeTime from '@/libs/date';
 import useOverlayStore from '@/stores/useOverlayStore';
@@ -22,6 +21,7 @@ import {
 } from '@/types/workspace.type';
 import { TagsColor } from '@/constants/drive';
 import useGetMoreItems from '@/hooks/useGetMoreItems';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 const CardContainer = styled(Container.FlexCol)<{ checked: boolean }>`
   width: 100%;
@@ -78,9 +78,7 @@ export default function FileCard(
     } & Partial<FolderListResponse>,
 ) {
   const {
-    worksheetId,
     updatedAt,
-    thumbImg,
     name,
     type,
     setState,

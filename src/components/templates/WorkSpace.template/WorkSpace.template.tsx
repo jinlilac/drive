@@ -1,6 +1,5 @@
 import { useObserver } from '@/hooks/useObserver';
 import { useEffect, useState } from 'react';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import ActionToolbar from '@/components/organisms/ActionToolBar';
 import useToastStore from '@/stores/useToastStore';
 import { AxiosResponse } from 'axios';
@@ -39,6 +38,14 @@ type WorkSpaceTemplateProps = {
   fetchNextPage: () => void;
   viewMode: 'list' | 'card';
   currentTab: KorToEngDriveCategory;
+};
+export type UpdateState = {
+  isOpen: boolean;
+  menu?: string;
+  fileSystemId: string;
+  defaultName: string;
+  parentId: string;
+  selectedIds: string[];
 };
 const WorkSpaceContainer = styled(Container.FlexCol)`
   margin-bottom: 164px;

@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { FileSystemAllResponseType, FileSystemListResponseType } from '@/types/workspace.type';
 import { AxiosResponse } from 'axios';
 import Container from '@/components/atoms/Container';
@@ -8,6 +7,7 @@ import { CardItems } from '@/components/organisms/CardItems';
 import { ListItems } from '@/components/organisms/ListItems';
 import Typography from '@/components/atoms/Typography';
 import { DRIVE_SHEET_LABEL } from '@/constants/workspace';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 type WorkSpaceStarAndTrashTemplateProps = {
   fileSystem: AxiosResponse<FileSystemAllResponseType | FileSystemListResponseType>[];

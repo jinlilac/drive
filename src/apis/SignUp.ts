@@ -34,7 +34,7 @@ export const useUpdateProfile = () => {
       const response = await axiosFormDataInstance.patch<ProfileResponseType>('/user/update-user', formData);
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // setUser({ name: data.name, profileImg: data.profileImg as string, accessToken: undefined, isInitialized: true });
     },
   });

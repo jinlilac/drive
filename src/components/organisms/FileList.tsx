@@ -5,7 +5,6 @@ import Typography from '@/components/atoms/Typography';
 import DropdownButton from '@/components/molecules/DropdownButton';
 import { DropBoxItem } from '@/components/molecules/ProfileCard';
 import TagLabel, { TagLabelProps } from '@/components/molecules/TagLabel';
-import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import { CATEGORY_FILTERS, GENDER_FILTERS } from '@/constants/worksheet';
 import { useFormatDate } from '@/libs/date';
@@ -25,6 +24,7 @@ import useGetMoreItems from '@/hooks/useGetMoreItems';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSpace.template';
 
 const ListWrap = styled(Container.Grid)<{ checked: boolean; isDrive: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.Colors.gray_30};
@@ -71,9 +71,7 @@ export default function FileList(
     } & Partial<FolderListResponse>,
 ) {
   const {
-    worksheetId,
     updatedAt,
-    thumbImg,
     name,
     type,
     setState,
@@ -153,7 +151,7 @@ export default function FileList(
   };
 
   return (
-    <ListWrap id={worksheetId} checked={checked} isDrive={isDrive} onDoubleClick={handleDoubleClick(fileSystemId)}>
+    <ListWrap checked={checked} isDrive={isDrive} onDoubleClick={handleDoubleClick(fileSystemId)}>
       <CheckboxContainer checked={checked}>
         <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '', name)} />
       </CheckboxContainer>

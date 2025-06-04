@@ -1,4 +1,3 @@
-import ComponentTest from '@/components/templates/ComponentTest.template';
 import LayoutTemplate from '@/components/templates/Layout.template/Layout.template';
 import ProfileTemplate from '@/components/templates/Profile.template';
 import SignInTemplate from '@/components/templates/SignIn.template/SignIn.template';
@@ -9,14 +8,10 @@ import OAuth from '@/components/templates/OAuth';
 import MainLayoutTemplate from '@/components/templates/Layout.template/MainLayout.template';
 import Starred from '@/components/pages/WorkSpace/Starred';
 import Trash from '@/components/pages/WorkSpace/Trash';
-import WorkSheet from '@/components/pages/WorkSheet/WorkSheet';
 import Drive from '@/components/pages/Drive/Drive';
 import SearchLayoutTemplate from '@/components/templates/Layout.template/SearchLayout.template';
 import MyPageLayoutTemplate from '@/components/templates/Layout.template/MypageLayout.template';
 import MyProfileTemplate from '@/components/templates/Mypage.template/MyProfile.template';
-import NoticeListTemplate from '@/components/templates/Mypage.template/NoticeList.template';
-import Notice from '@/components/pages/Mypage/Notice';
-import NoticeDetailTemplate from '@/components/templates/Mypage.template/NoticeDetail.template';
 
 export const router = createBrowserRouter([
   {
@@ -56,23 +51,14 @@ export const router = createBrowserRouter([
         children: [
           { path: 'profile', element: <MyProfileTemplate /> },
           { path: 'introduce', element: <div>우리 소개</div> },
-          // {
-          //   path: 'notices',
-          //   element: <Notice />,
-          //   children: [
-          //     { path: 'list', element: <NoticeListTemplate /> },
-          //     { path: ':id', element: <NoticeDetailTemplate /> },
-          //   ],
-          // },
-          // { path: 'help', element: <div>고객센터</div> },
         ],
       },
     ],
   },
-  {
-    path: '/test',
-    element: <ComponentTest />,
-  },
+  // {
+  //   path: '/test',
+  //   element: <ComponentTest />,
+  // },
 ]);
 
 export default function Router() {

@@ -3,15 +3,13 @@ import Button from '@/components/atoms/Button';
 import { DRIVE_CATEGORY } from '@/constants/workspace';
 import Typography from '@/components/atoms/Typography';
 import { KorToEngDriveCategory } from '@/types/workspace.type';
-import { Dispatch, MouseEvent, SetStateAction } from 'react';
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
-import TagLabel from '@/components/molecules/TagLabel';
 import { useSetSearchParam } from '@/hooks/useSearchParam';
 
 type CategoryTabProps = {
   currentTab: KorToEngDriveCategory;
   setCurrentTab: (category: KorToEngDriveCategory) => void;
-  // setCurrentTab: Dispatch<SetStateAction<KorToEngDriveCategory>>;
 };
 
 const TabButton = styled(Button.Ghost)<{ isActive: boolean }>`

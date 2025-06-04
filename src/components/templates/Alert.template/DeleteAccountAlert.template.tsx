@@ -2,7 +2,6 @@ import Button from '@/components/atoms/Button';
 import CheckBox from '@/components/atoms/CheckBox';
 import Container from '@/components/atoms/Container';
 import Img from '@/components/atoms/Img';
-import Input from '@/components/atoms/Input';
 import Typography from '@/components/atoms/Typography';
 import { DeleteAccountState } from '@/components/templates/Mypage.template/MyProfile.template';
 import { ICON } from '@/constants/icon';
@@ -87,7 +86,7 @@ const FeedbackInput = styled.textarea`
 `;
 
 export default function DeleteAccountAlert(props: DeleteAccountAlertProps) {
-  const { state, setState, onClose } = props;
+  const { onClose } = props;
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const { user } = useAuthStore();

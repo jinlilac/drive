@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
 
 export default function getCustomRelativeTime(dateString: string): string {

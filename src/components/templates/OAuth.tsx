@@ -29,7 +29,7 @@ export default function OAuth() {
   const [loader, setLoader] = useState<boolean>(false);
 
   const social = pathname.split('/')[3];
-  const { oauth, isPending } = useOAuth(social);
+  const { oauth } = useOAuth(social);
   useEffect(() => {
     openOverlay();
     setLoader(true);
