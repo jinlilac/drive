@@ -2,7 +2,7 @@ import { UserAuthType } from '@/types/auth.type';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type AuthStoreType = {
+export type AuthStoreType = {
   user: Partial<UserAuthType> | null;
   isLoggedIn: boolean;
   logout: () => void;

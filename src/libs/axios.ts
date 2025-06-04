@@ -1,6 +1,5 @@
 import { RefreshManager } from '@/libs/refresh';
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { router } from '@/Router';
 
 export const axiosInstance = axios.create({
@@ -48,33 +47,8 @@ axiosInstance.interceptors.response.use(
     const status = error.response?.status;
     if (status === 401 || status === 400) {
       const originalRequest = error.config;
-      const refreshTokenFn = async () => {
-        try {
-          if (user.social !== null && user.social !== undefined) {
-            const { data } = await axios.post(
-              `${import.meta.env.VITE_API_URL}/user/refresh`,
-              {},
-              {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
-              },
-            );
-            // 새로운 토큰 저장
-            const { accessToken: newAccessToken, accessTokenExpiresAt: newExpiresAt } = data;
-            user.accessToken = newAccessToken;
-            user.accessTokenExpiresAt = newExpiresAt;
-            useAuthStore.setState((prev) => ({ ...prev, user }));
-          }
-        } catch (error) {
-          const refreshTokenError = error as AxiosError;
-          if (refreshTokenError?.response?.status === 401) {
-            localStorage.removeItem('auth-store');
-            await router.navigate('/sign/in');
-          }
-        }
-      };
       try {
-        await RefreshManager.execute(refreshTokenFn); // RefreshManager 사용
+        await RefreshManager.execute(user); // RefreshManager 사용
         if (originalRequest) {
           const newAccessToken = user.accessToken; // 업데이트된 토큰 사용
           if (newAccessToken) {
