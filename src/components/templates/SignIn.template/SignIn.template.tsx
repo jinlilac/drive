@@ -75,6 +75,10 @@ export default function SignInTemplate() {
       },
     );
   };
+
+  const onDemoSubmit = () => {
+    signInEmail({ email: 'demo@kwondns.com', password: '1234qwer!@' });
+  };
   const onErrorSignIn = (error: FieldErrors<SignInEmailType>) => {
     if (error.email?.ref?.value === '' && error.password?.ref?.value === '') {
       methods.setError('email', { message: '이메일을 입력해주세요.' });
@@ -148,7 +152,7 @@ export default function SignInTemplate() {
         </Typography.B1>
         <Container.FlexRow gap="24" alignItems="center" justifyContent="center">
           <SocialButtonWrapper>
-            <Button.Ghost onClick={() => console.log('버튼 클릭~~~')}>
+            <Button.Ghost onClick={onDemoSubmit}>
               <Img src={ICON['demo-login']} />
             </Button.Ghost>
           </SocialButtonWrapper>
