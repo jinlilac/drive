@@ -12,11 +12,12 @@ import Drive from '@/components/pages/Drive/Drive';
 import SearchLayoutTemplate from '@/components/templates/Layout.template/SearchLayout.template';
 import MyPageLayoutTemplate from '@/components/templates/Layout.template/MypageLayout.template';
 import MyProfileTemplate from '@/components/templates/Mypage.template/MyProfile.template';
+import Root from '@/components/templates/Root';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>임시문구</div>,
+    element: <Root />,
   },
   {
     path: 'sign',
