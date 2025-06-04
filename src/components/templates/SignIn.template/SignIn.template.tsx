@@ -94,7 +94,7 @@ export default function SignInTemplate() {
         </Typography.H1>
         <Container.FlexRow alignItems="center" justifyContent="space-between">
           <Typography.T2 fontWeight="medium" color="gray_70">
-            위브에 처음 오셨나요?
+            처음 오셨나요?
           </Typography.T2>
           <Link to={'/sign/up'}>
             <Typography.T3 fontWeight="medium" color="blue">
