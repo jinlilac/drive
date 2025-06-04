@@ -92,12 +92,12 @@ export default function ProfileTemplate() {
   };
 
   const handleSubmit = (data: ProfileInput) => {
-    if (fileError) return; //
+    if (fileError) return;
     updateProfile(data, {
       onSuccess: (data) => {
         setUser({
           name: data.name,
-          profileImg: data.profileImg as string,
+          profileImg: data.profileImg,
           accessToken: undefined,
           isInitialized: true,
         });

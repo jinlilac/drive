@@ -36,7 +36,7 @@ export default function CategoryTab(props: CategoryTabProps) {
       {DRIVE_CATEGORY.map((value) => (
         <TabButton id={value.name} onClick={onClickTab} key={`${value.name}_tab`} isActive={currentTab === value.name}>
           <Typography.B1 fontWeight={'semiBold'}>{value.label}</Typography.B1>
-          {value.name === 'wiive' && <TagLabel wiive={true} />}
+          {/* {value.name === 'wiive' && <TagLabel wiive={true} />} */}
         </TabButton>
       ))}
     </Container.FlexRow>

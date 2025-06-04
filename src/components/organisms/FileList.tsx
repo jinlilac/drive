@@ -8,7 +8,7 @@ import TagLabel, { TagLabelProps } from '@/components/molecules/TagLabel';
 import { UpdateState } from '@/components/templates/WorkSpace.template/WorkSheetBaseTemplate';
 import { ICON } from '@/constants/icon';
 import { CATEGORY_FILTERS, GENDER_FILTERS } from '@/constants/worksheet';
-import getCustomRelativeTime from '@/libs/date';
+import { useFormatDate } from '@/libs/date';
 import useOverlayStore from '@/stores/useOverlayStore';
 import { WorkSheetItems } from '@/types/worksheet.type';
 import { Dispatch, MouseEvent, SetStateAction } from 'react';
@@ -165,7 +165,7 @@ export default function FileList(
             <Img
               full
               fit="fill"
-              src={`${import.meta.env.VITE_IMG_URL}/${type === 'wiive' ? thumbImg : storagePath}`}
+              src={`${import.meta.env.VITE_IMG_URL}/${storagePath}`}
               onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
               onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
             />
@@ -212,7 +212,7 @@ export default function FileList(
         </Typography.B2>
       )}
       <Typography.B2 fontWeight="medium" color="gray_90">
-        {getCustomRelativeTime(updatedAt)}
+        {useFormatDate(updatedAt)}
       </Typography.B2>
       <DropdownButton
         disabled={state.selectedIds.length > 0}

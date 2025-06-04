@@ -2,11 +2,11 @@ import { TagLabelProps } from '@/components/molecules/TagLabel';
 import { KorToEngDriveCategory } from '@/types/workspace.type';
 
 export const TAGS: { label: string; color: TagLabelProps['color']; value: KorToEngDriveCategory }[] = [
-  { label: '작업지시서', color: 'green', value: KorToEngDriveCategory.작업지시서 },
-  { label: '도식화', color: 'orange', value: KorToEngDriveCategory.도식화 },
-  { label: '원단', color: 'purple', value: KorToEngDriveCategory.원단 },
-  { label: '인쇄', color: 'red', value: KorToEngDriveCategory.인쇄 },
-  { label: '패턴', color: 'blue', value: KorToEngDriveCategory.패턴 },
+  { label: 'Type A', color: 'green', value: KorToEngDriveCategory['Type A'] },
+  { label: 'Type B', color: 'orange', value: KorToEngDriveCategory['Type B'] },
+  { label: 'Type C', color: 'purple', value: KorToEngDriveCategory['Type C'] },
+  { label: 'Type D', color: 'red', value: KorToEngDriveCategory['Type D'] },
+  { label: 'Type E', color: 'blue', value: KorToEngDriveCategory['Type E'] },
   { label: '기타', color: 'gray_80', value: KorToEngDriveCategory.기타 },
 ];
 

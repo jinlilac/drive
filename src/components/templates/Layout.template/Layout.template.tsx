@@ -16,7 +16,7 @@ const BgContainer = styled(Container.FlexCol)`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-image: url('/assets/imgs/bg-main.webp');
+  background-image: url('/assets/imgs/bg-main-layout.webp');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -31,7 +31,7 @@ export default function LayoutTemplate() {
   return (
     <LayoutContainer>
       <BgContainer>
-        <Img src={ICON['wiive-logo']} />
+        <Img src={ICON['drive-logo']} />
       </BgContainer>
       <Container.FlexCol style={{ flex: '1' }}>
         <OutletContainer>

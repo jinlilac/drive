@@ -13,7 +13,7 @@ export const ICON_LIST = [
   'mark-red',
   'mark-green',
   'confirm',
-  'wiive-logo',
+  'drive-logo',
   'chevron',
   'chevron-right',
   'google-logo',
@@ -66,6 +66,7 @@ export const ICON_LIST = [
   'mypage-bill-list',
   'mypage-bill-card',
   'radio',
+  'demo-login',
 ] as const;
 
 export const ICON = ICON_LIST.reduce((acc, item) => {

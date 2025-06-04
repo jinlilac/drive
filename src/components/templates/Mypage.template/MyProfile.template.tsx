@@ -97,7 +97,7 @@ export default function MyProfileTemplate() {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name || '',
-      profileImg: user?.profileImg || undefined,
+      profileImg: undefined,
     },
     mode: 'all',
   });
@@ -146,20 +146,19 @@ export default function MyProfileTemplate() {
   };
   // 사진 삭제
   const handleDeleteImage = () => {
-    setPreviewImage(null);
-    formValues.setValue('profileImg', undefined, { shouldDirty: true });
+    setPreviewImage('null');
+    formValues.setValue('profileImg', 'null', { shouldDirty: true });
     if (fileInput.current) fileInput.current.value = '';
   };
 
   const onSubmit = (data: ProfileInput) => {
-    console.log('data --->', data);
     const { profileImg, ...rest } = data;
     const payload = profileImg ? { ...rest, profileImg } : rest;
     updateProfile(payload, {
       onSuccess: (data) => {
         setUser({
           name: data.name,
-          profileImg: data.profileImg as string,
+          profileImg: data.profileImg,
         });
       },
     });

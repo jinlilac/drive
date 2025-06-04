@@ -9,19 +9,19 @@ export const MYPAGE_SIDEBAR_ITEMS = {
       isReady: true,
     },
     {
+      label: '프로젝트 소개',
+      path: '/mypage/introduce',
+      icon: ICON['mypage-customer'],
+      isReady: false,
+    },
+    {
       label: '공지사항',
       path: '/mypage/notices/list?page=1',
       icon: ICON['mypage-bell'],
-      isReady: true,
+      isReady: false,
     },
   ],
   관리: [
-    {
-      label: '고객센터',
-      path: '/mypage/help',
-      icon: ICON['mypage-customer'],
-      isReady: true,
-    },
     {
       label: '구독 관리',
       path: '/mypage/pricing',

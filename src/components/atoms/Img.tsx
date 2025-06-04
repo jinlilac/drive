@@ -11,6 +11,7 @@ const Img = styled.img.attrs<ImgProps>((props) => ({ loading: 'lazy' }))`
     props.full &&
     css`
       width: 100%;
+      height: 100%;
     `};
   object-fit: ${(props) => props.fit ?? 'contain'};
 `;

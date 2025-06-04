@@ -45,7 +45,6 @@ export const router = createBrowserRouter([
         path: '/workspace',
         element: <SearchLayoutTemplate />,
         children: [
-          { path: 'work-sheet', element: <WorkSheet /> },
           { path: 'drive', element: <Drive /> },
           { path: 'starred', element: <Starred /> },
           { path: 'trash', element: <Trash /> },
@@ -56,15 +55,16 @@ export const router = createBrowserRouter([
         element: <MyPageLayoutTemplate />,
         children: [
           { path: 'profile', element: <MyProfileTemplate /> },
-          {
-            path: 'notices',
-            element: <Notice />,
-            children: [
-              { path: 'list', element: <NoticeListTemplate /> },
-              { path: ':id', element: <NoticeDetailTemplate /> },
-            ],
-          },
-          { path: 'help', element: <div>고객센터</div> },
+          { path: 'introduce', element: <div>우리 소개</div> },
+          // {
+          //   path: 'notices',
+          //   element: <Notice />,
+          //   children: [
+          //     { path: 'list', element: <NoticeListTemplate /> },
+          //     { path: ':id', element: <NoticeDetailTemplate /> },
+          //   ],
+          // },
+          // { path: 'help', element: <div>고객센터</div> },
         ],
       },
     ],

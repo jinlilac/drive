@@ -133,7 +133,7 @@ export default function FileCard(
   };
   const MORE_ITEMS = useGetMoreItems(isStarred);
   return (
-    <CardContainer id={fileSystemId ?? worksheetId} checked={checked}>
+    <CardContainer id={fileSystemId} checked={checked}>
       <CheckboxContainer checked={checked}>
         <CheckBox option="default" checked={checked} onChange={handleCheckboxChange(props?.path ?? '', name)} />
       </CheckboxContainer>
@@ -142,7 +142,7 @@ export default function FileCard(
           full
           style={{ height: '100%' }}
           fit="contain"
-          src={`${import.meta.env.VITE_IMG_URL}/${type === 'wiive' ? thumbImg : storagePath}`}
+          src={`${import.meta.env.VITE_IMG_URL}/${storagePath}`}
           onError={({ currentTarget }) => (currentTarget.style.display = 'none')}
           onLoad={({ currentTarget }) => (currentTarget.style.display = 'block')}
         />
@@ -169,9 +169,9 @@ export default function FileCard(
         </TitleWrap>
         <SubtitleWrap gap="4" alignItems="center">
           <TagLabel
-            label={type === 'worksheet' ? '작업지시서' : EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
+            label={EngToKorDriveCategory[(tag as KorToEngDriveCategory) ?? 'etc']}
             color={TagsColor[(tag as KorToEngDriveCategory) ?? 'etc']}
-            wiive={type === 'worksheet'}
+            // wiive={type === 'worksheet'}
           />
           <Divider.Col color="gray_70" />
           <Typography.B3 fontWeight="medium" color="gray_70">

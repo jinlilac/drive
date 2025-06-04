@@ -3,18 +3,18 @@ import Divider from '@/components/atoms/Divider';
 import Img from '@/components/atoms/Img';
 import Typography from '@/components/atoms/Typography';
 import ProfileCard, { DropBoxItem } from '@/components/molecules/ProfileCard';
-// import SearchBar from '@/components/molecules/SearchBar';
+import { SideBarMenu } from '@/components/molecules/SideBarMenu';
 import StorageProgressBar from '@/components/molecules/StorageProgressBar';
-import WindowBar from '@/components/molecules/WindowBar';
 import SideBar from '@/components/organisms/SideBar';
 import { SIDEBAR_ITEMS } from '@/constants/workspace';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const MainLayoutContainer = styled(Container.FlexRow)`
   width: 100%;
   height: 100dvh;
+  padding-top: 8px;
 `;
 const LinkItem = styled(DropBoxItem)`
   display: flex;
@@ -47,9 +47,10 @@ export default function MainLayoutTemplate() {
       navigate(`${path}?page=1&path=${user?.rootFolder}&category=all&name=내 드라이브`);
     } else navigate(`${path}`);
   };
+  const location = useLocation();
+  const { pathname } = location;
   return (
     <>
-      <WindowBar />
       <MainLayoutContainer>
         <SideBar
           header={
@@ -62,12 +63,14 @@ export default function MainLayoutTemplate() {
           <SideBarContentWrap>
             <Container.FlexCol gap="16">
               {SIDEBAR_ITEMS.map((items) => (
-                <LinkItem onClick={() => handleMenuClick(items.path)} key={items.path}>
-                  <Img src={items.icon} style={{ width: '20px' }} />
-                  <Typography.B1 fontWeight="semiBold" color="gray_90">
-                    {items.label}
-                  </Typography.B1>
-                </LinkItem>
+                <SideBarMenu
+                  key={items.label}
+                  isActive={pathname.includes(items.path.split('?')[0])}
+                  label={items.label}
+                  icon={items.icon}
+                  path={items.path}
+                  onClick={() => handleMenuClick(items.path)}
+                />
               ))}
             </Container.FlexCol>
             <Storage>

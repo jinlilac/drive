@@ -97,11 +97,6 @@ export default function SearchBar() {
   // 드롭다운 메뉴 항목
   const menuItems = [
     {
-      label: '작업지시서',
-      icon: ICON['work-sheet'],
-      onClick: () => console.log('작업지시서'),
-    },
-    {
       label: '폴더',
       icon: ICON['folder-add'],
       onClick: () => {
@@ -162,14 +157,14 @@ export default function SearchBar() {
           }
         >
           <Container.FlexCol gap="16">
-            {menuItems.slice(0, 2).map((item) => (
+            {menuItems.slice(0, 1).map((item) => (
               <ButtonItem key={item.label} onClick={item.onClick}>
                 <Img src={item.icon} />
                 {item.label}
               </ButtonItem>
             ))}
             <Divider.Row />
-            {menuItems.slice(2, 3).map((item) => (
+            {menuItems.slice(1, 2).map((item) => (
               <ButtonItem key={item.label} onClick={item.onClick}>
                 <Img src={item.icon} />
                 {item.label}

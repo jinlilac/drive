@@ -5,7 +5,7 @@ export type UserAuthType = {
   accessTokenExpiresAt: string;
   social: 0 | 1 | 2 | 3;
   name: string;
-  profileImg: string;
+  profileImg?: string;
   isInitialized: boolean;
   rootFolder: string;
   currentId: string;

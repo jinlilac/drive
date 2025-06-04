@@ -7,7 +7,6 @@ import Typography from '@/components/atoms/Typography';
 import LabelWithInput from '@/components/molecules/LabelWithInput';
 import { ICON } from '@/constants/icon';
 import { useSignInEmail } from '@/apis/SignIn';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { EmailAuth, SignInEmailType } from '@/types/signin.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
@@ -27,40 +26,13 @@ const SaveId = styled(Button.Ghost)`
   align-items: center;
   gap: 4px;
 `;
-const TooltipBox = styled.div`
-  position: absolute;
-  bottom: -45px; /* 버튼 아래로 위치 */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 12px 26px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 10;
-  border-radius: 20px;
-  font-size: ${(props) => props.theme.Font.fontSize.b2};
-  font-weight: ${(props) => props.theme.Font.fontWeight.medium};
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -16px; /* 화살표 위치 */
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 9px;
-    border-style: solid;
-    border-color: transparent transparent #333 transparent; /* 위쪽 화살표 */
-  }
-`;
 
 const SocialButtonWrapper = styled.div`
   position: relative; /* 툴팁의 기준이 되는 컨테이너 */
 `;
 
 export default function SignInTemplate() {
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
   // visible password
   const { passwordVisible, togglePasswordVisibility } = usePasswordVisibility();
 
@@ -108,28 +80,6 @@ export default function SignInTemplate() {
       methods.setError('email', { message: '이메일을 입력해주세요.' });
       methods.setError('password', { message: '비밀번호를 입력해주세요.' });
     }
-  };
-
-  // sign-in oauth
-  const onClickKakao = () => {
-    const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
-    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-  };
-
-  const onClickGoogle = () => {
-    const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
-
-    window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`;
-  };
-
-  const onClickNaver = () => {
-    const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
-    const REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI;
-
-    window.location.href = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}`;
   };
 
   return (
@@ -194,26 +144,13 @@ export default function SignInTemplate() {
       <Container.FlexCol alignItems="center" gap="16">
         <Divider.Row size="medium" style={{ maxWidth: '65px', marginBottom: '32px' }} />
         <Typography.B1 fontWeight="medium" color="gray_70">
-          SNS 계정으로 로그인/회원가입
+          데모 계정으로 로그인
         </Typography.B1>
         <Container.FlexRow gap="24" alignItems="center" justifyContent="center">
           <SocialButtonWrapper>
-            <Button.Ghost onClick={onClickGoogle}>
-              <Img src={ICON['google-logo']} />
+            <Button.Ghost onClick={() => console.log('버튼 클릭~~~')}>
+              <Img src={ICON['demo-login']} />
             </Button.Ghost>
-            {user?.social === 1 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
-          </SocialButtonWrapper>
-          <SocialButtonWrapper>
-            <Button.Ghost onClick={onClickKakao}>
-              <Img src={ICON['kakao-logo']} />
-            </Button.Ghost>
-            {user?.social === 2 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
-          </SocialButtonWrapper>
-          <SocialButtonWrapper>
-            <Button.Ghost onClick={onClickNaver}>
-              <Img src={ICON['naver-logo']} />
-            </Button.Ghost>
-            {user?.social === 3 && <TooltipBox>최근에 로그인했어요</TooltipBox>}
           </SocialButtonWrapper>
         </Container.FlexRow>
       </Container.FlexCol>

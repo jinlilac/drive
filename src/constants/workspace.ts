@@ -8,12 +8,8 @@ export const MENU_ITEMS = [
     path: '/mypage/profile',
   },
   {
-    label: '공지사항',
-    path: '/mypage/notices/list?page=1',
-  },
-  {
-    label: '구독 관리',
-    path: '/mypage/pricing',
+    label: '프로젝트 소개',
+    path: '/mypage/introduce',
   },
 ] as const;
 
@@ -21,11 +17,6 @@ export const MENU_ITEMS = [
 export type MenuItem = (typeof MENU_ITEMS)[number];
 
 export const SIDEBAR_ITEMS = [
-  {
-    label: '작업지시서',
-    path: '/workspace/work-sheet',
-    icon: ICON['work-sheet'],
-  },
   {
     label: '내드라이브',
     path: '/workspace/drive',
@@ -46,12 +37,11 @@ export const SIDEBAR_ITEMS = [
 export const DRIVE_CATEGORY = [
   { label: '전체', name: KorToEngDriveCategory.전체 },
   { label: '폴더', name: KorToEngDriveCategory.폴더 },
-  { label: '작업지시서', name: KorToEngDriveCategory.WIIVE },
-  { label: '작업지시서', name: KorToEngDriveCategory.작업지시서 },
-  { label: '도식화', name: KorToEngDriveCategory.도식화 },
-  { label: '원단', name: KorToEngDriveCategory.원단 },
-  { label: '패턴', name: KorToEngDriveCategory.패턴 },
-  { label: '인쇄', name: KorToEngDriveCategory.인쇄 },
+  { label: 'Type A', name: KorToEngDriveCategory['Type A'] },
+  { label: 'Type B', name: KorToEngDriveCategory['Type B'] },
+  { label: 'Type C', name: KorToEngDriveCategory['Type C'] },
+  { label: 'Type D', name: KorToEngDriveCategory['Type D'] },
+  { label: 'Type E', name: KorToEngDriveCategory['Type E'] },
   { label: '기타', name: KorToEngDriveCategory.기타 },
 ];
 

@@ -3,17 +3,17 @@ import { axiosFormDataInstance, axiosInstance } from '@/libs/axios';
 import { SignUpResponseType, SignUpType } from '@/types/signup.type';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { ProfileInputType } from '@/types/profile.type';
+import { ProfileInput, ProfileResponseType } from '@/types/profile.type';
 
 export const useSignUp = () => {
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { setUser } = useAuthStore();
   const { mutate: signUp, isPending: isSigning } = useMutation({
     mutationFn: async (payload: Omit<SignUpType, 'confirmPassword'>) =>
       await axiosInstance.post<SignUpResponseType>('/user/sign-up', payload),
 
     onSuccess: (data) => {
-      login({ ...data.data });
+      setUser({ ...data.data });
 
       navigate('/sign/profile');
     },
@@ -22,19 +22,16 @@ export const useSignUp = () => {
 };
 
 export const useUpdateProfile = () => {
-  const { user, setUser } = useAuthStore();
+  const { user } = useAuthStore();
   const { mutate: updateProfile, isPending } = useMutation({
-    mutationFn: async (inputData: Omit<ProfileInputType, 'userId'>) => {
+    mutationFn: async (inputData: ProfileInput) => {
       const formData = new FormData();
       formData.append('userId', user?.userId as string);
       formData.append('name', inputData.name);
       if (inputData.profileImg) {
         formData.append('profileImg', inputData.profileImg);
       }
-      const response = await axiosFormDataInstance.patch<Omit<ProfileInputType, 'userId'>>(
-        '/user/update-user',
-        formData,
-      );
+      const response = await axiosFormDataInstance.patch<ProfileResponseType>('/user/update-user', formData);
       return response.data;
     },
     onSuccess: (data) => {

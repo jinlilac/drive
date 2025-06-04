@@ -1,24 +1,22 @@
 export enum KorToEngDriveCategory {
-  폴더 = 'folder',
-  작업지시서 = 'worksheet',
-  도식화 = 'schematic',
-  인쇄 = 'print',
-  패턴 = 'pattern',
-  기타 = 'etc',
-  원단 = 'fabric',
-  WIIVE = 'wiive',
-  전체 = 'all',
+  '폴더' = 'folder',
+  'Type A' = 'A',
+  'Type B' = 'B',
+  'Type C' = 'C',
+  'Type D' = 'D',
+  '기타' = 'etc',
+  'Type E' = 'E',
+  '전체' = 'all',
 }
 
 export enum EngToKorDriveCategory {
   folder = '폴더',
-  worksheet = '작업지시서',
-  schematic = '도식화',
-  print = '인쇄',
-  pattern = '패턴',
+  A = 'Type A',
+  B = 'Type B',
+  C = 'Type C',
+  D = 'Type D',
   etc = '기타',
-  fabric = '원단',
-  wiive = 'WIIVE',
+  E = 'Type E',
   all = '전체',
 }
 
